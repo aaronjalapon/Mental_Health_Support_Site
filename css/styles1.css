@@ -12,21 +12,9 @@ body {
     background-position: center center;
     background-size: scroll;
 }
-
-.message {
-    position: absolute;
-    top: 11%;
-    text-align: center;
-  }
-  .message h1 {
-    font-size: clamp(1.5rem, 4vw, 3.5rem); /* Minimum: 1.5rem, Viewport-based: 4vw, Maximum: 3.5rem */
-    text-align: center;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Optional: adds readability on lighter backgrounds */
-  }
-
+ 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(251, 245, 223, 0.7);
     padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(255, 0, 0, 0.1);
@@ -61,9 +49,9 @@ input[type="file"]{
     width: 100%;
     padding: 10px;
     border: 1px solid #cccccc;
-    border-radius: 4px;
+    border-radius: 5px;
     box-sizing: border-box;
-    transition: scale 1s;
+    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
 
 .login-btn {
@@ -75,6 +63,7 @@ input[type="file"]{
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 
 }
 
@@ -129,7 +118,7 @@ input[type="file"]{
 }
 
 .modal-content {
-    background-color: white;
+    background-color: rgba(251, 245, 223, 0.9);
     padding: 20px 30px;
     border-radius: 8px;
     width: 100%;
@@ -150,6 +139,7 @@ input[type="file"]{
     font-size: 20px;
     cursor: pointer;
     color: #4CAF50;
+   
 }
 
 .reset-btn {
@@ -162,6 +152,7 @@ input[type="file"]{
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
 
 .reset-btn:hover {
@@ -170,7 +161,7 @@ input[type="file"]{
 
 /* Signup Container Styles */
 .signup-container {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(251, 245, 223, 0.7);
     padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -189,17 +180,18 @@ input[type="file"]{
 .signup-btn {
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #31a434;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
 
 .signup-btn:hover {
-    background-color: #31a434;
+    background-color: #4CAF50;
 }
 
 .login-link {
