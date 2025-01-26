@@ -10,7 +10,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: #333;
-  background-image: url(https://w0.peakpx.com/wallpaper/490/753/HD-wallpaper-closeup-view-of-green-plant-leaves-green-aesthetic.jpg);
+  background-image: url(/images/landing_page.jpg);
   background-color: #317873;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -136,6 +136,26 @@ body {
   background-color: #003d82;
 }
 
+    @media (max-width: 576px) {
+        /* Hero Section: Adjust font sizes and spacing */
+        .hero-content h1 {
+        font-size: 1.8rem;
+        }
+    
+        .hero-content p {
+        font-size: 1rem;
+        }
+    
+        .btn-get-started {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+        }
+    
+        .hero {
+        padding: 3rem 1rem;
+        }
+    }
+
 /* Features Section */
 .features {
   display: flex;
@@ -177,6 +197,19 @@ body {
   text-decoration: underline;
 }
 
+    @media (max-width: 768px) {
+        /* Features Section: Stack features vertically */
+        .features {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1rem;
+        }
+    
+        .feature {
+        width: 100%;
+        }
+    }
+
 /* Footer */
 .footer {
   text-align: center;
@@ -201,39 +234,6 @@ body {
 }
 
 /* Responsive Styles */  
-  @media (max-width: 576px) {
-    /* Hero Section: Adjust font sizes and spacing */
-    .hero-content h1 {
-      font-size: 1.8rem;
-    }
-  
-    .hero-content p {
-      font-size: 1rem;
-    }
-  
-    .btn-get-started {
-      font-size: 0.9rem;
-      padding: 0.6rem 1rem;
-    }
-  
-    .hero {
-      padding: 3rem 1rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    /* Features Section: Stack features vertically */
-    .features {
-      flex-direction: column;
-      gap: 1rem;
-      padding: 0 1rem;
-    }
-  
-    .feature {
-      width: 100%;
-    }
-  }
-  
   @media (max-width: 400px) {
     /* Extra Small Screens: Fine-tuning */
     .hero-content h1 {
