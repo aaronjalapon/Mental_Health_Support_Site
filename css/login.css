@@ -12,7 +12,7 @@ body {
     background-position: center center;
     background-size: scroll;
 }
- 
+
 .login-container {
     background-color: rgba(251, 245, 223, 0.7);
     padding: 20px 30px;
@@ -82,6 +82,7 @@ input[type="file"]{
     font-size: 14px;
     text-decoration: none;
     transition: font-size 0.9s;
+    text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
 }
 
 .forgot-password a:hover{
@@ -92,6 +93,7 @@ input[type="file"]{
     color: #4CAF50;
     text-decoration: none;
     transition: font-size 0.9s;
+    text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
 }
 
 .signup-link a:hover {
@@ -139,7 +141,7 @@ input[type="file"]{
     font-size: 20px;
     cursor: pointer;
     color: #4CAF50;
-   
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 }
 
 .reset-btn {
@@ -202,6 +204,7 @@ input[type="file"]{
 .login-link a {
     color: #31a434;
     text-decoration: none;
+    text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
 }
 
 .login-link a:hover {
