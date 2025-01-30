@@ -10,7 +10,7 @@ body {
     background-image: url(/images/nature-bg.png);
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: scroll;
+    background-size: cover;
 }
 
 .login-container {

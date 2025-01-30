@@ -10,11 +10,10 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: #333;
-  background-image: url(/images/landing_page.jpg);
-  background-color: #317873;
+  background-color: rgb(211, 248, 226);
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size:cover;
 }
 
 /* Navbar */
@@ -24,9 +23,11 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: white;
-    color: #31a434;
-    position: relative;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    z-index: 1000; /* Add higher z-index to ensure navbar stays on top */
   }
   
   .logo h1 {
@@ -36,11 +37,12 @@ body {
   .nav-links {
     display: flex;
     gap: 1.5rem;
+    z-index: 999; /* Add z-index to ensure dropdown appears above other content */
   }
   
   .nav-links a {
     text-decoration: none;
-    color: black;
+    color: #fff;
     font-size: 1rem;
     transition: scale 1s;
   }
@@ -51,7 +53,20 @@ body {
 #community:hover,
 #privacy:hover{
     scale: 1.1;
-    color:#31a434;
+    color: #fff;
+}
+#btn-login{
+  background-color: #fff;
+  color: #1e9160;
+  border: none;
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+}
+#btn-login:hover{
+  background-color: #d3f8e2;
 }
   
   /* Burger Menu */
@@ -70,10 +85,22 @@ body {
   .burger-menu .bar {
     height: 3px;
     width: 100%;
-    background-color: #31a434;
+    background-color: #fff;
     border-radius: 2px;
   }
   
+  /* Add keyframes for dropdown animation */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Responsive Navbar */
   @media (max-width: 768px) {
     .burger-menu {
@@ -86,10 +113,11 @@ body {
       position: absolute;
       top: 100%;
       right: 0;
-      background-color: white;
+      background-color: #1e9160;
       width: 100%;
       padding: 1rem;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) inset;
+      transform-origin: top;
     }
   
     .nav-links a {
@@ -99,6 +127,24 @@ body {
   
     .nav-links.show {
       display: flex; /* Display menu when toggled */
+      animation: slideDown 0.3s ease forwards;
+    }
+
+    /* Add smooth rotation for burger menu icon */
+    .burger-menu .bar {
+      transition: transform 0.3s ease;
+    }
+  
+    .burger-menu.active .bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+  
+    .burger-menu.active .bar:nth-child(2) {
+      opacity: 0;
+    }
+  
+    .burger-menu.active .bar:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
     }
   }
   
@@ -106,24 +152,33 @@ body {
 /* Hero Section */
 .hero {
   text-align: center;
-  background-color: #fbf5df;
+  background-image: url(/images/nurse.svg);
+  background-position: 75% 35%;
+  background-repeat: no-repeat;
+  background-size: 120rem 100rem;
+  background-color: #fff;
   padding: 4rem 2rem;
+ 
 }
-
+.hero-content{
+  
+  padding-bottom: 30rem;
+  text-align:left;
+  align-items: left center;
+  color: white;
+}
 .hero-content h1 {
   font-size: 2.5rem;
-  color: #31a434;
   margin-bottom: 1rem;
 }
 
 .hero-content p {
   font-size: 1.2rem;
-  color: #555;
   margin-bottom: 1.5rem;
 }
 
 .btn-get-started {
-  background-color: #31a434;
+  background-color: #1e9160;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -133,7 +188,7 @@ body {
 }
 
 .btn-get-started:hover {
-  background-color: #003d82;
+  background-color: #6ee4c1;
 }
 
     @media (max-width: 576px) {
@@ -165,19 +220,48 @@ body {
   gap: 1rem;
 }
 
+/* Add keyframes for feature animation */
+@keyframes featureSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .feature {
-  background-color: #fbf5df;
+  background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 1.5rem;
   text-align: center;
   flex: 1;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  animation: featureSlideUp 0.8s ease forwards;
+  position: relative; /* Add position relative */
+  z-index: 1; /* Lower z-index for features */
+}
+
+/* Add different delays for each feature */
+.feature:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.feature:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.feature:nth-child(3) {
+  animation-delay: 0.6s;
 }
 
 .feature h2 {
   font-size: 1.5rem;
-  color: #31a434;
+  color: #1e9160;
   margin-bottom: 0.75rem;
 }
 
@@ -188,7 +272,7 @@ body {
 }
 
 .feature-link {
-  color: #31a434;
+  color: #1e9160;
   font-weight: bold;
   text-decoration: none;
 }
@@ -213,19 +297,17 @@ body {
 /* Footer */
 .footer {
   text-align: center;
-  position: fixed;
-  bottom: 0;
+  position: absolute;
   padding: 1rem;
   width: 100%;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
+  background-image: linear-gradient(90deg, #6ee4c1, #1e9160);
   margin-top: 2rem;
   font-size: 0.9rem;
-  color: #555;
+  color: #fff;
 }
 
 .footer a {
-  color: #31a434;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -249,4 +331,3 @@ body {
       font-size: 0.9rem;
     }
   }
-  
