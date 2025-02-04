@@ -3,73 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mental Health Support System</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <title>MindCare - Mental Health Support</title>
+  <link rel="stylesheet" href="/css/langding_page.css">
 </head>
 <body>
-  <header>
-    <h1>Mental Health Support System</h1>
-    <nav>
-      <ul>
-        <li><a href="#self-help">Self-Help Resources</a></li>
-        <li><a href="#professional-support">Professional Support</a></li>
-        <li><a href="#community">Community</a></li>
-        <li><a href="#privacy">Privacy & Security</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header class="navbar">
+        <div class="logo">
+          <h1>MindCare</h1>
+        </div>
+        <button class="burger-menu" id="burgerMenu">
+          <!-- 3-bar lines icon -->
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <nav class="nav-links" id="navLinks">
+          <a id="home" href="#hero">Home</a>
+          <a id="self-help" href="#self-help">Self-Help</a>
+          <a id="support" href="#support">Support</a>
+          <a id="community" href="#community">Community</a>
+          <a id="privacy" href="#privacy">Privacy</a>
+          <button id="btn-login">Log In</button>
+        </nav>
+      </header>
 
   <main>
-    <!-- Self-Help Resources Section -->
-    <section id="self-help">
-      <h2>Self-Help Resources</h2>
-      <div>
-        <h3>Guided Meditations</h3>
-        <audio controls>
-          <source src="guided-meditation.mp3" type="audio/mpeg">
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-      <div>
-        <h3>Educational Articles</h3>
-        <article>
-          <h4>Understanding Anxiety</h4>
-          <p>Learn the signs and coping strategies for anxiety.</p>
-          <a href="article.html">Read More</a>
-        </article>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <p>Mental Health Support Site</p>
+        <h1>Your Mental Health Matters</h1>
+        <p>Discover resources, connect with professionals, and find community support in a safe and supportive space.</p>
+        <button class="btn-get-started">Make an Appointment</button>
       </div>
     </section>
 
-    <!-- Professional Support Section -->
-    <section id="professional-support">
-      <h2>Professional Support</h2>
-      <p>Find mental health services in your area.</p>
-      <a href="services.html">Explore Services</a>
-      <div>
-        <h3>Crisis Hotline</h3>
-        <p>If you are in crisis, call: <a href="tel:+18001234567">1-800-123-4567</a></p>
+    <!-- Features Section -->
+    <section class="features">
+      <div class="what-we-offer">
+        <p>What We Offer</p>
+        <h2>Awareness today, better mental tomorrow</h2>
       </div>
-    </section>
-
-    <!-- Community Section -->
-    <section id="community">
-      <h2>Community</h2>
-      <p>Join our safe and supportive community forum.</p>
-      <a href="forum.html">Join the Community</a>
-    </section>
-
-    <!-- Privacy & Security Section -->
-    <section id="privacy">
-      <h2>Privacy & Security</h2>
-      <p>Your data is protected. Communication is secure.</p>
-      <a href="privacy.html">Learn More</a>
+      <div class="feature">
+        <h2>Guided Meditations</h2>
+        <p>Relax and recharge with our curated meditations.</p>
+        <a href="#" class="feature-link">Explore</a>
+      </div>
+      <div class="feature">
+        <h2>Professional Support</h2>
+        <p>Connect with mental health professionals and resources.</p>
+        <a href="#" class="feature-link">Learn More</a>
+      </div>
+      <div class="feature">
+        <h2>Community</h2>
+        <p>Join a safe and supportive online space for peer support.</p>
+        <a href="#" class="feature-link">Join Now</a>
+      </div>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Mental Health Support System. All rights reserved.</p>
+  <footer class="footer">
+    <p>© 2025 MindCare. All rights reserved. | <a href="#">Privacy Policy</a></p>
   </footer>
-
-  <script src="scripts.js"></script>
+  <script src="/js/landing_page.js"></script>
 </body>
 </html>
