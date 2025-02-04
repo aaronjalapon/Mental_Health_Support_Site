@@ -51,3 +51,21 @@ resetPasswordForm.addEventListener('submit', function (e) {
     alert(`A reset link has been sent to ${resetEmail}.`);
     forgotPasswordModal.classList.add('hidden');
 });
+
+// File Input Handling
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileInput');
+    const fileNameSpan = document.querySelector('.file-name');
+
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            console.log('File selected:', file.name); // Debug log
+            fileNameSpan.textContent = file.name;
+            fileNameSpan.style.color = '#000';
+        } else {
+            fileNameSpan.textContent = 'No file chosen';
+            fileNameSpan.style.color = '#b7b7b7';
+        }
+    });
+});

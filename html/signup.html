@@ -3,45 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Registration</title>
+    <title>Registration Form</title>
     <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
 </head>
 <body>
-    <div class="signup-container">
-        <h1>Register for Mental Health Support Site</h1>
-        <form id="registrationForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="firstName">First Name:</label>
-                <input type="text" id="firstName" name="firstName" placeholder="John" required>
+    <div class="vector-parent">
+        <div class="logo-serrenity-1-1-parent">
+            <img class="logo-serrenity-1-1-icon" alt="" src="/images/Logo_serrenity_1 1.png">
+            <div class="mindspace">MindSpace</div>
+        </div>
+        
+        <b class="registration-form">Registration Form</b>
+        
+        <div class="vector-group">
+            <div class="form-row">
+                <div class="input-group">
+                    <b class="first-name">First Name:</b>
+                    <input type="text" placeholder="John" class="group-child">
+                </div>
+                <div class="input-group">
+                    <b class="last-name">Last Name:</b>
+                    <input type="text" placeholder="Doe" class="group-inner">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="lastName">Last Name:</label>
-                <input type="text" id="firstName" name="firstName" placeholder="Doe" required>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <b class="password">Password:</b>
+                    <input type="password" placeholder="password123" class="rectangle-div">
+                </div>
+                <div class="input-group">
+                    <b class="confirm-password">Confirm Password:</b>
+                    <input type="password" placeholder="password123" class="group-child1">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="johndoe@email.com" required>
+
+            <div class="input-group full-width">
+                <b class="email">Email:</b>
+                <input type="email" placeholder="johndoe@email.com" class="group-item">
             </div>
-            <div class="form-group">
-                <label for="contact">Contact Number:</label>
-                <input type="tel" id="contact" name="contact" placeholder="09123456789" pattern="[0-9]{10,15}" required>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <b class="contact-number">Contact Number:</b>
+                    <input type="tel" placeholder="09123456789" class="group-child4">
+                </div>
+                <div class="input-group">
+                    <b class="address">Address:</b>
+                    <input type="text" placeholder="Matina, Davao City" class="group-child2">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Create a password" required>
+
+            <div class="input-group full-width">
+                <b class="address1">Address:</b>
+                <input type="text" placeholder="Matina, Davao City" class="group-child3">
             </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            <div class="file-upload">
+                <input type="file" accept="image/jpeg,image/png" class="file-input" id="fileInput">
+                <label for="fileInput" class="file-label">Choose Image</label>
+                <span class="file-name">No file chosen</span>
             </div>
-            <div class="form-group">
-                <label for="validID">Upload your Valid ID:</label>
-                <input type="file" id="validID" name="validID" accept="image/jpeg, image/png" required>
+            <button class="register-btn">
+                <b class="register">Register</b>
+            </button>
+    
+            <div class="already-have-an-account-parent">
+                <b class="already-have-an">Already have an Account?</b>
+                <b class="sign-in"><a href="/html/login.html">Sign In</a></b>
             </div>
-            <button type="submit" class="signup-btn">Register</button>
-        </form>
-        <p class="login-link">Already have an account? <a href="/html/login.html">Log in here</a></p>
+        </div>
     </div>
-    <script src="/js/signup.js"></script>
+    <script src="/js/login.js"></script>
 </body>
 </html>

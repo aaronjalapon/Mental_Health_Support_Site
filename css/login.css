@@ -1,70 +1,90 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: black;
-    background-image: url(/images/nature-bg.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+}
+
+.rectangle-parent, .vector-parent {
+    position: relative;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+    opacity: 0.98;
+    padding: 24px;
+    font-family: Poppins;
+}
+
+.rectangle-parent {
+    width: 411px;
+    height: 500px;
+}
+
+.vector-parent {
+    width: 460px;
+    height: 646px;
 }
 
 .login-container {
-    background-color: rgba(251, 245, 223, 0.7);
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(255, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
     text-align: center;
     width: 100%;
-    max-width: 400px;
-    
+    max-width: 525px;
+    opacity: 0.98;
+    margin-left: 350px;
 }
 
 h2 {
     margin-bottom: 20px;
-    font-size: 35px;
-    color: #31a434;
+    font-size: 40px;
+    color: #000;
+    text-align: center;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 29px;
     text-align: left;
 }
 
 label {
     display: block;
     margin-bottom: 5px;
-    color: #31a434;
+    color: #1e9160;
+    font-size: 25px;
 }
 
 input[type="email"],
 input[type="password"], 
 input[type="text"], 
 input[type="tel"],
-input[type="file"]{
+input[type="file"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
+    padding: 15px;
+    border: 1px solid #9c9c9c;
+    border-radius: 20px;
     box-sizing: border-box;
-    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-size: 25px;
+    color: #b7b7b7;
 }
 
-.login-btn {
+.login-btn, .signup-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #31a434;
+    padding: 8px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 16px;
-    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
-
+    font-size: 35px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .login-btn:hover {
@@ -72,33 +92,25 @@ input[type="file"]{
  
 }
 
-.signup-link {
-    margin-top: 15px;
-    font-size: 14px;
+.signup-link, .login-link {
+    margin-top: 20px;
+    font-size: 17px;
 }
+
+.signup-link a, .login-link a, .forgot-password a {
+    color: #1e9160;
+    text-decoration: none;
+    font-weight: 700;
+}
+
 .forgot-password a{
-    color: #4CAF50;
     margin-top: 15px;
     font-size: 14px;
-    text-decoration: none;
-    transition: font-size 0.9s;
-    text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
+    transition: 0.9s ease-out;
 }
 
 .forgot-password a:hover{
     text-decoration: underline;
-    font-size: 15px ;
-}
-.signup-link a {
-    color: #4CAF50;
-    text-decoration: none;
-    transition: font-size 0.9s;
-    text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
-}
-
-.signup-link a:hover {
-    text-decoration: underline;
-    font-size: 15px ;
 }
 
 /* Forgot Password Modal Styles */
@@ -172,6 +184,7 @@ input[type="file"]{
     max-width: 400px;
     margin: auto;
     margin-top: 50px;
+    margin-left: 200px;
 }
 
 .signup-container h1 {
@@ -181,15 +194,16 @@ input[type="file"]{
 
 .signup-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #31a434;
+    padding: 15px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 35px;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     margin-top: 10px;
-    box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
 
 .signup-btn:hover {
@@ -197,13 +211,14 @@ input[type="file"]{
 }
 
 .login-link {
-    margin-top: 15px;
-    font-size: 14px;
+    margin-top: 20px;
+    font-size: 17px;
 }
 
 .login-link a {
-    color: #31a434;
+    color: #1e9160;
     text-decoration: none;
+    font-weight: 700;
     text-shadow: 1px 1px 10px rgba(225, 255, 0, 0.5);
 }
 
@@ -219,4 +234,392 @@ input[type="file"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     width: 100%;
+}
+
+.mindspace {
+    font-family: 'Potta One', cursive;
+    color: #1e9160;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+/* New styles for the signup page */
+.name-group, .password-group, .contact-address-group {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 20px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.registration-form {
+    font-size: 40px;
+    color: #000;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.file-upload-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.choose-file-btn {
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 40px;
+    font-size: 25px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.file-name {
+    color: #b7b7b7;
+    font-size: 25px;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 35px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin: 20px 0;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.logo-icon {
+    width: 99.4px;
+    height: 72px;
+}
+
+/* Update existing input styles */
+input[type="email"],
+input[type="password"], 
+input[type="text"], 
+input[type="tel"] {
+    font-size: 25px;
+    color: #b7b7b7;
+}
+
+/* Hide default file input */
+input[type="file"] {
+    display: none;
+}
+
+.logo-serrenity-1-1-parent {
+    position: absolute;
+    top: 32px;
+    left: 107px;
+    width: 240px;
+    height: 65px;
+}
+
+.logo-serrenity-1-1-icon {
+    width: 55px;
+    height: 42.6px;
+    object-fit: cover;
+}
+
+.mindspace {
+    position: absolute;
+    top: 0;
+    left: 62px;
+    font-family: 'Potta One';
+    color: #1e9160;
+    font-size: 40px;
+    width: 178px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+}
+
+.login-into-account {
+    position: absolute;
+    top: 105px;
+    left: 1px;
+    width: 411px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    color: #000;
+}
+
+.input-fields {
+    margin-top: 175px;
+    padding: 0 36px;
+}
+
+.form-group {
+    margin-bottom: 29px;
+}
+
+.form-group input {
+    width: 351px;
+    height: 50px;
+    border-radius: 20px;
+    border: 1px solid #9c9c9c;
+    padding: 0 20px;
+    font-size: 20px;
+    color: #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.login-btn {
+    position: absolute;
+    left: 50px;
+    top: 375px;
+    width: 351px;
+    height: 50px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 25px;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.login-btn:hover{
+    background: linear-gradient(90deg, hsl(162, 69%, 74%), hsl(154, 66%, 42%));
+}
+.login-btn:active{
+    background: linear-gradient(90deg, hsl(162, 69%, 58%), hsl(154, 66%, 26%));
+}
+.forgot-password {
+    position: absolute;
+    top: 345px;
+    left: 220px;
+    font-size: 14px;
+    color: #1e9160;
+    cursor: pointer;
+    width: 167px;
+    height: 21px;
+    text-align: right;
+}
+
+.dont-have-an-account-parent {
+    position: absolute;
+    top: 443px;
+    left: 76px;
+    width: 316.7px;
+    height: 28px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.register-here {
+    margin-left: 10px;
+    color: #1e9160;
+    cursor: pointer;
+}
+
+.register-here a {
+    color: #1e9160;
+    text-decoration: none;
+}
+
+/* Keep existing modal styles */
+.modal {
+    /* ...existing modal styles... */
+}
+
+/* New styles for the signup page */
+.vector-parent {
+    width: 460px;
+    position: relative;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    background-color: #fff;
+    height: 646px;
+    overflow: hidden;
+    opacity: 0.98;
+    padding: 24px;
+    font-family: Poppins;
+}
+
+.logo-serrenity-1-1-parent {
+    position: absolute;
+    top: 24px;
+    left: 113px;
+    width: 249.3px;
+    height: 44px;
+}
+
+.logo-serrenity-1-1-icon {
+    width: 55px;
+    height: 43.8px;
+    object-fit: cover;
+}
+
+.mindspace {
+    position: absolute;
+    left: 56px;
+    top: 3px;
+    font-family: 'Potta One';
+    color: #1e9160;
+    font-size: 25px;
+    width: 193.3px;
+    height: 41px;
+    display: flex;
+    align-items: center;
+}
+
+.registration-form {
+    position: absolute;
+    top: 40px;
+    font-size: 25px;
+    color: #000;
+    width: 460px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vector-group {
+    position: absolute;
+    top: 132px;
+    left: 17px;
+    width: 425px;
+}
+
+.form-row {
+    display: flex;
+    gap: 8px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.input-group b {
+    font-size: 20px;
+    color: #000;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.input-group input {
+    width: 204px;
+    height: 38px;
+    border-radius: 20px;
+    border: 1px solid #9c9c9c;
+    padding: 0 14px;
+    font-size: 18px;
+    color: #000;
+    box-shadow: 0px 4px 7px rgba(3, 3, 3, 0.25);
+}
+
+.full-width input {
+    width: 425px;
+}
+
+.file-upload {
+    position: absolute;
+    top: 400px;
+    left: 5px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    width: 135px;
+    height: 30px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    border-radius: 20px;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-name {
+    width: 245px;
+    height: 30px;
+    border-radius: 20px;
+    border: 1px solid #9c9c9c;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    box-shadow: 0px 4px 7px rgba(3, 3, 3, 0.25);
+    font-size: 12px;
+    color: #b7b7b7;
+    transition: color 0.3s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.register-btn {
+    position: absolute;
+    top: 430px;
+    left: 123px;
+    width: 202px;
+    height: 41px;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    border-radius: 20px;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.already-have-an-account-parent {
+    position: absolute;
+    top: 520px;
+    left: 92px;
+    width: 281px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+}
+
+.already-have-an {
+    color: #000;
+    opacity: 0.78;
+}
+
+.sign-in {
+    color: #1e9160;
+    margin-left: 8px;
+}
+
+.sign-in a {
+    color: #1e9160;
+    text-decoration: none;
 }
