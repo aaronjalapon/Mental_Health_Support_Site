@@ -5,7 +5,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f4f4f4;
+    background-image: url(/images/nature-bg.png);
+    background-size: cover;
 }
 
 .rectangle-parent, .vector-parent {
@@ -341,7 +342,7 @@ input[type="file"] {
 .mindspace {
     position: absolute;
     top: 0;
-    left: 62px;
+    left: 80px;
     font-family: 'Potta One';
     color: #1e9160;
     font-size: 40px;
@@ -354,7 +355,7 @@ input[type="file"] {
 .login-into-account {
     position: absolute;
     top: 105px;
-    left: 1px;
+    left: 20px;
     width: 411px;
     height: 55px;
     display: flex;
@@ -421,7 +422,7 @@ input[type="file"] {
 .dont-have-an-account-parent {
     position: absolute;
     top: 443px;
-    left: 76px;
+    left: 85px;
     width: 316.7px;
     height: 28px;
     font-size: 14px;
@@ -462,7 +463,7 @@ input[type="file"] {
 .logo-serrenity-1-1-parent {
     position: absolute;
     top: 24px;
-    left: 113px;
+    left: 8rem;
     width: 249.3px;
     height: 44px;
 }
@@ -512,6 +513,7 @@ input[type="file"] {
 
 .input-group {
     position: relative;
+    left: 30px;
     margin-bottom: 4px;
 }
 
@@ -540,7 +542,7 @@ input[type="file"] {
 .file-upload {
     position: absolute;
     top: 400px;
-    left: 5px;
+    left: 35px;
     display: flex;
     gap: 8px;
     align-items: center;
@@ -586,7 +588,7 @@ input[type="file"] {
 .register-btn {
     position: absolute;
     top: 430px;
-    left: 123px;
+    left: 135px;
     width: 202px;
     height: 41px;
     background: linear-gradient(90deg, #6ee4c1, #1e9160);
