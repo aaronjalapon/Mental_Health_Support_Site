@@ -9,7 +9,7 @@
 <body>
     <header class="navbar">
         <div class="logo">
-          <img class="logo-serrenity-1-1-icon" alt="" src="/images/Logo.svg">
+          <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">
           <h1>MindSpace</h1>
         </div>
         <button class="burger-menu" id="burgerMenu">
@@ -20,10 +20,20 @@
         </button>
         <nav class="nav-links" id="navLinks">
           <a id="home" href="#hero">Home</a>
-          <a id="self-help" href="#self-help">Self-Help</a>
-          <a id="support" href="#support">Support</a>
-          <a id="community" href="#community">Community</a>
-          <a id="privacy" href="#privacy">Privacy</a>
+          <a id="about_us" href="#self-help">About us</a>
+          <div class="dropdown">
+            <button class="dropbtn">
+              Self-Help
+              <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+              </svg>
+            </button>
+            <div class="dropdown-content">
+              <a href="#">Self-Help</a>
+              <a href="#">Professional Support</a>
+              <a href="#">Community</a>
+            </div>
+          </div>
           <button id="btn-login">Log In</button>
         </nav>
       </header>
@@ -46,21 +56,45 @@
     </div>
     <section class="features">
       <div class="feature">
+        <img id="guided-meditation" src="/images/guided-meditation.png" alt="Guided Meditation">
         <h2>Guided Meditations</h2>
         <p>Relax and recharge with our curated meditations.</p>
         <a href="#" class="feature-link">Explore</a>
       </div>
       <div class="feature">
+        <img id="professional-support" src="/images/professional-support.png" alt="Professional Support">
         <h2>Professional Support</h2>
         <p>Connect with mental health professionals and resources.</p>
         <a href="#" class="feature-link">Learn More</a>
       </div>
       <div class="feature">
+        <img id="community" src="/images/community.png">
         <h2>Community</h2>
         <p>Join a safe and supportive online space for peer support.</p>
         <a href="#" class="feature-link">Join Now</a>
       </div>
     </section>
+    <section class="testimonials">
+      <div class="client-testimonies">
+        <p>Testimonials</p>
+        <h2>What our users say</h2>
+      </div>
+    <div class="testimonial-cards">
+      <div class="testimony">
+        <h2>Guided Meditations</h2>
+        <p>Relax and recharge with our curated meditations.</p>
+      </div>
+      <div class="testimony">
+        <h2>Professional Support</h2>
+        <p>Connect with mental health professionals and resources.</p>
+      </div>
+      <div class="testimony">
+        <h2>Community</h2>
+        <p>Join a safe and supportive online space for peer support.</p>
+      </div>
+    </div>
+    </section>
+    
   </main>
 
   <footer class="footer">

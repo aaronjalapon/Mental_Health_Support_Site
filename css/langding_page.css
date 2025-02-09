@@ -50,9 +50,73 @@ body {
   .nav-links {
     display: flex;
     align-items: center;  /* center items vertically */
-    gap: 2.5rem;         /* increased gap between items */
+    gap: 1.5rem;         /* increased gap between items */
     z-index: 999; /* Add z-index to ensure dropdown appears above other content */
   }
+
+.dropbtn {
+  background-color: transparent;
+  color: white;
+  padding: 5px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: 300ms;
+}
+
+.dropdown-arrow {
+  height: 10px;
+  width: 10px;
+  fill: white;
+  transition: transform 300ms;
+}
+
+.dropdown:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  cursor: pointer;
+  transition: 300ms;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #1e9160;
+  min-width: 160px;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  opacity: 0;
+  top: -100px;
+  transition: opacity 300ms, top 300ms;
+}
+
+.dropdown-content a {
+  padding: 5px;
+  text-decoration: none;
+  display: block;
+  border-radius: 5px;
+  transition: 300ms;
+}
+
+.dropdown-content a:hover {
+  background-color: #28d7a3;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  opacity: 1;
+  top: 100%;
+}
   
   .nav-links a {
     text-decoration: none;
@@ -65,13 +129,12 @@ body {
   }
 
 #home:hover, 
-#self-help:hover,
-#support:hover,
-#community:hover,
-#privacy:hover{
+#about_us,
+#support:hover{
     scale: 1.1;
     color: #fff;
 }
+
 #btn-login{
   display: flex;
   background-color: #fff;
@@ -82,7 +145,6 @@ body {
   border-radius: 12px;
   cursor: pointer;
   box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-  margin-left: 1rem;   /* add space before login button */
   align-self: center;
 }
 #btn-login:hover{
@@ -200,10 +262,8 @@ body {
   background-image: url(/images/Consult.png);
   background-position: 75% 35%;
   background-repeat: no-repeat;
-  background-size: 120rem 100rem;
   background-color: #fff;
   padding: 4rem 1rem;
-  background-attachment: relative;
   background-size: cover;
 }
 .hero-content{
@@ -360,7 +420,7 @@ body {
   display: flex;
   padding: 1rem;
   justify-content: space-between;
-  margin: 0rem 0rem 0rem 1rem;
+  margin: 0rem 0rem 4rem 8rem;
   max-width: 1100px;
   gap: 1.5rem;
 }
@@ -379,8 +439,8 @@ body {
 .what-we-offer{
   font-size: 1.5625rem;
   max-width: 50%;
-  margin: 2.5rem auto auto auto;
-  padding: 4rem 2rem 0rem 2rem;
+  margin: 2rem auto auto auto;
+  padding: 2rem 2rem 0rem 2rem;
   align-items: center;
   text-align: center;
   color: #333;
@@ -402,11 +462,11 @@ body {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 3rem 2rem;
+  padding: 0rem 0rem;
   text-align: center;
   flex: 1;
   width: 28rem;
-  height: 20rem;
+  height: 24rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
   opacity: 0;
   transform: translateY(50px);
@@ -414,9 +474,11 @@ body {
   position: relative; /* Add position relative */
   z-index: 1; /* Lower z-index for features */
 }
+
 .feature.visible {
   animation: featureSlideUp 0.8s ease forwards;
 }
+
 .feature.visible:nth-child(1) {
   animation-delay: 0.4s;
 }
@@ -426,13 +488,31 @@ body {
 .feature.visible:nth-child(3) {
   animation-delay: 0.8s;
 }
+
+#guided-meditation{
+  width: 35%;
+  display:block;
+  margin: 5px auto;
+}
+
+#professional-support{
+  width: 65%;
+  display:block;
+  margin: 5px auto;
+}
+
+#community{
+  width: 65%;
+  display:block;
+  margin: 5px auto;
+}
 .feature h2 {
   text-align: center;
   font-size: 2rem;
   width: 24rem;
   color: #1e9160;
   height: 2.875rem;
-  margin: 3.5rem 0rem 0.75rem 0rem;
+  margin: 0rem 0rem 0.75rem 0rem;
 }
 
 .feature p {
@@ -470,14 +550,64 @@ body {
         }
     }
 
+.testimonials{
+  background-image: url(/images/sunset.png);
+  background-position: 75% 35%;
+  background-repeat: no-repeat;
+  background-color: #fff;
+  padding: 4rem 1rem;
+  background-size: cover;
+}
+
+.client-testimonies{
+  padding: 1rem 0rem 1rem 1rem;
+  text-align:left;
+  align-items:center;
+  color: white;
+}
+.testimonial-cards{
+  display: flex;
+  margin: 0rem 0rem 4rem 8rem;
+  max-width: 1100px;
+  gap: 1.5rem;
+  height: 50rem;
+  justify-content: space-between;
+  text-align: center;
+}
+.testimony{
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 50px;
+  padding: 0rem 0rem;
+  text-align: center;
+  flex: 1;
+  width: 22rem;
+  height: 19rem;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  position: relative; /* Add position relative */
+  z-index: 1; /* Lower z-index for features */
+}
+
+.testimony h2{
+  line-height: 1.2;
+  font-size: 2rem;
+  max-width: 40vw;
+  margin-bottom: 1rem;
+}
+.testimony p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* Footer */
 .footer {
+  height: 21.875rem;
   text-align: center;
   position: absolute;
   padding: 1rem;
   width: 100%;
   background-image: linear-gradient(90deg, #6ee4c1, #1e9160);
-  margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #fff;
 }
