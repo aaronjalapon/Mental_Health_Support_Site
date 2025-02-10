@@ -40,13 +40,19 @@ body {
     height: 40px;
     width: auto;
   }
-  
+
   .logo h1 {
     margin: 0;
     font-size: 1.5rem;
     color: #fff;
+    display: inline;
   }
-  
+  .logo a{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
   .nav-links {
     display: flex;
     align-items: center;  /* center items vertically */
@@ -109,7 +115,7 @@ body {
 }
 
 .dropdown-content a:hover {
-  background-color: #28d7a3;
+  background-color: #188162;
 }
 
 .dropdown:hover .dropdown-content {
@@ -148,7 +154,16 @@ body {
   align-self: center;
 }
 #btn-login:hover{
-  background-color: #d3f8e2;
+  background-color: hsl(144, 73%, 80%);
+}
+
+#btn-login:active{
+  color: #fff;
+  background-color: hsl(144, 73%, 70%);
+}
+
+  .nav-links a:hover {
+    color: #28d7a3;
 }
   
   /* Burger Menu */
@@ -271,6 +286,11 @@ body {
   text-align:left;
   align-items:center;
   color: white;
+  opacity: 0;
+  transform: translateY(50px);
+  animation: none; /* Remove default animation */
+  position: relative; /* Add position relative */
+  z-index: 1; /* Lower z-index for features */
 }
 .hero-content h1 {
   line-height: 1.2;
@@ -297,6 +317,19 @@ body {
   cursor: pointer;
 }
 
+.hero-content {
+  animation: hero-contentSlideFromLeft 0.8s ease forwards;
+}
+
+.hero-content:nth-child(1) {
+  animation-delay: 0.4s;
+}
+.hero-content:nth-child(2) {
+  animation-delay: 0.6s;
+}
+.hero-content:nth-child(3) {
+  animation-delay: 0.8s;
+}
 .btn-get-started:hover {
   background-color: #6ee4c1;
 }
@@ -420,7 +453,7 @@ body {
   display: flex;
   padding: 1rem;
   justify-content: space-between;
-  margin: 0rem 0rem 4rem 8rem;
+  margin: 6rem 0rem 4rem 8rem;
   max-width: 1100px;
   gap: 1.5rem;
 }
@@ -461,7 +494,7 @@ body {
 .feature {
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 0rem 0rem;
   text-align: center;
   flex: 1;
@@ -555,19 +588,21 @@ body {
   background-position: 75% 35%;
   background-repeat: no-repeat;
   background-color: #fff;
-  padding: 4rem 1rem;
+  padding: 0.4rem 0rem;
   background-size: cover;
 }
 
 .client-testimonies{
-  padding: 1rem 0rem 1rem 1rem;
+  margin-top: 20rem;
+  padding: 1rem 0rem 1rem 10rem;
+  font-size: 50px;
   text-align:left;
   align-items:center;
   color: white;
 }
 .testimonial-cards{
   display: flex;
-  margin: 0rem 0rem 4rem 8rem;
+  margin: 10rem 0rem 4rem 8rem;
   max-width: 1100px;
   gap: 1.5rem;
   height: 50rem;
@@ -591,12 +626,13 @@ body {
 
 .testimony h2{
   line-height: 1.2;
+  text-align: center;
   font-size: 2rem;
   max-width: 40vw;
   margin-bottom: 1rem;
 }
 .testimony p {
-  font-size: 1rem;
+  font-size: 1.3rem;
   margin-bottom: 1rem;
 }
 
@@ -765,5 +801,16 @@ body {
 
   .feature h2 {
     font-size: 1.5rem;
+  }
+}
+
+@keyframes hero-contentSlideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
