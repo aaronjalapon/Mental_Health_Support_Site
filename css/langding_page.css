@@ -449,26 +449,6 @@ body {
     }
 
 /* Features Section */
-.features {
-  display: flex;
-  padding: 1rem;
-  justify-content: space-between;
-  margin: 6rem 0rem 4rem 8rem;
-  max-width: 1100px;
-  gap: 1.5rem;
-}
-
-/* Add keyframes for feature animation */
-@keyframes featureSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 .what-we-offer{
   font-size: 1.5625rem;
   max-width: 50%;
@@ -491,149 +471,233 @@ body {
   font-size: 3.125rem;
   margin-bottom: 1rem;
 }
+
+.features {
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  margin: 6rem auto 4rem auto;
+  max-width: 1200px;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+@keyframes featureSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .feature {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 50px;
-  padding: 0rem 0rem;
   text-align: center;
-  flex: 1;
-  width: 28rem;
-  height: 24rem;
+  width: calc(33.333% - 2rem);
+  min-width: 300px;
+  padding: 2rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
   opacity: 0;
   transform: translateY(50px);
-  animation: none; /* Remove default animation */
-  position: relative; /* Add position relative */
-  z-index: 1; /* Lower z-index for features */
+  animation: none;
+  position: relative;
+  z-index: 1;
 }
 
 .feature.visible {
   animation: featureSlideUp 0.8s ease forwards;
 }
 
-.feature.visible:nth-child(1) {
-  animation-delay: 0.4s;
-}
-.feature.visible:nth-child(2) {
-  animation-delay: 0.6s;
-}
-.feature.visible:nth-child(3) {
-  animation-delay: 0.8s;
+.feature.visible:nth-child(1) { animation-delay: 0.4s; }
+.feature.visible:nth-child(2) { animation-delay: 0.6s; }
+.feature.visible:nth-child(3) { animation-delay: 0.8s; }
+
+#guided-meditation { width: 35%; }
+#professional-support { width: 65%; }
+#community { width: 65%; }
+
+.feature img {
+  display: block;
+  margin: 5px auto;
+  max-width: 100%;
+  height: auto;
 }
 
-#guided-meditation{
-  width: 35%;
-  display:block;
-  margin: 5px auto;
-}
-
-#professional-support{
-  width: 65%;
-  display:block;
-  margin: 5px auto;
-}
-
-#community{
-  width: 65%;
-  display:block;
-  margin: 5px auto;
-}
 .feature h2 {
   text-align: center;
   font-size: 2rem;
-  width: 24rem;
   color: #1e9160;
-  height: 2.875rem;
-  margin: 0rem 0rem 0.75rem 0rem;
+  margin: 1rem 0;
+  width: 100%;
 }
 
 .feature p {
-  font-size: 1.5625rem;
+  font-size: 1.25rem;
   color: #555;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .feature-link {
-  width: 240px;
-  height: 66px;
-  padding: 10px 15px;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
   border-radius: 15px;
   background-color: #1E9160;
   color: #fff;
   font-weight: bold;
   text-decoration: none;
-  box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .feature-link:hover {
   text-decoration: underline;
 }
 
-    @media (max-width: 768px) {
-        /* Features Section: Stack features vertically */
-        .features {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 0 1rem;
-        }
-    
-        .feature {
-        width: 100%;
-        }
-    }
+@media (max-width: 992px) {
+  .features {
+    margin: 4rem auto 2rem auto;
+    padding: 0 2rem;
+  }
+  
+  .feature {
+    width: calc(50% - 2rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .features {
+    margin: 3rem auto 1rem auto;
+    padding: 0 1rem;
+  }
+  
+  .feature {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .feature h2 {
+    font-size: 1.75rem;
+  }
+  
+  .feature p {
+    font-size: 1.1rem;
+  }
+}
 
 .testimonials{
+  height: 810px;
   background-image: url(/images/sunset.png);
-  background-position: 75% 35%;
   background-repeat: no-repeat;
   background-color: #fff;
-  padding: 0.4rem 0rem;
   background-size: cover;
 }
 
-.client-testimonies{
-  margin-top: 20rem;
-  padding: 1rem 0rem 1rem 10rem;
-  font-size: 50px;
-  text-align:left;
-  align-items:center;
+.client-testimonies {
+  padding: 8rem 4rem 1rem 8rem;
+  font-size: 3.125rem;
+  text-align: left;
+  align-items: center;
   color: white;
+}
+
+@media (max-width: 992px) {
+  .client-testimonies {
+    padding: 6rem 3rem 1rem 3rem;
+    font-size: 2.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .client-testimonies {
+    padding: 5rem 2rem 1rem 2rem;
+    font-size: 2.25rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .client-testimonies {
+    padding: 4rem 1.5rem 1rem 1.5rem;
+    font-size: 1.875rem;
+  }
 }
 .testimonial-cards{
   display: flex;
-  margin: 10rem 0rem 4rem 8rem;
-  max-width: 1100px;
-  gap: 1.5rem;
-  height: 50rem;
-  justify-content: space-between;
-  text-align: center;
+  transition: transform 0.5s ease;
+  gap: 2rem;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  width: max-content; /* Allow container to grow based on content */
+  margin: 4rem 0;
+  padding: 0 2rem;
+  will-change: transform;
 }
-.testimony{
+.testimony {
   background-color: transparent;
   color: white;
   border: 1px solid white;
   border-radius: 50px;
-  padding: 0rem 0rem;
   text-align: center;
-  flex: 1;
   width: 22rem;
-  height: 19rem;
+  height: auto; /* Changed from fixed height */
+  min-height: 19rem;
+  padding: 2rem 1.5rem; /* Added padding */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-  position: relative; /* Add position relative */
-  z-index: 1; /* Lower z-index for features */
+  position: relative;
+  z-index: 1;
+  transition: ease-in-out 0.3s;
 }
 
-.testimony h2{
+.testimony:hover {
+  border: 1px solid #1e9160;
+}
+
+.testimony h2 {
   line-height: 1.2;
   text-align: center;
   font-size: 2rem;
-  max-width: 40vw;
-  margin-bottom: 1rem;
+  max-width: 100%; /* Changed from 40vw */
+  margin: 0 0 1rem 0; /* Adjusted margins */
 }
+
 .testimony p {
   font-size: 1.3rem;
-  margin-bottom: 1rem;
+  margin: 1rem 0; /* Adjusted margins */
+}
+
+@media (max-width: 768px) {
+  .testimony {
+    width: 18rem;
+    min-height: 16rem;
+    padding: 1.5rem;
+  }
+
+  .testimony h2 {
+    font-size: 1.75rem;
+  }
+
+  .testimony p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimony {
+    width: 16rem;
+    min-height: 14rem;
+    padding: 1.25rem;
+  }
+
+  .testimony h2 {
+    font-size: 1.5rem;
+  }
+
+  .testimony p {
+    font-size: 1rem;
+  }
 }
 
 /* Footer */
@@ -704,6 +768,11 @@ body {
 
   .what-we-offer {
     max-width: 70%;
+  }
+
+  .testimony {
+    flex: 0 0 300px;
+    min-width: 300px;
   }
 }
 
@@ -784,6 +853,11 @@ body {
     height: 50px;
     padding: 8px 12px;
   }
+
+  .testimony {
+    flex: 0 0 280px;
+    min-width: 280px;
+  }
 }
 
 @media (max-width: 360px) {
@@ -812,5 +886,96 @@ body {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Carousel Styles */
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0 40px;
+}
+
+.testimonial-cards {
+  display: flex;
+  transition: transform 0.5s ease;
+  gap: 2rem;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  width: max-content; /* Allow container to grow based on content */
+  margin: 4rem 0;
+  padding: 0 2rem;
+  will-change: transform;
+}
+
+.testimony {
+  flex: 0 0 300px; /* Fixed width for each testimony */
+  min-width: 300px;
+  margin: 0;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  z-index: 2;
+}
+
+.carousel-btn:hover {
+  background: #1e916066;
+}
+.carousel-btn:active {
+  background: #11553766;
+}
+
+.carousel-btn.prev {
+  left: 0;
+}
+
+.carousel-btn.next {
+  right: 0;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background: white;
+}
+
+@media (max-width: 992px) {
+  .testimony {
+    flex: 0 0 300px;
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimony {
+    flex: 0 0 280px;
+    min-width: 280px;
   }
 }
