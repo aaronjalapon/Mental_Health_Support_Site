@@ -19,6 +19,21 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     }
 });
 
+function togglePassword(inputId) {
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = passwordInput.nextElementSibling;
+    
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
+
 // Forgot Password Modal Functionality
 const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 const forgotPasswordModal = document.getElementById('forgotPasswordModal');

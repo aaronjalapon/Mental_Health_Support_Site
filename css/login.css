@@ -744,3 +744,46 @@ input[type="file"] {
         height: 45px;
     }
 }
+
+/* Styles for the password toggle icon */
+.password-field {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    color: #1e9160;
+    font-size: 18px;
+}
+
+.toggle-password:hover {
+    opacity: 0.7;
+}
+
+/* Update password field styles for signup form */
+.signup-form .password-field {
+    position: relative;
+    width: 100%;
+}
+
+.signup-form .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 65%;  /* Adjusted to account for label */
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    color: #1e9160;
+    font-size: 18px;
+    z-index: 1;
+}
+
+/* Adjust input padding to prevent text overlap with icon */
+.signup-form .password-field input {
+    padding-right: 40px;
+}

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
     <div class="vector-parent">
@@ -30,13 +31,15 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group password-field">
                         <label for="password">Password:</label>
                         <input type="password" id="password" placeholder="password123" required>
+                        <i class="toggle-password fa-regular fa-eye" onclick="togglePassword('password')"></i>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group password-field">
                         <label for="confirmPassword">Confirm Password:</label>
                         <input type="password" id="confirmPassword" placeholder="password123" required>
+                        <i class="toggle-password fa-regular fa-eye" onclick="togglePassword('confirmPassword')"></i>
                     </div>
                 </div>
 

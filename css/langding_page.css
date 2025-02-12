@@ -503,14 +503,20 @@ body {
   padding: 2rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
   opacity: 0;
+  transition: scale ease-in-out 0.5s;
   transform: translateY(50px);
   animation: none;
   position: relative;
   z-index: 1;
+ 
 }
 
 .feature.visible {
   animation: featureSlideUp 0.8s ease forwards;
+}
+.feature:hover{
+  box-shadow: 0px 6px 5px 2px rgba(0, 0, 0, 0.5);
+  scale: 1.08;
 }
 
 .feature.visible:nth-child(1) { animation-delay: 0.4s; }
@@ -530,14 +536,14 @@ body {
 
 .feature h2 {
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: #1e9160;
   margin: 1rem 0;
   width: 100%;
 }
 
 .feature p {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: #555;
   margin-bottom: 1.5rem;
 }
@@ -590,10 +596,12 @@ body {
 
 .testimonials{
   height: 810px;
-  background-image: url(/images/sunset.png);
+  background-image: url(/images/sunset.jpg);
   background-repeat: no-repeat;
+  background-position: center;
   background-color: #fff;
   background-size: cover;
+  box-shadow: inset 0px 4px 4px 800px rgba(0, 0, 0, 0.5);
 }
 
 .client-testimonies {

@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   prevBtn.addEventListener('click', () => moveToSlide('prev'));
 
   // Auto advance slides every 5 seconds
-  setInterval(() => moveToSlide('next'), 5000);
+  setInterval(() => moveToSlide('next'), 3000);
 
   // Handle window resize
   window.addEventListener('resize', () => {

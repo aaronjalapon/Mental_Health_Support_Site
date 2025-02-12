@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapist Management - MindSpace</title>
+    <link rel="stylesheet" href="/css/admin_panel.css">
+    <link rel="stylesheet" href="/css/therapist_management.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">
+                <h2>MindSpace</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="admin_panel.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="client_management.html"><i class="fas fa-users"></i> Clients</a></li>
+                <li><a href="therapist_management.html" class="active"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="#"><i class="fas fa-comments"></i> Community</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Therapist Management</h1>
+                <button class="btn btn-primary" id="addTherapistBtn">
+                    <i class="fas fa-plus"></i> Add New Therapist
+                </button>
+            </div>
+
+            <div class="management-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" id="therapistSearch" placeholder="Search therapists...">
+                </div>
+                <select class="status-filter" id="statusFilter">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="onleave">On Leave</option>
+                </select>
+            </div>
+
+            <div class="form-container" id="therapistForm">
+                <form id="addTherapistForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="therapistName" required>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="therapistEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="therapistPhone">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Specialization</label>
+                            <input type="text" class="form-input" id="therapistSpecialization" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Years of Experience</label>
+                            <input type="number" class="form-input" id="therapistExperience" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-input" id="therapistBio"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Therapist</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="therapist-list">
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Experience</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="therapistTableBody">
+                            <!-- Therapist rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/js/therapist_management.js"></script>
+</body>
+</html>
