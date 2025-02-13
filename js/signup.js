@@ -1,35 +1,76 @@
-document.getElementById('registrationForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('signupForm');
+    const fileInput = document.getElementById('fileInput');
+    const fileLabel = document.querySelector('.file-name');
+    const registerBtn = document.querySelector('.register-btn');
 
-    const fullName = document.getElementById('fullName').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const contact = document.getElementById('contact').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const confirmPassword = document.getElementById('confirmPassword').value.trim();
-    const driversLicense = document.getElementById('driversLicense').files[0];
+    // File upload handler
+    fileInput.addEventListener('change', function() {
+        fileLabel.textContent = this.files[0] ? this.files[0].name : 'Upload Valid ID';
+    });
 
-    if (!fullName || !email || !contact || !password || !confirmPassword || !driversLicense) {
-        alert('Please fill in all fields and upload your Driver’s License.');
-        return;
+    // Password toggle functionality
+    window.togglePassword = function(inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = passwordInput.nextElementSibling;
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
     }
 
-    if (!/^[0-9]{10,15}$/.test(contact)) {
-        alert('Contact number must be between 10 and 15 digits.');
-        return;
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(form);
+            
+            // Debug: Log form data
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "../php/signup.php", true);
+            
+            xhr.onload = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        let data = xhr.response;
+                        console.log('Server response:', data);
+                        
+                        if (data.trim() === "Success") {
+                            console.log("../html/verify.html")
+                            window.location.href = '../html/verify.php';
+                            
+                        } else {
+                            console.log('Error:', data);
+                            alert(data);
+                        }
+                    }
+                }
+            }
+
+            xhr.onerror = () => {
+                console.error('Request failed');
+                alert('Error submitting form. Please try again.');
+            }
+
+            xhr.send(formData);
+        });
     }
 
-    if (password !== confirmPassword) {
-        alert('Passwords do not match.');
-        return;
-    }
-
-    if (password.length < 6) {
-        alert('Password must be at least 6 characters long.');
-        return;
-    }
-
-    // Simulate successful registration
-    alert('Registration successful! Welcome to Car Rental Services.');
-    // Redirect to login page
-    window.location.href = 'index.html';
+    // Prevent double submission
+    form.addEventListener('submit', function() {
+        registerBtn.disabled = true;
+        setTimeout(function() {
+            registerBtn.disabled = false;
+        }, 2000);
+    });
 });

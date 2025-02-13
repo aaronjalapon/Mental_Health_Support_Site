@@ -122,3 +122,60 @@ const oberserver = new IntersectionObserver((entries) => {
 const hiddenElements = document.querySelectorAll('.hidden');
 hiddenElements.forEach((element) => 
   oberserver.observe(element));
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const authButton = document.getElementById('btn-login');
+  
+  // Check session status when page loads
+  checkSession();
+
+  // Handle auth button click
+  authButton.addEventListener('click', function() {
+      if (authButton.textContent === 'Log In') {
+          window.location.href = '/html/login.html';
+      } else {
+          logout();
+      }
+  });
+});
+
+
+
+
+
+
+
+
+
+//THIS IS FOR CHECKING SESSION FOR LOGIN OKAAAAAy
+
+
+
+function checkSession() {
+  fetch('../php/check_session.php')
+      .then(response => response.json())
+      .then(data => {
+          const authButton = document.getElementById('btn-login');
+          if (data.loggedIn) {
+              authButton.textContent = 'Log Out';
+          } else {
+              authButton.textContent = 'Log In';
+          }
+      })
+      .catch(error => console.error('Error:', error));
+}
+
+function logout() {
+  fetch('../php/logout.php')
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              const authButton = document.getElementById('btn-login');
+              authButton.textContent = 'Log In';
+              window.location.reload();
+          }
+      })
+      .catch(error => console.error('Error:', error));
+}

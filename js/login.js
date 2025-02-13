@@ -2,23 +2,54 @@
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
+    const loginInput = document.getElementById('login_input').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    if (!email || !password) {
+    if (!loginInput || !password) {
         alert('Please fill in all fields.');
         return;
     }
 
-    // Example login validation
-    if (email === 'test@carrental.com' && password === 'password123') {
-        alert('Login successful!');
-        window.location.href = 'dashboard.html';
-    } else {
-        alert('Invalid email or password. Please try again.');
+    // Hardcoded admin check
+    if (loginInput === 'admin' && password === 'password123') {
+        alert('Admin login successful!');
+        window.location.href = '../html/admin_panel.html';
+        return;
     }
+
+    // For regular users, send to PHP backend
+    const formData = new FormData();
+    formData.append('login_input', loginInput);
+    formData.append('password', password);
+
+    fetch('../php/login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        switch(data) {
+            case 'user':
+                alert('Login successful!');
+                window.location.href = '../html/index.html';
+                break;
+            case 'admin':
+                window.location.href = '../html/admin_panel.html';
+                break;
+            default:
+                alert(data); // Show error message from PHP
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during login. Please try again.');
+    });
 });
 
+
+
+
+// ...rest of your existing code...
 function togglePassword(inputId) {
     const passwordInput = document.getElementById(inputId);
     const toggleIcon = passwordInput.nextElementSibling;
