@@ -17,11 +17,12 @@
                 <h2>MindSpace</h2>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="admin_panel.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="admin_panel.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="client_management.html"><i class="fas fa-users"></i> Clients</a></li>
-                <li><a href="therapist_management.html" class="active"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="therapist_management.html"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="appointment_management.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 <li><a href="#"><i class="fas fa-comments"></i> Community</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="settings_management.html"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </aside>
@@ -47,41 +48,103 @@
                 </select>
             </div>
 
-            <div class="form-container" id="therapistForm">
-                <form id="addTherapistForm">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-input" id="therapistName" required>
+            <div id="therapistFormModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add New Therapist</h2>
+                        <span class="close-modal">&times;</span>
                     </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-input" id="therapistEmail" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Phone</label>
-                            <input type="tel" class="form-input" id="therapistPhone">
-                        </div>
+                    <div class="modal-body">
+                        <form id="addTherapistForm">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" id="therapistName" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" id="therapistEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-input" id="therapistPhone">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Specialization</label>
+                                    <input type="text" class="form-input" id="therapistSpecialization" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Years of Experience</label>
+                                    <input type="number" class="form-input" id="therapistExperience" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-input" id="therapistBio"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Therapist</button>
+                                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">Specialization</label>
-                            <input type="text" class="form-input" id="therapistSpecialization" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Years of Experience</label>
-                            <input type="number" class="form-input" id="therapistExperience" required>
-                        </div>
+                </div>
+            </div>
+
+            <div id="editTherapistModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Edit Therapist</h2>
+                        <span class="close-modal">&times;</span>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Bio</label>
-                        <textarea class="form-input" id="therapistBio"></textarea>
+                    <div class="modal-body">
+                        <form id="editTherapistForm">
+                            <input type="hidden" id="editTherapistId">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" id="editTherapistName" required>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-input" id="editTherapistEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-input" id="editTherapistPhone">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Specialization</label>
+                                    <input type="text" class="form-input" id="editTherapistSpecialization" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Years of Experience</label>
+                                    <input type="number" class="form-input" id="editTherapistExperience" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Status</label>
+                                <select class="form-input" id="editTherapistStatus" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                    <option value="OnLeave">On Leave</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-input" id="editTherapistBio"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary edit-cancel-btn">Cancel</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Therapist</button>
-                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    </div>
-                </form>
+                </div>
             </div>
 
             <div class="therapist-list">
@@ -104,6 +167,7 @@
             </div>
         </main>
     </div>
+    <script src="/js/admin_panel.js"></script>
     <script src="/js/therapist_management.js"></script>
 </body>
 </html>

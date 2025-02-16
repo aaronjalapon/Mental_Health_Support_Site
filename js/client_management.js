@@ -1,3 +1,25 @@
+// Make these functions and variables globally accessible
+let clients = [
+    {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'johndoe',
+        email: 'john@example.com',
+        contact: '123-456-7890',
+        pronouns: 'he/him',
+        address: '123 Main St',
+        status: 'Active'
+    }
+];
+
+let filteredClients = [...clients];
+
+// Make toggleEditModal globally accessible
+window.toggleEditModal = function() {
+    document.getElementById('editClientModal').classList.toggle('active');
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const clientForm = document.getElementById('clientForm');
     const addClientBtn = document.getElementById('addClientBtn');
@@ -6,26 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const clientTableBody = document.getElementById('clientTableBody');
     const searchInput = document.getElementById('clientSearch');
     const statusFilter = document.getElementById('statusFilter');
+    const clientFormModal = document.getElementById('clientFormModal');
+    const editClientModal = document.getElementById('editClientModal');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const editClientForm = document.getElementById('editClientForm');
 
-    // Sample initial client data
-    let clients = [
-        {
-            id: 1,
-            firstName: 'John',
-            lastName: 'Doe',
-            username: 'johndoe',
-            email: 'john@example.com',
-            contact: '123-456-7890',
-            pronouns: 'he/him',
-            address: '123 Main St',
-            status: 'Active'
-        }
-    ];
-
-    let filteredClients = [...clients];
-
-    function toggleForm() {
-        clientForm.style.display = clientForm.style.display === 'none' ? 'block' : 'none';
+    function toggleModal() {
+        clientFormModal.classList.toggle('active');
     }
 
     function filterClients() {
@@ -58,10 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${client.contact}</td>
                 <td><span class="client-status status-${client.status.toLowerCase()}">${client.status}</span></td>
                 <td>
-                    <button class="btn btn-primary" onclick="editClient(${client.id})">
+                    <button class="btn btn-primary" onclick="window.editClient(${client.id})">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn btn-danger" onclick="deleteClient(${client.id})">
+                    <button class="btn btn-danger" onclick="window.deleteClient(${client.id})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>
@@ -69,8 +78,26 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
     }
 
-    addClientBtn.addEventListener('click', toggleForm);
-    cancelBtn.addEventListener('click', toggleForm);
+    addClientBtn.addEventListener('click', toggleModal);
+    cancelBtn.addEventListener('click', toggleModal);
+
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (this.closest('.modal-overlay').id === 'editClientModal') {
+                toggleEditModal();
+            } else {
+                toggleModal();
+            }
+        });
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === editClientModal) {
+            toggleEditModal();
+        } else if (e.target === clientFormModal) {
+            toggleModal();
+        }
+    });
 
     addClientForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -89,25 +116,67 @@ document.addEventListener('DOMContentLoaded', function() {
         clients.push(newClient);
         filterClients();
         addClientForm.reset();
-        toggleForm();
+        toggleModal();
     });
 
     // Add event listeners for search and filter
     searchInput.addEventListener('input', filterClients);
     statusFilter.addEventListener('change', filterClients);
 
+    // Add event listener for edit form submission
+    editClientForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('editClientId').value);
+        const clientIndex = clients.findIndex(c => c.id === id);
+
+        if (clientIndex !== -1) {
+            clients[clientIndex] = {
+                id: id,
+                firstName: document.getElementById('editFirstName').value,
+                lastName: document.getElementById('editLastName').value,
+                username: document.getElementById('editUsername').value,
+                email: document.getElementById('editEmail').value,
+                contact: document.getElementById('editContact').value,
+                pronouns: document.getElementById('editPronouns').value,
+                address: document.getElementById('editAddress').value,
+                status: document.getElementById('editStatus').value
+            };
+
+            filterClients();
+            toggleEditModal();
+        }
+    });
+
+    // Add event listeners for edit modal close buttons
+    document.querySelector('.edit-cancel-btn').addEventListener('click', toggleEditModal);
+
     // Initial render
     filterClients();
 });
 
-function editClient(id) {
-    // Implement edit functionality
-    console.log('Edit client:', id);
-}
+// Make editClient globally accessible
+window.editClient = function(id) {
+    const client = clients.find(c => c.id === id);
+    if (!client) return;
 
-function deleteClient(id) {
+    // Populate the edit form
+    document.getElementById('editClientId').value = client.id;
+    document.getElementById('editFirstName').value = client.firstName;
+    document.getElementById('editLastName').value = client.lastName;
+    document.getElementById('editUsername').value = client.username;
+    document.getElementById('editEmail').value = client.email;
+    document.getElementById('editContact').value = client.contact;
+    document.getElementById('editPronouns').value = client.pronouns;
+    document.getElementById('editAddress').value = client.address;
+    document.getElementById('editStatus').value = client.status;
+
+    toggleEditModal();
+};
+
+// Make deleteClient globally accessible
+window.deleteClient = function(id) {
     if (confirm('Are you sure you want to delete this client?')) {
         clients = clients.filter(client => client.id !== id);
         filterClients();
     }
-}
+};

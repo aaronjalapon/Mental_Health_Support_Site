@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <button class="mobile-toggle btn">
+        <i class="fas fa-bars"></i>
+    </button>
     <div class="admin-container">
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -17,11 +20,12 @@
                 <h2>MindSpace</h2>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="admin_panel.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="admin_panel.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="client_management.html"><i class="fas fa-users"></i> Clients</a></li>
                 <li><a href="therapist_management.html"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="appointment_management.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 <li><a href="#"><i class="fas fa-comments"></i> Community</a></li>
-                <li><a href="settings_management.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="settings_management.html"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </aside>
@@ -45,30 +49,37 @@
                     </button>
                 </div>
 
-                <div class="form-container" id="testimonialForm">
-                    <form id="addTestimonialForm">
-                        <div class="form-group">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-input" id="clientName" 
-                                   placeholder="Enter username (first name only)" required>
-                            <small class="form-hint">For privacy, use first name or nickname only</small>
+                <div class="modal-overlay" id="testimonialForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Add New Testimonial</h2>
+                            <span class="close-modal" id="closeTestimonialBtn">&times;</span>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Testimonial Content</label>
-                            <textarea class="form-input" id="testimonialContent" rows="4" required></textarea>
+                        <div class="modal-body">
+                            <form id="addTestimonialForm">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-input" id="clientName" 
+                                           placeholder="Enter username (first name only)" required>
+                                    <small class="form-hint">For privacy, use first name or nickname only</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Testimonial Content</label>
+                                    <textarea class="form-input" id="testimonialContent" rows="4" required></textarea>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Rating (1-5)</label>
+                                        <input type="number" class="form-input" id="rating" min="1" max="5" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Testimonial</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelTestimonialBtn">Cancel</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Rating (1-5)</label>
-                                <input type="number" class="form-input" id="rating" min="1" max="5" required>
-                            </div>
-                        </div>
-                        <!-- Removed file upload section -->
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Save Testimonial</button>
-                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="testimonials-list">
@@ -99,36 +110,44 @@
                     </button>
                 </div>
 
-                <div class="form-container" id="wordForm">
-                    <form id="addWordForm">
-                        <div class="form-group">
-                            <label class="form-label">Word</label>
-                            <input type="text" class="form-input" id="word" required>
+                <div class="modal-overlay" id="wordForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Add New Word</h2>
+                            <span class="close-modal" id="closeWordBtn">&times;</span>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Definition</label>
-                            <textarea class="form-input" id="definition" rows="3" required></textarea>
+                        <div class="modal-body">
+                            <form id="addWordForm">
+                                <div class="form-group">
+                                    <label class="form-label">Word</label>
+                                    <input type="text" class="form-input" id="word" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Definition</label>
+                                    <textarea class="form-input" id="definition" rows="3" required></textarea>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-input" id="category" required>
+                                            <option value="mental-health">Mental Health</option>
+                                            <option value="wellness">Wellness</option>
+                                            <option value="psychology">Psychology</option>
+                                            <option value="mindfulness">Mindfulness</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Display Date</label>
+                                        <input type="date" class="form-input" id="displayDate" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Word</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelWordBtn">Cancel</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                <select class="form-input" id="category" required>
-                                    <option value="mental-health">Mental Health</option>
-                                    <option value="wellness">Wellness</option>
-                                    <option value="psychology">Psychology</option>
-                                    <option value="mindfulness">Mindfulness</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Display Date</label>
-                                <input type="date" class="form-input" id="displayDate" required>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Save Word</button>
-                            <button type="button" class="btn btn-secondary" id="cancelWordBtn">Cancel</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="data-table">

@@ -214,6 +214,27 @@ body {
     color: #333;
 }
 
+/* Mobile Toggle Button */
+.mobile-toggle {
+    display: none;
+    padding: 0.5rem;
+    background-color: #1e9160;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.mobile-toggle i {
+    font-size: 1.25rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.mobile-toggle:hover {
+    background-color: #187a4d;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .admin-container {
@@ -222,15 +243,15 @@ body {
 
     .sidebar {
         position: fixed;
-        left: -250px;
+        left: -260px;
         top: 0;
         bottom: 0;
         z-index: 1000;
-        transition: left 0.3s;
+        transition: transform 0.3s ease-in-out;
     }
 
     .sidebar.show {
-        left: 0;
+        transform: translateX(260px);
     }
 
     .mobile-toggle {
@@ -239,6 +260,19 @@ body {
         top: 1rem;
         left: 1rem;
         z-index: 1001;
+        transition: transform 0.3s ease-in-out, left 0.3s ease-in-out;
+    }
+
+    .sidebar.show ~ .mobile-toggle {
+        left: 210px;
+    }
+
+    .sidebar.show ~ .mobile-toggle i {
+        transform: rotate(45deg);
+    }
+
+    .main-content {
+        padding-top: 4rem;
     }
 }
 
@@ -266,6 +300,21 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+}
+
+.date-display {
+    text-align: right;
+}
+
+.current-date {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.current-day {
+    font-size: 1rem;
+    color: #666;
 }
 
 /* Status badges */
@@ -299,4 +348,35 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
     display: none;
+}
+
+/* Chart Styles */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
 }

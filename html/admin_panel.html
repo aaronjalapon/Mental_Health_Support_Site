@@ -19,12 +19,22 @@
                 <li><a href="admin_panel.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="client_management.html"><i class="fas fa-users"></i> Clients</a></li>
                 <li><a href="therapist_management.html"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="appointment_management.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 <li><a href="#"><i class="fas fa-comments"></i> Community</a></li>
                 <li><a href="settings_management.html"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </aside>
         <main class="main-content">
+            <div class="content-header">
+                <h1>Dashboard Overview</h1>
+                <div class="header-actions">
+                    <div class="date-display">
+                        <h3 class="current-date"></h3>
+                        <h4 class="current-day"></h4>
+                    </div>
+                </div>
+            </div>
             <div class="dashboard-cards">
                 <div class="card">
                     <div class="card-header">
@@ -49,32 +59,28 @@
                 </div>
             </div>
 
-            <div class="data-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                            <td>Active</td>
-                            <td>
-                                <button class="btn btn-primary">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </tbody>
-                </table>
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Client Growth</h3>
+                    <canvas id="clientGrowthChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Session Distribution</h3>
+                    <canvas id="sessionDistChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="charts-container">
+                <div class="chart-card full-width">
+                    <h3>Monthly Statistics</h3>
+                    <canvas id="monthlyStatsChart"></canvas>
+                </div>
             </div>
         </main>
     </div>
+
+    <!-- Add Chart.js before your custom scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/admin_panel.js"></script>
 </body>
 </html>

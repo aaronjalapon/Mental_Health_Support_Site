@@ -1,4 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sidebar toggle functionality
+    const sidebar = document.querySelector('.sidebar');
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = e.target.closest('.mobile-toggle');
+                
+                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+    }
+
+    // Close sidebar when window is resized above mobile breakpoint
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('show');
+        }
+    });
+
     // Tab Switching Logic
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -19,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Testimonials Management
     const testimonialForm = document.getElementById('testimonialForm');
     const addTestimonialBtn = document.getElementById('addTestimonialBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
+    const cancelTestimonialBtn = document.getElementById('cancelTestimonialBtn');
+    const closeTestimonialBtn = document.getElementById('closeTestimonialBtn');
     const addTestimonialForm = document.getElementById('addTestimonialForm');
 
     // Sample testimonials data
@@ -34,12 +64,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle testimonial form
     addTestimonialBtn.addEventListener('click', () => {
-        testimonialForm.classList.add('active');
+        testimonialForm.style.display = 'flex';
     });
 
-    cancelBtn.addEventListener('click', () => {
-        testimonialForm.classList.remove('active');
-        addTestimonialForm.reset();
+    [cancelTestimonialBtn, closeTestimonialBtn].forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', () => {
+                testimonialForm.style.display = 'none';
+                addTestimonialForm.reset();
+            });
+        }
     });
 
     // Update add testimonial button visibility
@@ -78,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         testimonials.push(newTestimonial);
         updateTestimonialsTable();
         updateAddTestimonialButtonState();
-        testimonialForm.classList.remove('active');
+        testimonialForm.style.display = 'none';
         addTestimonialForm.reset();
     });
 
@@ -94,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${testimonial.content}</td>
                 <td>${"★".repeat(testimonial.rating)}</td>
                 <td>
-                    <button class="btn btn-secondary btn-sm" onclick="editTestimonial(${testimonial.id})">
+                    <button class="btn btn-primary btn-sm" onclick="editTestimonial(${testimonial.id})">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-secondary btn-sm" onclick="deleteTestimonial(${testimonial.id})">
@@ -110,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const wordForm = document.getElementById('wordForm');
     const addWordBtn = document.getElementById('addWordBtn');
     const cancelWordBtn = document.getElementById('cancelWordBtn');
+    const closeWordBtn = document.getElementById('closeWordBtn');
     const addWordForm = document.getElementById('addWordForm');
 
     // Sample words data
@@ -125,12 +160,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle word form
     addWordBtn.addEventListener('click', () => {
-        wordForm.classList.add('active');
+        wordForm.style.display = 'flex';
     });
 
-    cancelWordBtn.addEventListener('click', () => {
-        wordForm.classList.remove('active');
-        addWordForm.reset();
+    [cancelWordBtn, closeWordBtn].forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', () => {
+                wordForm.style.display = 'none';
+                addWordForm.reset();
+            });
+        }
     });
 
     // Handle word form submission
@@ -147,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         words.push(newWord);
         updateWordsTable();
-        wordForm.classList.remove('active');
+        wordForm.style.display = 'none';
         addWordForm.reset();
     });
 
@@ -164,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${word.category}</td>
                 <td>${word.displayDate}</td>
                 <td>
-                    <button class="btn btn-secondary btn-sm" onclick="editWord(${word.id})">
+                    <button class="btn btn-primary btn-sm" onclick="editWord(${word.id})">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-secondary btn-sm" onclick="deleteWord(${word.id})">
@@ -175,6 +214,17 @@ document.addEventListener('DOMContentLoaded', function() {
             tbody.appendChild(row);
         });
     }
+
+    // Close modals when clicking outside
+    [testimonialForm, wordForm].forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                const form = modal.querySelector('form');
+                if (form) form.reset();
+            }
+        });
+    });
 
     // Initialize tables
     updateTestimonialsTable();
@@ -188,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('clientName').value = testimonial.clientName;
             document.getElementById('testimonialContent').value = testimonial.content;
             document.getElementById('rating').value = testimonial.rating;
-            testimonialForm.classList.add('active');
+            testimonialForm.style.display = 'flex';
             testimonial._editing = true;
         }
     };
@@ -208,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('definition').value = word.definition;
             document.getElementById('category').value = word.category;
             document.getElementById('displayDate').value = word.displayDate;
-            wordForm.classList.add('active');
+            wordForm.style.display = 'flex';
             word._editing = true;
         }
     };

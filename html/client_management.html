@@ -17,9 +17,10 @@
                 <h2>MindSpace</h2>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="admin_panel.html"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="client_management.html" class="active"><i class="fas fa-users"></i> Clients</a></li>
+                <li><a href="admin_panel.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="client_management.html"><i class="fas fa-users"></i> Clients</a></li>
                 <li><a href="therapist_management.html"><i class="fas fa-user-md"></i> Therapists</a></li>
+                <li><a href="appointment_management.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
                 <li><a href="#"><i class="fas fa-comments"></i> Community</a></li>
                 <li><a href="settings_management.html"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -47,74 +48,82 @@
                 </select>
             </div>
 
-            <div class="form-container" id="clientForm">
-                <form id="addClientForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" class="form-input" id="firstName" placeholder="John" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" class="form-input" id="lastName" placeholder="Doe" required>
-                        </div>
+            <div id="clientFormModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Add New Client</h2>
+                        <span class="close-modal">&times;</span>
                     </div>
+                    <div class="modal-body">
+                        <form id="addClientForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" class="form-input" id="firstName" placeholder="John" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" class="form-input" id="lastName" placeholder="Doe" required>
+                                </div>
+                            </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-input" id="username" placeholder="johndoe123" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-input" id="email" placeholder="johndoe@email.com" required>
-                        </div>
-                    </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-input" id="username" placeholder="johndoe123" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-input" id="email" placeholder="johndoe@email.com" required>
+                                </div>
+                            </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-input" id="password" placeholder="password123" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" class="form-input" id="confirmPassword" placeholder="password123" required>
-                        </div>
-                    </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-input" id="password" placeholder="password123" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-input" id="confirmPassword" placeholder="password123" required>
+                                </div>
+                            </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="contact">Contact Number</label>
-                            <input type="tel" class="form-input" id="contact" placeholder="09123456789" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="pronouns">Pronouns</label>
-                            <select class="form-input" id="pronouns" required>
-                                <option value="">Select pronouns</option>
-                                <option value="he/him/his">He/Him/His</option>
-                                <option value="she/her/hers">She/Her/Hers</option>
-                                <option value="they/them/theirs">They/Them/Theirs</option>
-                                <option value="i_prefer_not_to_say">I prefer not to say</option>
-                            </select>
-                        </div>
-                    </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="contact">Contact Number</label>
+                                    <input type="tel" class="form-input" id="contact" placeholder="09123456789" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pronouns">Pronouns</label>
+                                    <select class="form-input" id="pronouns" required>
+                                        <option value="">Select pronouns</option>
+                                        <option value="he/him/his">He/Him/His</option>
+                                        <option value="she/her/hers">She/Her/Hers</option>
+                                        <option value="they/them/theirs">They/Them/Theirs</option>
+                                        <option value="i_prefer_not_to_say">I prefer not to say</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-input" id="address" placeholder="Matina, Davao City" required>
-                    </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" class="form-input" id="address" placeholder="Matina, Davao City" required>
+                            </div>
 
-                    <div class="form-group file-upload">
-                        <input type="file" id="fileInput" accept="image/jpeg,image/png" required>
-                        <label for="fileInput" class="file-label">Choose Image</label>
-                        <span class="file-name">Upload Valid ID</span>
-                    </div>
+                            <div class="form-group file-upload">
+                                <input type="file" id="fileInput" accept="image/jpeg,image/png" required>
+                                <label for="fileInput" class="file-label">Choose Image</label>
+                                <span class="file-name">Upload Valid ID</span>
+                            </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Client</button>
-                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Save Client</button>
+                                <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
 
             <div class="client-list">
@@ -136,7 +145,79 @@
                 </div>
             </div>
         </main>
+
+        <!-- Edit Client Modal -->
+        <div id="editClientModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Edit Client</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="editClientForm">
+                        <input type="hidden" id="editClientId">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="editFirstName">First Name</label>
+                                <input type="text" class="form-input" id="editFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editLastName">Last Name</label>
+                                <input type="text" class="form-input" id="editLastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="editUsername">Username</label>
+                                <input type="text" class="form-input" id="editUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editEmail">Email</label>
+                                <input type="email" class="form-input" id="editEmail" required>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="editContact">Contact Number</label>
+                                <input type="tel" class="form-input" id="editContact" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editPronouns">Pronouns</label>
+                                <select class="form-input" id="editPronouns" required>
+                                    <option value="he/him/his">He/Him/His</option>
+                                    <option value="she/her/hers">She/Her/Hers</option>
+                                    <option value="they/them/theirs">They/Them/Theirs</option>
+                                    <option value="i_prefer_not_to_say">I prefer not to say</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editAddress">Address</label>
+                            <input type="text" class="form-input" id="editAddress" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <select class="form-input" id="editStatus" required>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary edit-cancel-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+    <script src="/js/admin_panel.js"></script>
     <script src="/js/client_management.js"></script>
 </body>
 </html>

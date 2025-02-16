@@ -1,10 +1,58 @@
-.therapist-form-container {
+/* Add or update modal styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex !important; /* Force display when active */
+}
+
+.modal-content {
     background: white;
     padding: 2rem;
-    border-radius: 10px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Update modal header and close button styles */
+.modal-header {
+    position: relative;
+    padding-right: 30px; /* Make room for close button */
+}
+
+.close-modal {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    display: none;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    background: #f0f0f0;
+    transform: scale(1.1);
 }
 
 /* Only therapist-specific styles */
