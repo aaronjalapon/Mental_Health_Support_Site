@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    position: relative;
+    background-image: url(/images/nature-bg.png);
+    background-size: cover;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0 5%;
+}
+
+.form {
+    position: relative;
+    background: #f2f3f7;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    box-shadow: -3px 3px 10px -5px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    margin-right: 0;
+}
+
+.form h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1e9160;
+    margin-bottom: 15px;
+}
+
+.form p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.fields-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 30px 0;
+}
+
+.otp_field {
+    border-radius: 8px;
+    font-size: 24px;
+    height: 60px;
+    width: 50px;
+    border: 2px solid #e0e0e0;
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.otp_field::-webkit-inner-spin-button,
+.otp_field::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.otp_field:focus {
+    border-color: #1e9160;
+    box-shadow: 0 0 0 2px rgba(110, 228, 193, 0.2);
+    
+
+}
+
+.otp_field:valid {
+    border-color: #6ee4c1;
+    box-shadow: 0 5px 10px -5px rgba(110, 228, 193, 0.3);
+
+    background: linear-gradient(135deg, #6ee4c1, #1e9160);
+    color: white;
+
+}
+
+.submit {
+    margin-top: 20px;
+}
+
+.button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1e9160;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.button:hover {
+    background-color: #157a50;
+}
+
+/* Resend Code Link */
+.resend-code {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.resend-code a {
+    color: #157a50;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.15s ease;
+}
+
+.resend-code a:hover {
+    color: #6ee4c1;
+    text-decoration: underline;
+}
+
+.resend-timer {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .form {
+        margin: 0;
+        padding: 30px;
+    }
+
+    .fields-input {
+        gap: 8px;
+    }
+
+    .otp_field {
+        height: 50px;
+        width: 40px;
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .fields-input {
+        gap: 6px;
+    }
+
+    .otp_field {
+        height: 45px;
+        width: 35px;
+        font-size: 18px;
+    }
+}
