@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 1,
             client: 'John Doe',
             therapist: 'Dr. Wilson',
-            date: '2025-02-19',
+            date: '2025-02-20',
             time: '10:00',
             sessionType: 'Video Call',
             notes: 'Follow-up session',

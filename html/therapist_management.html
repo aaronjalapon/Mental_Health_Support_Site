@@ -84,6 +84,59 @@
                                 <label class="form-label">Bio</label>
                                 <textarea class="form-input" id="therapistBio"></textarea>
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">Availability</label>
+                                <div class="availability-section">
+                                    <div class="available-days">
+                                        <h4>Working Days</h4>
+                                        <div class="days-btn-container">
+                                            <input class="day-btn" id="sunday" name="availableDays" type="checkbox" value="sunday" />
+                                            <label class="day-label" for="sunday">Su</label>
+
+                                            <input class="day-btn" id="monday" name="availableDays" type="checkbox" value="monday" />
+                                            <label class="day-label" for="monday">M</label>
+
+                                            <input class="day-btn" id="tuesday" name="availableDays" type="checkbox" value="tuesday" />
+                                            <label class="day-label" for="tuesday">T</label>
+
+                                            <input class="day-btn" id="wednesday" name="availableDays" type="checkbox" value="wednesday" />
+                                            <label class="day-label" for="wednesday">W</label>
+
+                                            <input class="day-btn" id="thursday" name="availableDays" type="checkbox" value="thursday" />
+                                            <label class="day-label" for="thursday">Th</label>
+
+                                            <input class="day-btn" id="friday" name="availableDays" type="checkbox" value="friday" />
+                                            <label class="day-label" for="friday">F</label>
+
+                                            <input class="day-btn" id="saturday" name="availableDays" type="checkbox" value="saturday" />
+                                            <label class="day-label" for="saturday">Sa</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="available-hours">
+                                        <h4>Working Hours</h4>
+                                        <div class="hours-grid">
+                                            <div class="time-range">
+                                                <label>Start Time
+                                                    <input type="time" name="startTime" class="form-input" required>
+                                                </label>
+                                                <label>End Time
+                                                    <input type="time" name="endTime" class="form-input" required>
+                                                </label>
+                                            </div>
+                                            <div class="break-time">
+                                                <label>Break Time (optional)
+                                                    <div class="break-inputs">
+                                                        <input type="time" name="breakStart" class="form-input">
+                                                        <span>to</span>
+                                                        <input type="time" name="breakEnd" class="form-input">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">Save Therapist</button>
                                 <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
@@ -138,6 +191,59 @@
                                 <label class="form-label">Bio</label>
                                 <textarea class="form-input" id="editTherapistBio"></textarea>
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">Availability</label>
+                                <div class="availability-section">
+                                    <div class="available-days">
+                                        <h4>Working Days</h4>
+                                        <div class="days-btn-container">
+                                            <input class="day-btn" id="sunday" name="availableDays" type="checkbox" value="sunday" />
+                                            <label class="day-label" for="sunday">S</label>
+
+                                            <input class="day-btn" id="monday" name="availableDays" type="checkbox" value="monday" />
+                                            <label class="day-label" for="monday">M</label>
+
+                                            <input class="day-btn" id="tuesday" name="availableDays" type="checkbox" value="tuesday" />
+                                            <label class="day-label" for="tuesday">T</label>
+
+                                            <input class="day-btn" id="wednesday" name="availableDays" type="checkbox" value="wednesday" />
+                                            <label class="day-label" for="wednesday">W</label>
+
+                                            <input class="day-btn" id="thursday" name="availableDays" type="checkbox" value="thursday" />
+                                            <label class="day-label" for="thursday">T</label>
+
+                                            <input class="day-btn" id="friday" name="availableDays" type="checkbox" value="friday" />
+                                            <label class="day-label" for="friday">F</label>
+
+                                            <input class="day-btn" id="saturday" name="availableDays" type="checkbox" value="saturday" />
+                                            <label class="day-label" for="saturday">S</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="available-hours">
+                                        <h4>Working Hours</h4>
+                                        <div class="hours-grid">
+                                            <div class="time-range">
+                                                <label>Start Time
+                                                    <input type="time" name="startTime" class="form-input" required>
+                                                </label>
+                                                <label>End Time
+                                                    <input type="time" name="endTime" class="form-input" required>
+                                                </label>
+                                            </div>
+                                            <div class="break-time">
+                                                <label>Break Time (optional)
+                                                    <div class="break-inputs">
+                                                        <input type="time" name="breakStart" class="form-input">
+                                                        <span>to</span>
+                                                        <input type="time" name="breakEnd" class="form-input">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                 <button type="button" class="btn btn-secondary edit-cancel-btn">Cancel</button>
@@ -155,6 +261,8 @@
                                 <th>Name</th>
                                 <th>Specialization</th>
                                 <th>Experience</th>
+                                <th>Working Days</th>
+                                <th>Working Hours</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
