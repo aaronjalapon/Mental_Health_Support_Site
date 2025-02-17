@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 1,
             client: 'John Doe',
             therapist: 'Dr. Wilson',
-            date: '2025-02-15',
+            date: '2025-02-19',
             time: '10:00',
             sessionType: 'Video Call',
             notes: 'Follow-up session',
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 2,
             client: 'Jane Smith',
             therapist: 'Dr. Brown',
-            date: '2025-02-15',
+            date: '2025-02-18',
             time: '14:30',
             sessionType: 'Voice Call',
             notes: 'Initial consultation',
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 3,
             client: 'Mike Johnson',
             therapist: 'Dr. Davis',
-            date: '2025-02-16',
+            date: '2025-02-17',
             time: '11:00',
             sessionType: 'Chat Session',
             notes: 'Weekly check-in',
@@ -660,6 +660,62 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('Appointment updated successfully!', 'success');
         }
     }
+
+    // Initialize filter dropdowns
+    function initializeFilterDropdowns() {
+        const clientInput = document.getElementById('clientInput');
+        const therapistInput = document.getElementById('therapistInput');
+        const clientDropdown = document.getElementById('clientDropdown');
+        const therapistDropdown = document.getElementById('therapistDropdown');
+
+        // Setup event listeners for client input
+        setupDropdownFilter(clientInput, clientDropdown, sampleClients);
+        
+        // Setup event listeners for therapist input
+        setupDropdownFilter(therapistInput, therapistDropdown, sampleTherapists);
+    }
+
+    function setupDropdownFilter(input, dropdown, items) {
+        // Show dropdown on focus
+        input.addEventListener('focus', () => {
+            filterDropdownItems(input, dropdown, items);
+            dropdown.classList.add('active');
+        });
+
+        // Filter items as user types
+        input.addEventListener('input', () => {
+            filterDropdownItems(input, dropdown, items);
+        });
+
+        // Handle click outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Handle dropdown item selection
+        dropdown.addEventListener('click', (e) => {
+            const item = e.target.closest('.dropdown-item');
+            if (item) {
+                input.value = item.textContent;
+                dropdown.classList.remove('active');
+            }
+        });
+    }
+
+    function filterDropdownItems(input, dropdown, items) {
+        const filterValue = input.value.toLowerCase();
+        const filteredItems = items.filter(item => 
+            item.toLowerCase().includes(filterValue)
+        );
+
+        dropdown.innerHTML = filteredItems.map(item => `
+            <div class="dropdown-item">${item}</div>
+        `).join('');
+    }
+
+    initializeFilterDropdowns();
 });
 
 // Add responsiveness handling

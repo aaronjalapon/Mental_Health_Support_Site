@@ -86,17 +86,21 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Client</label>
-                                    <select class="form-input" required>
-                                        <option value="">Select Client</option>
-                                        <!-- Will be populated dynamically -->
-                                    </select>
+                                    <div class="filter-dropdown">
+                                        <input type="text" class="form-input" name="client" id="clientInput" placeholder="Search client..." required>
+                                        <div class="dropdown-list" id="clientDropdown">
+                                            <!-- Dropdown items will be populated by JS -->
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Therapist</label>
-                                    <select class="form-input" required>
-                                        <option value="">Select Therapist</option>
-                                        <!-- Will be populated dynamically -->
-                                    </select>
+                                    <div class="filter-dropdown">
+                                        <input type="text" class="form-input" name="therapist" id="therapistInput" placeholder="Search therapist..." required>
+                                        <div class="dropdown-list" id="therapistDropdown">
+                                            <!-- Dropdown items will be populated by JS -->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -147,15 +151,21 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label class="form-label">Client</label>
-                                    <select class="form-input" name="client" required>
-                                        <option value="">Select Client</option>
-                                    </select>
+                                    <div class="filter-dropdown">
+                                        <input type="text" class="form-input" name="client" id="clientInput" placeholder="Search client..." required>
+                                        <div class="dropdown-list" id="clientDropdown">
+                                            <!-- Dropdown items will be populated by JS -->
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label">Therapist</label>
-                                    <select class="form-input" name="therapist" required>
-                                        <option value="">Select Therapist</option>
-                                    </select>
+                                    <div class="filter-dropdown">
+                                        <input type="text" class="form-input" name="therapist" id="therapistInput" placeholder="Search therapist..." required>
+                                        <div class="dropdown-list" id="therapistDropdown">
+                                            <!-- Dropdown items will be populated by JS -->
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
