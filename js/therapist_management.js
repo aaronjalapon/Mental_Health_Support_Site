@@ -23,7 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
             experience: 8,
             email: 'jane.smith@mindspace.com',
             phone: '123-456-7890',
-            status: 'Active'
+            status: 'Active',
+            availability: {
+                days: ['monday', 'wednesday', 'friday'],
+                hours: {
+                    start: '09:00',
+                    end: '17:00',
+                    break: {
+                        start: '12:00',
+                        end: '13:00'
+                    }
+                }
+            }
         }
     ];
 
@@ -66,12 +77,49 @@ document.addEventListener('DOMContentLoaded', function() {
         renderTherapists();
     }
 
+    function formatDays(days) {
+        const dayMapping = {
+            sunday: 'Sun',
+            monday: 'Mon',
+            tuesday: 'Tue',
+            wednesday: 'Wed',
+            thursday: 'Thu',
+            friday: 'Fri',
+            saturday: 'Sat'
+        };
+        return days.map(day => dayMapping[day] || day);
+    }
+
+    function formatTime(time) {
+        if (!time) return '';
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minutes} ${ampm}`;
+    }
+
     function renderTherapists() {
         therapistTableBody.innerHTML = filteredTherapists.map(therapist => `
             <tr>
                 <td>${therapist.name}</td>
                 <td>${therapist.specialization}</td>
                 <td>${therapist.experience} years</td>
+                <td>
+                    <div class="availability-days">
+                        ${therapist.availability.days.map(day => 
+                            `<span class="availability-day">${formatDays([day])}</span>`
+                        ).join('')}
+                    </div>
+                </td>
+                <td>
+                    <div class="working-hours">
+                        <span class="time">${formatTime(therapist.availability.hours.start)} - ${formatTime(therapist.availability.hours.end)}</span>
+                        ${therapist.availability.hours.break.start ? `
+                            <span class="break">Break: ${formatTime(therapist.availability.hours.break.start)} - ${formatTime(therapist.availability.hours.break.end)}</span>
+                        ` : ''}
+                    </div>
+                </td>
                 <td><span class="therapist-status status-${therapist.status.toLowerCase()}">${therapist.status}</span></td>
                 <td>
                     <button class="btn btn-primary" onclick="editTherapist(${therapist.id})">
@@ -113,6 +161,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Add this function to get availability data from form
+    function getAvailabilityFromForm(form) {
+        const availableDays = Array.from(form.querySelectorAll('input[name="availableDays"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        return {
+            days: availableDays,
+            hours: {
+                start: form.querySelector('input[name="startTime"]').value,
+                end: form.querySelector('input[name="endTime"]').value,
+                break: {
+                    start: form.querySelector('input[name="breakStart"]').value,
+                    end: form.querySelector('input[name="breakEnd"]').value
+                }
+            }
+        };
+    }
+
     addTherapistForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const newTherapist = {
@@ -123,7 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
             email: document.getElementById('therapistEmail').value,
             phone: document.getElementById('therapistPhone').value,
             bio: document.getElementById('therapistBio').value,
-            status: 'Active'
+            status: 'Active',
+            availability: getAvailabilityFromForm(this)
         };
         
         therapists.push(newTherapist);
@@ -140,14 +207,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (therapistIndex !== -1) {
             therapists[therapistIndex] = {
-                id: id,
+                ...therapists[therapistIndex],
                 name: document.getElementById('editTherapistName').value,
                 specialization: document.getElementById('editTherapistSpecialization').value,
                 experience: document.getElementById('editTherapistExperience').value,
                 email: document.getElementById('editTherapistEmail').value,
                 phone: document.getElementById('editTherapistPhone').value,
                 bio: document.getElementById('editTherapistBio').value,
-                status: document.getElementById('editTherapistStatus').value
+                status: document.getElementById('editTherapistStatus').value,
+                availability: getAvailabilityFromForm(this)
             };
 
             filterTherapists();
@@ -168,6 +236,26 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('editTherapistExperience').value = therapist.experience;
         document.getElementById('editTherapistBio').value = therapist.bio || '';
         document.getElementById('editTherapistStatus').value = therapist.status;
+
+        // Populate availability
+        if (therapist.availability) {
+            const form = document.getElementById('editTherapistForm');
+            
+            // Check working days
+            form.querySelectorAll('input[name="availableDays"]').forEach(checkbox => {
+                checkbox.checked = therapist.availability.days.includes(checkbox.value);
+            });
+            
+            // Set working hours
+            form.querySelector('input[name="startTime"]').value = therapist.availability.hours.start;
+            form.querySelector('input[name="endTime"]').value = therapist.availability.hours.end;
+            
+            // Set break time if exists
+            if (therapist.availability.hours.break) {
+                form.querySelector('input[name="breakStart"]').value = therapist.availability.hours.break.start;
+                form.querySelector('input[name="breakEnd"]').value = therapist.availability.hours.break.end;
+            }
+        }
 
         toggleEditModal();
     };
