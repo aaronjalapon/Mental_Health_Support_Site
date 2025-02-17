@@ -216,19 +216,18 @@ body {
 
 /* Mobile Toggle Button */
 .mobile-toggle {
-    display: none;
+    display: none; /* Hidden by default */
     padding: 0.5rem;
     background-color: #1e9160;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
+    transition: background-color 0.3s;
 }
 
 .mobile-toggle i {
     font-size: 1.25rem;
-    transition: transform 0.3s ease-in-out;
 }
 
 .mobile-toggle:hover {
@@ -255,20 +254,11 @@ body {
     }
 
     .mobile-toggle {
-        display: block;
+        display: block; /* Only show on mobile */
         position: fixed;
         top: 1rem;
         left: 1rem;
         z-index: 1001;
-        transition: transform 0.3s ease-in-out, left 0.3s ease-in-out;
-    }
-
-    .sidebar.show ~ .mobile-toggle {
-        left: 210px;
-    }
-
-    .sidebar.show ~ .mobile-toggle i {
-        transform: rotate(45deg);
     }
 
     .main-content {
