@@ -18,7 +18,7 @@
 
     if($result->num_rows > 0){
         $row = $result->fetch_assoc();
-        if($row['verification_status'] == '1'){ // Changed from 'Verified' to '1'
+        if($row['verification_status'] == '1'){
             header('Location: ../html/login.html');
             exit();
         }
@@ -31,10 +31,21 @@
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $otp = $_POST['otp1'] . $_POST['otp2'] . $_POST['otp3'] . $_POST['otp4'] . $_POST['otp5'] . $_POST['otp6'];
         
-        // Verify OTP (this is just a placeholder, implement your OTP verification logic)
-        if ($otp == '123456') { // Replace with actual OTP verification logic
+        // Verify OTP against the stored value in database
+        $stmt = $conn->prepare("SELECT otp FROM users WHERE unique_id = ?");
+        $stmt->bind_param("i", $unique_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        
+        if ($result->num_rows > 0 && $otp === $row['otp']) {
             // Update verification status in the database
             $stmt = $conn->prepare("UPDATE users SET verification_status = '1' WHERE unique_id = ?");
+            $stmt->bind_param("i", $unique_id);
+            $stmt->execute();
+
+            // Optionally, clear the OTP from database after successful verification
+            $stmt = $conn->prepare("UPDATE users SET otp = NULL WHERE unique_id = ?");
             $stmt->bind_param("i", $unique_id);
             $stmt->execute();
 
