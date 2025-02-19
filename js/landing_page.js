@@ -217,22 +217,59 @@ function checkSession() {
       })
       .catch(error => console.error('Error:', error));
 }
-function handleLogout() {
-  fetch('/php/logout.php')
-  .then(response => response.json())
-  .then(data => {
-      if (data.success) {
-          // Hide user dropdown and show login button
-          document.querySelector('.user-dropdown').style.display = 'none';
-          document.getElementById('btn-login').style.display = 'block';
-          
-          // Redirect to home page or login page
-          window.location.href = '/html/index.html';
-      } else {
-          console.error('Logout failed:', data.message);
-      }
-  })
-  .catch(error => {
-      console.error('Error during logout:', error);
-  });
+
+// Update the handleLogout function
+function handleLogout(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    
+    fetch('/php/logout.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Clear any stored session data
+                sessionStorage.clear();
+                localStorage.clear();
+                
+                // Update UI if on main site
+                const userDropdown = document.querySelector('.user-dropdown');
+                const loginButton = document.getElementById('btn-login');
+                if (userDropdown && loginButton) {
+                    userDropdown.style.display = 'none';
+                    loginButton.style.display = 'block';
+                }
+                
+                // Redirect to landing page
+                window.location.href = '/html/index.html';
+            } else {
+                throw new Error(data.message || 'Logout failed');
+            }
+        })
+        .catch(error => {
+            console.error('Logout error:', error);
+            alert('Logout failed. Please try again.');
+            // Redirect anyway as fallback
+            window.location.href = '/html/index.html';
+        });
 }
+
+// Add event listeners for logout
+document.addEventListener('DOMContentLoaded', function() {
+    // For admin panel logout links
+    const logoutLinks = document.querySelectorAll('.logout-link');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', handleLogout);
+    });
+    
+    // For main site logout
+    const dropdownLogout = document.querySelector('.dropdown-logout a[onclick*="handleLogout"]');
+    if (dropdownLogout) {
+        dropdownLogout.addEventListener('click', handleLogout);
+    }
+});
