@@ -35,7 +35,7 @@ $pronouns = mysqli_real_escape_string($conn, trim($_POST['Pronouns']));
 $address = mysqli_real_escape_string($conn, trim($_POST['address']));
 $password = $_POST['password'];
 $cpassword = $_POST['cpass'];
-
+$status = "Pending";
 $Role = 'user';
 $verification_status = '0';
 
@@ -133,9 +133,11 @@ try {
     $mail->setFrom('nonamemister28@gmail.com', 'MindSpace');
     $mail->addAddress($email);
     $mail->Subject = "Account Verification OTP";
-    $mail->Body = "Hello $firstName $lastName,\n\n"
+    $mail->Body = "NOTE: NEVER SHARE your ONE-TIME PIN(OTP)."
+                . "Hello $firstName $lastName,\n\n"
                 . "Your OTP for email verification is: $otp\n\n"
                 . "Thank you for registering with MindSpace!";
+               
     
     $mail->send();
 
@@ -147,11 +149,11 @@ try {
         INSERT INTO users (
             unique_id, firstName, lastName, username, password, 
             email, contactNumber, Pronouns, Address, ValidID, 
-            otp, verification_status, Role, RegisterDate
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+            otp, Status ,verification_status, Role, RegisterDate
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
     ");
     
-    $stmt->bind_param("sssssssssssss", 
+    $stmt->bind_param("ssssssssssssss", 
         $random_id, 
         $firstName, 
         $lastName, 
@@ -162,7 +164,8 @@ try {
         $pronouns, 
         $address, 
         $newimagename, 
-        $otp, 
+        $otp,
+        $status, 
         $verification_status, 
         $Role
     );

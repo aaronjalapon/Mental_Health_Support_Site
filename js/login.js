@@ -46,8 +46,37 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     });
 });
 
+document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    const loginInput = document.getElementById('login_input').value.trim();
+    
+    if (!loginInput) {
+        alert('Please enter your email or username first');
+        return;
+    }
 
+    const formData = new FormData();
+    formData.append('login_input', loginInput);
 
+    fetch('../php/forgot_password.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Server response:', data);
+        if (data.status === 'success') {
+            alert('OTP has been sent to your email');
+            window.location.href = data.redirect;
+        } else {
+            alert(data.message || 'Failed to send OTP');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
+});
 
 // ...rest of your existing code...
 function togglePassword(inputId) {

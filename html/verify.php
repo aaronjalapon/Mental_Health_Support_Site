@@ -1,10 +1,10 @@
-<!-- <?php
+<?php
     session_start();
     include_once '../php/db.php';
 
     // Redirect if not logged in
     if(!isset($_SESSION['unique_id'])){
-        header('Location: login.php');
+        header('Location: ../html/login.html');
         exit();
     }
 
@@ -19,18 +19,33 @@
     if($result->num_rows > 0){
         $row = $result->fetch_assoc();
         if($row['verification_status'] == '1'){ // Changed from 'Verified' to '1'
-            header('Location: index.html');
+            header('Location: ../html/login.html');
             exit();
         }
     } else {
-        header('Location: login.php');
+        header('Location: login.html');
         exit();
     }
 
-    // Only show the HTML if user is not verified
-?> -->
+    // Handle form submission for OTP verification
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $otp = $_POST['otp1'] . $_POST['otp2'] . $_POST['otp3'] . $_POST['otp4'] . $_POST['otp5'] . $_POST['otp6'];
+        
+        // Verify OTP (this is just a placeholder, implement your OTP verification logic)
+        if ($otp == '123456') { // Replace with actual OTP verification logic
+            // Update verification status in the database
+            $stmt = $conn->prepare("UPDATE users SET verification_status = '1' WHERE unique_id = ?");
+            $stmt->bind_param("i", $unique_id);
+            $stmt->execute();
 
-
+            // Redirect to index page after successful verification
+            header('Location: ../index.html');
+            exit();
+        } else {
+            $error = "Invalid OTP. Please try again.";
+        }
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +53,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verification</title>
+    <link rel="stylesheet" href="../css/verify.css">
    
 </head>
 <body>
@@ -56,6 +72,12 @@
                 <input type="number" name="otp6" class="otp_field" placeholder="0" min="0" max="9" required onpaste="false">
 
             </div>
+            <!-- Add this before the closing </form> tag in verify.php -->
+            <div class="resend-code">
+                <a href="#" id="resendCode">Resend verification code</a>
+                <div class="resend-timer" id="resendTimer"></div>
+            </div>
+
 
             <div class="submit">
                 <input type="submit" class="button" class="otp_field" value="Verify Now" >
@@ -65,7 +87,7 @@
 
 
     </div>
-    <script src="../js/verfiy.js"></script>
+    <script src="../js/verify.js"></script>
 
 </body>
 </html>
