@@ -284,3 +284,13 @@ td:nth-child(3) {
 .data-table td:nth-child(5) {
     width: 15%;
 }
+
+/* Adjust z-indices for form elements and dropdowns */
+.filter-dropdown {
+    position: relative;
+    z-index: 2; /* Lower than sidebar but higher than regular form inputs */
+}
+
+.dropdown-list {
+    z-index: 3; /* Higher than dropdown container but lower than sidebar */
+}
