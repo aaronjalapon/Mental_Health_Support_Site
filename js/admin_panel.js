@@ -159,21 +159,43 @@ function initCharts() {
 }
 
 // Handle logout functionality
-function handleLogout() {
+function handleLogout(event) {
+    event.preventDefault(); // Prevent default link behavior
+    
     fetch('/php/logout.php')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                // Redirect to landing page after successful logout
+                // Clear any stored session data on client side
+                sessionStorage.clear();
+                localStorage.clear();
+                
+                // Redirect to landing page
                 window.location.href = '/html/index.html';
             } else {
-                console.error('Logout failed:', data.message);
+                throw new Error(data.message || 'Logout failed');
             }
         })
         .catch(error => {
-            console.error('Error during logout:', error);
+            console.error('Logout error:', error);
+            alert('Logout failed. Please try again.');
+            // Redirect anyway as fallback
+            window.location.href = '/html/index.html';
         });
 }
+
+// Add event listener to all logout links
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutLinks = document.querySelectorAll('a[onclick*="handleLogout"]');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', handleLogout);
+    });
+});
 
 // Initialize sidebar and charts when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
