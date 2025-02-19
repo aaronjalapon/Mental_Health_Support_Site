@@ -127,7 +127,10 @@ hiddenElements.forEach((element) =>
 
 document.addEventListener('DOMContentLoaded', function() {
   const authButton = document.getElementById('btn-login');
-  
+  const userDropdown = document.querySelector('.user-dropdown');
+  const dropdownBtn = document.querySelector('.dropdown-btn');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
   // Check session status when page loads
   checkSession();
 
@@ -139,43 +142,97 @@ document.addEventListener('DOMContentLoaded', function() {
           logout();
       }
   });
+
+  // Handle dropdown button click
+  dropdownBtn.addEventListener('click', () => {
+      dropdownContent.classList.toggle('show');
+  });
+
+  // Close the dropdown when clicking outside
+  window.addEventListener('click', (event) => {
+      if (!event.target.matches('.dropdown-btn')) {
+          if (dropdownContent.classList.contains('show')) {
+              dropdownContent.classList.remove('show');
+          }
+      }
+  });
 });
 
+// Add dropdown toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownBtn = document.querySelector('.dropdown-btn');
+    const dropdownContent = document.querySelector('.dropdown-content');
 
+    dropdownBtn?.addEventListener('click', () => {
+        dropdownContent.classList.toggle('show');
+    });
 
-
-
-
-
-
+    // Close dropdown when clicking outside
+    window.addEventListener('click', (event) => {
+        if (!event.target.matches('.dropdown-btn')) {
+            if (dropdownContent?.classList.contains('show')) {
+                dropdownContent.classList.remove('show');
+            }
+        }
+    });
+});
 
 //THIS IS FOR CHECKING SESSION FOR LOGIN OKAAAAAy
 
-
-
+/* filepath: /d:/Backend/Mental_Health_Support_Site/js/landing_page.js */
 function checkSession() {
-  fetch('../php/check_session.php')
+  fetch('/php/check_session.php')
       .then(response => response.json())
       .then(data => {
           const authButton = document.getElementById('btn-login');
+          const userDropdown = document.querySelector('.user-dropdown');
+          const dropdownLogout = document.querySelector('.dropdown-logout');
+          
           if (data.loggedIn) {
-              authButton.textContent = 'Log Out';
+              // Hide login button and show user dropdown
+              authButton.style.display = 'none';
+              userDropdown.style.display = 'block';
+              
+              // Update welcome message with user's name
+              const username = `${data.user.username}`;
+              const dropdownBtn = document.querySelector('.dropdown-btn');
+              dropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${username}`;
+              
+              // Setup dropdown toggle
+              dropdownBtn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  dropdownLogout.classList.toggle('show');
+              });
+
+              // Close dropdown when clicking outside
+              document.addEventListener('click', (e) => {
+                  if (!userDropdown.contains(e.target)) {
+                      dropdownLogout.classList.remove('show');
+                  }
+              });
           } else {
-              authButton.textContent = 'Log In';
+              authButton.style.display = 'block';
+              userDropdown.style.display = 'none';
           }
       })
       .catch(error => console.error('Error:', error));
 }
-
-function logout() {
-  fetch('../php/logout.php')
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              const authButton = document.getElementById('btn-login');
-              authButton.textContent = 'Log In';
-              window.location.reload();
-          }
-      })
-      .catch(error => console.error('Error:', error));
+function handleLogout() {
+  fetch('/php/logout.php')
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          // Hide user dropdown and show login button
+          document.querySelector('.user-dropdown').style.display = 'none';
+          document.getElementById('btn-login').style.display = 'block';
+          
+          // Redirect to home page or login page
+          window.location.href = '/html/index.html';
+      } else {
+          console.error('Logout failed:', data.message);
+      }
+  })
+  .catch(error => {
+      console.error('Error during logout:', error);
+  });
 }

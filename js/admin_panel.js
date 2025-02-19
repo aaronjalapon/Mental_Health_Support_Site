@@ -158,6 +158,23 @@ function initCharts() {
     );
 }
 
+// Handle logout functionality
+function handleLogout() {
+    fetch('/php/logout.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to landing page after successful logout
+                window.location.href = '/html/index.html';
+            } else {
+                console.error('Logout failed:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error during logout:', error);
+        });
+}
+
 // Initialize sidebar and charts when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Only initialize sidebar functionality if we're on mobile

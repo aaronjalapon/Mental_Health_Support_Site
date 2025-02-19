@@ -33,6 +33,7 @@ if(!empty($OTP)){
         
         if($stmt2->execute()){
             $_SESSION['unique_id'] = $row['unique_id'];
+            $_SESSION['username'] = $row['username'];
             $_SESSION['verification_status'] = '1';
             echo "Success";
         } else {

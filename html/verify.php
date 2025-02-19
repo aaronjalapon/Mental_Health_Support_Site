@@ -1,10 +1,10 @@
-<!-- <?php
+<?php
     session_start();
     include_once '../php/db.php';
 
     // Redirect if not logged in
     if(!isset($_SESSION['unique_id'])){
-        header('Location: ../login.html');
+        header('Location: ../html/login.html');
         exit();
     }
 
@@ -19,7 +19,7 @@
     if($result->num_rows > 0){
         $row = $result->fetch_assoc();
         if($row['verification_status'] == '1'){ // Changed from 'Verified' to '1'
-            header('Location: ../login.html');
+            header('Location: ../html/login.html');
             exit();
         }
     } else {
@@ -27,10 +27,25 @@
         exit();
     }
 
-    // Only show the HTML if user is not verified
-?> -->
+    // Handle form submission for OTP verification
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $otp = $_POST['otp1'] . $_POST['otp2'] . $_POST['otp3'] . $_POST['otp4'] . $_POST['otp5'] . $_POST['otp6'];
+        
+        // Verify OTP (this is just a placeholder, implement your OTP verification logic)
+        if ($otp == '123456') { // Replace with actual OTP verification logic
+            // Update verification status in the database
+            $stmt = $conn->prepare("UPDATE users SET verification_status = '1' WHERE unique_id = ?");
+            $stmt->bind_param("i", $unique_id);
+            $stmt->execute();
 
-
+            // Redirect to index page after successful verification
+            header('Location: ../index.html');
+            exit();
+        } else {
+            $error = "Invalid OTP. Please try again.";
+        }
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
