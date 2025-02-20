@@ -10,14 +10,6 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         return;
     }
 
-    // Hardcoded admin check
-    if (loginInput === 'admin' && password === 'password123') {
-        alert('Admin login successfully!');
-        window.location.href = '../html/admin_panel.html';
-        return;
-    }
-
-    // For regular users, send to PHP backend
     const formData = new FormData();
     formData.append('login_input', loginInput);
     formData.append('password', password);
@@ -26,18 +18,17 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
-        switch(data) {
-            case 'user':
-                alert('Login successful!');
-                window.location.href = '/index.html';
-                break;
-            case 'admin':
+        if (data.status === 'success') {
+            alert(data.message); // Show success message
+            if (data.role === 'admin') {
                 window.location.href = '../html/admin_panel.html';
-                break;
-            default:
-                alert(data); // Show error message from PHP
+            } else {
+                window.location.href = '/index.html';
+            }
+        } else {
+            alert(data.message);
         }
     })
     .catch(error => {
@@ -45,8 +36,6 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         alert('An error occurred during login. Please try again.');
     });
 });
-
-
 
 
 // ...rest of your existing code...

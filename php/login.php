@@ -2,18 +2,34 @@
 session_start();
 include_once "db.php";
 
+// Define admin credentials in a separate config file
+define('ADMIN_USERNAME', 'admin');
+define('ADMIN_PASSWORD_HASH', '$2y$10$8WRnqofHP6geI.22MQjvoedWoZJhkENE4oHZ0rOcHDkON4EH0rdH6');
+
 // Sanitize inputs
-$login_input = mysqli_real_escape_string($conn, trim($_POST['login_input'])); // Can be email or username
+$login_input = mysqli_real_escape_string($conn, trim($_POST['login_input']));
 $password = $_POST['password'];
 
 // Validate required fields
 if (empty($login_input) || empty($password)) {
-    echo "All input fields are required!";
+    echo json_encode(['status' => 'error', 'message' => 'All input fields are required!']);
     exit();
 }
 
 try {
-    // Prepare statement to check user credentials (both email and username)
+    // First check if it's an admin login
+    if ($login_input === ADMIN_USERNAME) {
+        if (password_verify($password, ADMIN_PASSWORD_HASH)) {
+            $_SESSION['unique_id'] = 'admin';
+            $_SESSION['email'] = ADMIN_USERNAME;
+            $_SESSION['username'] = 'Administrator';
+            $_SESSION['role'] = 'admin';
+            echo json_encode(['status' => 'success', 'role' => 'admin', 'message' => 'Admin Login Successful!']);
+            exit();
+        }
+    }
+
+    // Rest of your existing authentication code...
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
     $stmt->bind_param("ss", $login_input, $login_input);
     $stmt->execute();
@@ -22,11 +38,8 @@ try {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // Verify password
         if (password_verify($password, $row['password'])) {
-            // Check if email is verified
             if ($row['verification_status'] == '1') {
-                // Set session variables
                 $_SESSION['unique_id'] = $row['unique_id'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['firstName'] = $row['firstName'];
@@ -34,29 +47,26 @@ try {
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['role'] = $row['Role'];
                 
-                // Check role and redirect accordingly
-                if ($_SESSION['role'] === 'admin') {
-                    echo "admin"; // Frontend will redirect to admin_panel.html
-                } else {
-                    echo "user"; // Frontend will redirect to index.html
-                }
+                echo json_encode(['status' => 'success', 'role' => 'user', 'message' => 'Login Successful!']);
             } else {
-                // Email not verified
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['otp'] = $row['otp'];
-                echo "Please verify your email first!";
+                echo json_encode(['status' => 'error', 'message' => 'Please verify your email first!']);
             }
         } else {
-            echo "Invalid credentials!";
+            echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
         }
     } else {
-        echo "Invalid credentials!";
+        echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
     }
 
 } catch (Exception $e) {
     error_log("Login Error: " . $e->getMessage());
-    echo "Login failed. Please try again later.";
+    echo json_encode(['status' => 'error', 'message' => 'Login failed. Please try again later.']);
+} finally {
+    if (isset($stmt)) {
+        $stmt->close();
+    }
+    $conn->close();
 }
-
-$conn->close();
 ?>
