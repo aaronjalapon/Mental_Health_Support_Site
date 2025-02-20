@@ -176,7 +176,7 @@ function handleLogout(event) {
                 localStorage.clear();
                 
                 // Redirect to landing page
-                window.location.href = '/html/index.html';
+                window.location.href = '/index.html';
             } else {
                 throw new Error(data.message || 'Logout failed');
             }
@@ -185,7 +185,7 @@ function handleLogout(event) {
             console.error('Logout error:', error);
             alert('Logout failed. Please try again.');
             // Redirect anyway as fallback
-            window.location.href = '/html/index.html';
+            window.location.href = '/index.html';
         });
 }
 

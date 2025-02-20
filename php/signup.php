@@ -39,6 +39,8 @@ $status = "Pending";
 $Role = 'user';
 $verification_status = '0';
 
+
+
 // Validate all required fields
 if (empty($firstName) || empty($lastName) || empty($username) || empty($email) || 
     empty($contactNumber) || empty($pronouns) || empty($address) || 
@@ -133,7 +135,7 @@ try {
     $mail->setFrom('nonamemister28@gmail.com', 'MindSpace');
     $mail->addAddress($email);
     $mail->Subject = "Account Verification OTP";
-    $mail->Body = "NOTE: NEVER SHARE your ONE-TIME PIN(OTP)."
+    $mail->Body = "NOTE: NEVER SHARE your ONE-TIME PIN(OTP).\n\n"
                 . "Hello $firstName $lastName,\n\n"
                 . "Your OTP for email verification is: $otp\n\n"
                 . "Thank you for registering with MindSpace!";
@@ -199,3 +201,4 @@ try {
 
 $conn->close();
 ?>
+

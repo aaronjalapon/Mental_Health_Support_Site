@@ -12,7 +12,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
     // Hardcoded admin check
     if (loginInput === 'admin' && password === 'password123') {
-        alert('Admin login successful!');
+        alert('Admin login successfully!');
         window.location.href = '../html/admin_panel.html';
         return;
     }
@@ -31,7 +31,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         switch(data) {
             case 'user':
                 alert('Login successful!');
-                window.location.href = '../html/index.html';
+                window.location.href = '/index.html';
                 break;
             case 'admin':
                 window.location.href = '../html/admin_panel.html';
