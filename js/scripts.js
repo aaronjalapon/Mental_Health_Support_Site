@@ -8,6 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   
   document.querySelector('.btn-get-started').addEventListener('click', () => {
-    alert('Welcome to MindCare!');
+    alert('Welcome to MindSpace!');
   });
   
