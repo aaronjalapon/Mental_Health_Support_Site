@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('Server response:', data);
                         
                         if (data.trim() === "Success") {
-                            console.log("../html/verify.html")
                             window.location.href = '../html/verify.php';
                             
                         } else {
