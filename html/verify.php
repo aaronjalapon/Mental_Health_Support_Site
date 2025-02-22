@@ -4,7 +4,7 @@
 
     // Redirect if not logged in
     if(!isset($_SESSION['unique_id'])){
-        header('Location: ../html/login.html');
+        header('Location: ../html/login.php');
         exit();
     }
 

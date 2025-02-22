@@ -23,9 +23,9 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         if (data.status === 'success') {
             alert(data.message); // Show success message
             if (data.role === 'admin') {
-                window.location.href = '../html/admin_panel.html';
+                window.location.href = '../html/admin_panel.php';
             } else {
-                window.location.href = '/index.html';
+                window.location.href = '/index.php';
             }
         } else {
             alert(data.message);

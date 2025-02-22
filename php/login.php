@@ -22,7 +22,7 @@ try {
         if (password_verify($password, ADMIN_PASSWORD_HASH)) {
             $_SESSION['unique_id'] = 'admin';
             $_SESSION['email'] = ADMIN_USERNAME;
-            $_SESSION['username'] = 'Administrator';
+            $_SESSION['username'] = 'admin';
             $_SESSION['role'] = 'admin';
             echo json_encode(['status' => 'success', 'role' => 'admin', 'message' => 'Admin Login Successful!']);
             exit();

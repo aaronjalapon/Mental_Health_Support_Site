@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+// Function to check if user is logged in
+function isLoggedIn() {
+    return isset($_SESSION['user_id']);
+}
+
+// Redirect to login for protected pages
+function redirectToLogin() {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +29,7 @@
     <header class="navbar">
       
         <div class="logo">
-          <a href="index.html">
+          <a href="index.php">
             <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">
             <h1>MindSpace</h1>
           </a>
@@ -25,7 +41,7 @@
           <span class="bar"></span>
         </button>
         <nav class="nav-links" id="navLinks">
-          <a id="home" href="index.html">Home</a>
+          <a id="home" href="index.php">Home</a>
           <a id="about_us" href="#self-help">About us</a>
           <div class="dropdown">
             <button class="dropbtn">
@@ -135,3 +151,8 @@
   
 </body>
 </html>
+
+
+
+
+

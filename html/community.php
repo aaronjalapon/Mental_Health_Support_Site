@@ -1,3 +1,13 @@
+<?php
+session_start();
+// Check if user is logged in and is admin
+if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../html/login.php");
+    exit();
+}
+
+?>
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html>
 <head>
@@ -164,3 +174,5 @@
   	
 </body>
 </html>
+
+<html>
