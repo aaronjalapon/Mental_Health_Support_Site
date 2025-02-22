@@ -8,7 +8,6 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 
 ?>
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -172,5 +171,3 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 	<script src="/js/landing_page.js"></script>
 </body>
 </html>
-
-<html>
