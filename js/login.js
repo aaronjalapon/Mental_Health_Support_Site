@@ -2,23 +2,43 @@
 document.getElementById('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
+    const loginInput = document.getElementById('login_input').value.trim();
     const password = document.getElementById('password').value.trim();
 
-    if (!email || !password) {
+    if (!loginInput || !password) {
         alert('Please fill in all fields.');
         return;
     }
 
-    // Example login validation
-    if (email === 'test@carrental.com' && password === 'password123') {
-        alert('Login successful!');
-        window.location.href = 'dashboard.html';
-    } else {
-        alert('Invalid email or password. Please try again.');
-    }
+    const formData = new FormData();
+    formData.append('login_input', loginInput);
+    formData.append('password', password);
+
+    fetch('../php/login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message); // Show success message
+            if (data.role === 'admin') {
+                window.location.href = '../html/admin_panel.php';
+            } else {
+                window.location.href = '/index.php';
+            }
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during login. Please try again.');
+    });
 });
 
+
+// ...rest of your existing code...
 function togglePassword(inputId) {
     const passwordInput = document.getElementById(inputId);
     const toggleIcon = passwordInput.nextElementSibling;

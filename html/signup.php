@@ -1,0 +1,109 @@
+<?php
+session_start();
+// Redirect if already logged in
+if(isset($_SESSION['unique_id'])) {
+    if($_SESSION['role'] === 'admin') {
+        header("Location: ../html/admin_panel.php");
+    } else {
+        header("Location: /index.php");
+    }
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="vector-parent">
+        <div class="logo-mindspace-1-1-parent">
+            <img class="logo-mindspace-1-1-icon" alt="logo.svg" src="/images/Logo.svg">
+            <div class="mindspace">MindSpace</div>
+        </div>
+        
+        <b class="registration-form">Registration Form</b>
+        <form id="signupForm" class="signup-form" method="POST" enctype="multipart/form-data">
+          
+            <div class="form-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group password-field">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" placeholder="password123" required>
+                        <i class="toggle-password fa-regular fa-eye" onclick="togglePassword('password')"></i>
+                    </div>
+                    <div class="form-group password-field">
+                        <label for="confirmPassword">Confirm Password:</label>
+                        <input type="password" id="confirmPassword" name="cpass" placeholder="password123" required>
+                        <i class="toggle-password fa-regular fa-eye" onclick="togglePassword('confirmPassword')"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="johndoe@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" placeholder="johndoe123" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contact">Contact Number:</label>
+                        <input type="tel" id="contact" name="contactNumber" placeholder="09123456789" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pronouns">Pronouns:</label>
+                        <select id="pronouns" name="Pronouns" required>
+                            <option value="">Select pronouns</option>
+                            <option value="he/him/his">He/Him/His</option>
+                            <option value="she/her/hers">She/Her/Hers</option>
+                            <option value="they/them/theirs">They/Them/Theirs</option>
+                            <option value="i_prefer_not_to_say">I prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" placeholder="Matina, Davao City" required>
+                </div>
+        
+                <div class="file-upload">
+                    <input type="file" id="fileInput" name="ValidID" accept="image/jpeg,image/png" required>
+                    <label for="fileInput" class="file-label">Choose Image</label>
+                    <span class="file-name">Upload Valid ID</span>
+                </div>
+        
+                <input type="submit" value="Register" class="register-btn"></button>
+            </div>
+        </form>
+
+        <div class="already-have-an-account-parent">
+            <span class="already-have-an">Already have an Account?</span>
+            <span class="sign-in"><a href="/html/login.php">Sign In</a></span>
+        </div>
+    </div>
+    <script src="../js/signup.js"></script>
+</body>
+</html>

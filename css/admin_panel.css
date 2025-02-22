@@ -13,16 +13,22 @@ body {
 
 /* Admin Layout */
 .admin-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
+    display: flex; /* Changed from grid to flex */
     min-height: 100vh;
 }
 
 /* Sidebar Styles */
 .sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
     background: linear-gradient(180deg, #6ee4c1, #1e9160);
     color: white;
     padding: 2rem;
+    z-index: 1000; /* Add higher z-index for sidebar */
 }
 
 .sidebar-header {
@@ -62,7 +68,11 @@ body {
 
 /* Main Content */
 .main-content {
+    flex: 1;
+    margin-left: 250px; /* Match sidebar width */
     padding: 2rem;
+    overflow-y: auto;
+    min-height: 100vh;
 }
 
 /* Dashboard Cards */
@@ -168,6 +178,8 @@ body {
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 1rem;
+    position: relative;
+    z-index: 1; /* Add lower z-index for form inputs */
 }
 
 /* Management Filters */
@@ -214,31 +226,55 @@ body {
     color: #333;
 }
 
+/* Mobile Toggle Button */
+.mobile-toggle {
+    display: none; /* Hidden by default */
+    padding: 0.5rem;
+    background-color: #1e9160;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.mobile-toggle i {
+    font-size: 1.25rem;
+}
+
+.mobile-toggle:hover {
+    background-color: #187a4d;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .admin-container {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .sidebar {
-        position: fixed;
-        left: -250px;
-        top: 0;
-        bottom: 0;
-        z-index: 1000;
-        transition: left 0.3s;
+        width: 260px; /* Slightly wider for mobile */
+        left: -260px;
+    }
+
+    .main-content {
+        margin-left: 0;
     }
 
     .sidebar.show {
-        left: 0;
+        transform: translateX(260px);
     }
 
     .mobile-toggle {
-        display: block;
+        display: block; /* Only show on mobile */
         position: fixed;
         top: 1rem;
         left: 1rem;
         z-index: 1001;
+    }
+
+    .main-content {
+        padding-top: 4rem;
     }
 }
 
@@ -266,6 +302,21 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+}
+
+.date-display {
+    text-align: right;
+}
+
+.current-date {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+.current-day {
+    font-size: 1rem;
+    color: #666;
 }
 
 /* Status badges */
@@ -299,4 +350,35 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
     display: none;
+}
+
+/* Chart Styles */
+.charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .charts-container {
+        grid-template-columns: 1fr;
+    }
 }
