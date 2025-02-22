@@ -51,8 +51,8 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <select class="status-filter" id="statusFilter">
                     <option value="all">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="approved">Approved</option>
+                    <option value="blocked">Blocked</option>
                     <option value="pending">Pending</option>
                 </select>
             </div>
@@ -211,9 +211,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         <div class="form-group">
                             <label for="editStatus">Status</label>
                             <select class="form-input" id="editStatus" required>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="blocked">Blocked</option>
+                                <option value="pending">Pending</option>
                             </select>
                         </div>
 
