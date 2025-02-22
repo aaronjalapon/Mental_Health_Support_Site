@@ -10,7 +10,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 $data = json_decode(file_get_contents('php://input'), true);
 
 try {
-    $stmt = $conn->prepare("DELETE FROM users WHERE unique_id = ? AND Role = 'user'");
+    $stmt = $conn->prepare("DELETE FROM client WHERE unique_id = ? AND Role = 'client'");
     $stmt->bind_param("s", $data['id']);
 
     if($stmt->execute()) {

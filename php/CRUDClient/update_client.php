@@ -10,7 +10,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 $data = json_decode(file_get_contents('php://input'), true);
 
 try {
-    $stmt = $conn->prepare("UPDATE users SET 
+    $stmt = $conn->prepare("UPDATE client SET 
         firstName = ?, 
         lastName = ?, 
         username = ?, 

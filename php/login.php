@@ -30,7 +30,7 @@ try {
     }
 
     // Rest of your existing authentication code...
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
+    $stmt = $conn->prepare("SELECT * FROM client WHERE email = ? OR username = ?");
     $stmt->bind_param("ss", $login_input, $login_input);
     $stmt->execute();
     $result = $stmt->get_result();

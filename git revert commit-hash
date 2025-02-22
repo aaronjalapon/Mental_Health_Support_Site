@@ -1,0 +1,244 @@
+[33mcommit 163765a63f1feda2a075a149bd35f06f4de091d9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mBack-end[m[33m, [m[1;31morigin/Back-end[m[33m)[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Sat Feb 22 09:58:41 2025 +0800
+
+    adding client's almost done but still inconsistent.
+
+[33mcommit 3678c16a31b714ace10f9ef1a2f944bd8616f140[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Sat Feb 22 08:35:38 2025 +0800
+
+    Changing the html to php for dynamic webpage(necessary)
+
+[33mcommit 627d0ced9c081a732584a51cf1efd57b804b9c59[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Fri Feb 21 14:04:02 2025 +0800
+
+    unta ma pull nimo ni bantay lang ka..
+
+[33mcommit e30c68f30a96c1bdf7cffd52bff973e6ae21e5c3[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Thu Feb 20 19:13:09 2025 +0800
+
+    Hiding the admin's Username and Password
+
+[33mcommit ce5fd7414e19aaf4d4e5a6bb048658579485f1ed[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Thu Feb 20 18:13:37 2025 +0800
+
+    gigawas nako ang index naaaah
+
+[33mcommit ae12bcefb9471e4a38464dbaace554a7afd15474[m
+Merge: d6df29f 8595bc4
+Author: John <jmdalumpines24@gmail.com>
+Date:   Wed Feb 19 21:09:30 2025 +0800
+
+    Merge branch 'main' of https://github.com/aaronjalapon/Mental_Health_Support_Site into Back-end
+
+[33mcommit 8595bc4887216c048f5abb0b4aac5bf8a6163056[m[33m ([m[1;31mupstream/main[m[33m)[m
+Merge: cf16e72 f5f724c
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Wed Feb 19 19:17:24 2025 +0800
+
+    commited sui sauce na
+
+[33mcommit d6df29ff532c014ba567a8d0c1944d5122a1a934[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Wed Feb 19 13:39:55 2025 +0800
+
+    Na mali kog send sa databases ahahhaa
+
+[33mcommit a3fd4e5aff3cb5e0474f949d926134aa79965684[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Wed Feb 19 13:34:01 2025 +0800
+
+    for database incase magloko si baby laptop
+
+[33mcommit cf16e7267644a7a9eb3858fc81defb6767c0432a[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Wed Feb 19 13:13:38 2025 +0800
+
+    commited sui sauce na
+
+[33mcommit f5f724c1c2b23982245995de53819e992e2835d0[m
+Merge: 4bf4db9 7f8a65d
+Author: Aaron Jalapon <142800093+aaronjalapon@users.noreply.github.com>
+Date:   Wed Feb 19 11:43:39 2025 +0800
+
+    Merge pull request #4 from jmdada24/Back-end
+    
+    wala na apil sa pag push
+
+[33mcommit 7f8a65d636f1518ee9b1cfe1a2cd5b06bd230d29[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Wed Feb 19 11:42:23 2025 +0800
+
+    wala na apil sa pag push
+
+[33mcommit 4bf4db9a54dcb25a851f63cf70d4efdf42c88d21[m
+Merge: 74f2082 647d455
+Author: Aaron Jalapon <142800093+aaronjalapon@users.noreply.github.com>
+Date:   Wed Feb 19 11:34:14 2025 +0800
+
+    Merge pull request #3 from jmdada24/main
+    
+    huhuhuhu
+
+[33mcommit 647d455a06cb4369ffeb685930e0ebb29fcb4547[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mupstream/main[m[33m, [m[1;32mmain[m[33m, [m[1;32mfeature-admin-panel[m[33m, [m[1;32madmin-panel-update[m[33m)[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Wed Feb 19 11:13:24 2025 +0800
+
+    Log out of both user and admin DONE!
+
+[33mcommit cb3ae49975ccb7ae6cf818aed3bf31a290cec962[m
+Merge: bbd47a4 74f2082
+Author: John <jmdalumpines24@gmail.com>
+Date:   Mon Feb 17 22:22:38 2025 +0800
+
+    Merge remote-tracking branch 'upstream/main'
+    
+    cd
+
+[33mcommit bbd47a4bf644a56327fdfbd86fefb39e5c04f22f[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Mon Feb 17 22:20:32 2025 +0800
+
+    Update verification design
+
+[33mcommit 74f20829ce37a31f03bc34e92614a9a044806bd9[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 17 20:38:38 2025 +0800
+
+    improved form modal
+
+[33mcommit edba3e791ce4ba3427fa347791bcc184c6de7795[m
+Merge: 460ca00 019776b
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 17 09:33:30 2025 +0800
+
+    Merge remote changes and add PHPMailer integration
+
+[33mcommit 460ca009b9c9eea5c8eb6ada1ae8727cca5a3f7c[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 17 09:27:30 2025 +0800
+
+    saved progress
+
+[33mcommit 60334000f24cb34a3bc1e119f339798e8a57a04c[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 17 09:26:11 2025 +0800
+
+    Updated the form inputs
+
+[33mcommit 019776b462fd46baafbc528ea61d9c93934f04a5[m
+Merge: 9942fef bfd3784
+Author: Aaron Jalapon <142800093+aaronjalapon@users.noreply.github.com>
+Date:   Mon Feb 17 05:17:14 2025 +0800
+
+    Merge pull request #2 from jmdada24/backend_branch
+    
+    I guess all of it are nice
+
+[33mcommit 9942fef04d1d3673b1c5e51dc1e32b4a2042b8b4[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Sun Feb 16 19:34:36 2025 +0800
+
+    Update CSS styling for admin page
+
+[33mcommit bfd3784f61893768e550b4586d973dd1540cff21[m[33m ([m[1;31morigin/backend_branch[m[33m, [m[1;32mbackend_branch[m[33m)[m
+Author: John <jmdalumpines24@gmail.com>
+Date:   Thu Feb 13 22:18:08 2025 +0800
+
+    I guess all of it are nice
+
+[33mcommit ce07feae92e0fb0b70694eed23820d6381bd0a46[m[33m ([m[1;31mupstream/Back-end[m[33m)[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Wed Feb 12 10:54:17 2025 +0800
+
+    admin and fixed ui
+
+[33mcommit c6cfa28d1b036d37d6269a2ba993095259462d61[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 10 19:58:58 2025 +0800
+
+    landing page testimonials
+    
+    new and improved testimonials section
+
+[33mcommit cab090a3dbae4bcab4c6d8f0f34a7b6862ce1811[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Mon Feb 10 10:09:19 2025 +0800
+
+    index html progess
+
+[33mcommit b84f1447233935f4f972b7a770730e43eb57cbb6[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Sun Feb 9 19:08:04 2025 +0800
+
+    login&signup fixed
+
+[33mcommit ef5e707cc39aa759c8739afac8c92357717bf2cb[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Thu Feb 6 13:25:26 2025 +0800
+
+    adjusted login&signup containers
+
+[33mcommit 957114ba77baba67dc05afde112da0793c8bfa24[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Thu Feb 6 13:12:13 2025 +0800
+
+    fixed login, signup, landing page
+
+[33mcommit f91c9604441404a11b0b7895b2c5f1fc2c61902c[m
+Author: Aaron Jalapon <142800093+aaronjalapon@users.noreply.github.com>
+Date:   Tue Feb 4 13:24:45 2025 +0800
+
+    Create CNAME
+
+[33mcommit ad04dec82d126b520f673de906bb37ac8fd85f62[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Tue Feb 4 13:21:41 2025 +0800
+
+    renamed landing_page.html
+    
+    recently made the landing page as the index html
+
+[33mcommit 7b259a28197926aa640de3b16465b4138bd6c5d3[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Tue Feb 4 13:18:34 2025 +0800
+
+    new and improved UI
+
+[33mcommit 4149db8fca3e24359be0920d329eca0a540be454[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Thu Jan 30 14:36:33 2025 +0800
+
+    landing_page_Update
+
+[33mcommit b30028834e4553079ea094776188a912a6d62f62[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Sun Jan 26 17:48:23 2025 +0800
+
+    landing_pageUpdate
+    
+    adjusted links and some css
+
+[33mcommit 8f477655578bcf2168e66718eed91379d1919c43[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Sun Jan 26 17:27:36 2025 +0800
+
+    landing_page
+
+[33mcommit 1e268ee0816cb2d8683683093ce67ed5169b748f[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Sun Jan 26 14:10:45 2025 +0800
+
+    adjusted_css
+
+[33mcommit a42c489fc0a93e2b4f8e3da94ea5c25ccffa6c9f[m
+Author: aaronjalapon <arquillanoaaron974@gmail.com>
+Date:   Thu Jan 23 11:07:56 2025 +0800
+
+    webDev
+    
+    added files

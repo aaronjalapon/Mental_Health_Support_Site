@@ -21,8 +21,8 @@ try {
         Status as status, 
         Pronouns as pronouns, 
         Address as address 
-        FROM users 
-        WHERE Role = 'user'";
+        FROM client 
+        WHERE Role = 'client'";
         
     $result = $conn->query($query);
     
