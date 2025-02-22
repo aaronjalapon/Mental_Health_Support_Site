@@ -29,7 +29,8 @@ try {
     while($row = $result->fetch_assoc()) {
         $therapists[] = [
             'id' => $row['therapist_id'],
-            'name' => htmlspecialchars($row['first_name'] . ' ' . $row['last_name']),
+            'firstName' => htmlspecialchars($row['first_name']),
+            'lastName' => htmlspecialchars($row['last_name']),
             'specialization' => htmlspecialchars($row['specialization']),
             'experience' => (int)$row['experience_years'],
             'email' => htmlspecialchars($row['email']),

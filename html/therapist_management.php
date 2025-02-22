@@ -66,8 +66,12 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                     <div class="modal-body">
                         <form id="addTherapistForm">
                             <div class="form-group">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-input" id="therapistName" required>
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-input" id="therapistFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-input" id="therapistLastName" required>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
@@ -165,8 +169,12 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         <form id="editTherapistForm">
                             <input type="hidden" id="editTherapistId">
                             <div class="form-group">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-input" id="editTherapistName" required>
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-input" id="editTherapistFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-input" id="editTherapistLastName" required>
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
@@ -206,26 +214,26 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                     <div class="available-days">
                                         <h4>Working Days</h4>
                                         <div class="days-btn-container">
-                                            <input class="day-btn" id="sunday" name="availableDays" type="checkbox" value="sunday" />
-                                            <label class="day-label" for="sunday">S</label>
+                                            <input class="day-btn" id="editSunday" name="availableDays" type="checkbox" value="sunday" />
+                                            <label class="day-label" for="editSunday">Su</label>
 
-                                            <input class="day-btn" id="monday" name="availableDays" type="checkbox" value="monday" />
-                                            <label class="day-label" for="monday">M</label>
+                                            <input class="day-btn" id="editMonday" name="availableDays" type="checkbox" value="monday" />
+                                            <label class="day-label" for="editMonday">M</label>
 
-                                            <input class="day-btn" id="tuesday" name="availableDays" type="checkbox" value="tuesday" />
-                                            <label class="day-label" for="tuesday">T</label>
+                                            <input class="day-btn" id="editTuesday" name="availableDays" type="checkbox" value="tuesday" />
+                                            <label class="day-label" for="editTuesday">T</label>
 
-                                            <input class="day-btn" id="wednesday" name="availableDays" type="checkbox" value="wednesday" />
-                                            <label class="day-label" for="wednesday">W</label>
+                                            <input class="day-btn" id="editWednesday" name="availableDays" type="checkbox" value="wednesday" />
+                                            <label class="day-label" for="editWednesday">W</label>
 
-                                            <input class="day-btn" id="thursday" name="availableDays" type="checkbox" value="thursday" />
-                                            <label class="day-label" for="thursday">T</label>
+                                            <input class="day-btn" id="editThursday" name="availableDays" type="checkbox" value="thursday" />
+                                            <label class="day-label" for="editThursday">T</label>
 
-                                            <input class="day-btn" id="friday" name="availableDays" type="checkbox" value="friday" />
-                                            <label class="day-label" for="friday">F</label>
+                                            <input class="day-btn" id="editFriday" name="availableDays" type="checkbox" value="friday" />
+                                            <label class="day-label" for="editFriday">F</label>
 
-                                            <input class="day-btn" id="saturday" name="availableDays" type="checkbox" value="saturday" />
-                                            <label class="day-label" for="saturday">S</label>
+                                            <input class="day-btn" id="editSaturday" name="availableDays" type="checkbox" value="saturday" />
+                                            <label class="day-label" for="editSaturday">S</label>
                                         </div>
                                     </div>
                                     
@@ -284,9 +292,16 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             </div>
         </main>
     </div>
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/admin_panel.js"></script>
-    <script src="/js/therapist_management.js"></script>
+    <script>
+        // Add global error handler
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError object: ' + JSON.stringify(error));
+            return false;
+        };
+    </script>
+    <script src="../js/landing_page.js"></script>
+    <script src="../js/admin_panel.js"></script>
+    <script src="../js/therapist_management.js"></script>
     
 </body>
 </html>
