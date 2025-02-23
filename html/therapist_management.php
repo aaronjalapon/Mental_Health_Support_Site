@@ -167,7 +167,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                     </div>
                     <div class="modal-body">
                         <form id="editTherapistForm">
-                            <input type="hidden" id="editTherapistId">
+                            <input type="hidden" id="editTherapistId" name="editTherapistId" required>
                             <div class="form-group">
                                 <label class="form-label">First Name</label>
                                 <input type="text" class="form-input" id="editTherapistFirstName" required>

@@ -60,7 +60,7 @@ INSERT INTO `client` (`client_id`, `unique_id`, `firstName`, `lastName`, `userna
 --
 
 CREATE TABLE `therapists` (
-  `therapist_id` int(11) NOT NULL,
+  `therapist_id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `specialization` varchar(100) NOT NULL,
@@ -70,7 +70,8 @@ CREATE TABLE `therapists` (
   `bio` text DEFAULT NULL,
   `status` enum('Active','Inactive','On Leave') DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`therapist_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -80,13 +81,14 @@ CREATE TABLE `therapists` (
 --
 
 CREATE TABLE `therapist_availability` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `therapist_id` int(11) NOT NULL,
   `day` enum('monday','tuesday','wednesday','thursday','friday','saturday','sunday') NOT NULL,
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
   `break_start` time DEFAULT NULL,
-  `break_end` time DEFAULT NULL
+  `break_end` time DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -142,8 +144,6 @@ ALTER TABLE `therapist_availability`
 --
 -- Constraints for table `therapist_availability`
 --
-ALTER TABLE `therapist_availability`
-  ADD CONSTRAINT `therapist_availability_ibfk_1` FOREIGN KEY (`therapist_id`) REFERENCES `therapists` (`therapist_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
