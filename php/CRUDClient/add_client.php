@@ -2,6 +2,9 @@
 session_start();
 include_once '../db.php';
 
+// Ensure proper JSON response headers
+header('Content-Type: application/json');
+
 if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['error' => 'Unauthorized']);
     exit();
@@ -21,17 +24,22 @@ function isPasswordStrong($password) {
 
 try {
     // Get form data
-    $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
-    $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_STRING);
+    $lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_STRING);
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
-    $contactNumber = mysqli_real_escape_string($conn, $_POST['contact']);
-    $pronouns = mysqli_real_escape_string($conn, $_POST['pronouns']);
-    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $contactNumber = filter_input(INPUT_POST, 'contact', FILTER_SANITIZE_STRING);
+    $pronouns = filter_input(INPUT_POST, 'pronouns', FILTER_SANITIZE_STRING);
+    $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
     $status = "Pending";
     $Role = 'user';
     $verification_status = '1'; // Auto-verified since admin is creating
+
+    // Validate required fields
+    if (!$firstName || !$lastName || !$username || !$email || !$password || !$contactNumber) {
+        throw new Exception('All required fields must be filled');
+    }
 
     // Validate password
     if (!isPasswordStrong($password)) {
@@ -97,6 +105,10 @@ try {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
 
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
         $stmt->bind_param("sssssssssssss",
             $random_id,
             $firstName,
@@ -114,7 +126,7 @@ try {
         );
 
         if (!$stmt->execute()) {
-            throw new Exception("Failed to insert user data");
+            throw new Exception("Execute failed: " . $stmt->error);
         }
 
         $conn->commit();
@@ -129,6 +141,7 @@ try {
     }
 
 } catch (Exception $e) {
+    error_log("Error in add_client.php: " . $e->getMessage());
     echo json_encode(['error' => $e->getMessage()]);
 }
 

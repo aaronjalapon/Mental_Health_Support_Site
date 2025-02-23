@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function fetchTherapists() {
         try {
             const data = await fetchWithRetry('../php/CRUDTherapist/fetch_therapist.php', {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Cache-Control': 'no-cache',
                     'Pragma': 'no-cache'
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             filteredTherapists = [...therapists];
             renderTherapists();
             
-            console.log('Fetched therapists:', therapists);
+            console.log('Fetched therapistsasss:', therapists);
         } catch (error) {
             console.error('Failed to fetch therapists:', error);
             alert('Failed to load therapists. Please try again later.');
@@ -150,12 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
             </tr>
         `).join('');
-        
-        // Debug log of available therapists
-        console.log('Current therapists:', filteredTherapists.map(t => ({
-            id: t.therapist_id,
-            name: `${t.firstName} ${t.lastName}`
-        })));
     }
 
     addTherapistBtn.addEventListener('click', toggleAddModal);
@@ -260,29 +254,20 @@ document.addEventListener('DOMContentLoaded', function() {
     editTherapistForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const formData = {
+            id: document.getElementById('editTherapistId').value,
+            firstName: document.getElementById('editTherapistFirstName').value,
+            lastName: document.getElementById('editTherapistLastName').value,
+            specialization: document.getElementById('editTherapistSpecialization').value,
+            experience: parseInt(document.getElementById('editTherapistExperience').value),
+            email: document.getElementById('editTherapistEmail').value,
+            phone: document.getElementById('editTherapistPhone').value,
+            bio: document.getElementById('editTherapistBio').value,
+            status: document.getElementById('editTherapistStatus').value,
+            availability: getAvailabilityFromForm(this)
+        };
+
         try {
-            const therapistId = Number(document.getElementById('editTherapistId').value);
-            console.log('Form submission - therapist ID:', therapistId, typeof therapistId);
-
-            if (isNaN(therapistId)) {
-                throw new Error('Invalid therapist ID');
-            }
-
-            const formData = {
-                id: therapistId,
-                firstName: document.getElementById('editTherapistFirstName').value.trim(),
-                lastName: document.getElementById('editTherapistLastName').value.trim(),
-                specialization: document.getElementById('editTherapistSpecialization').value.trim(),
-                experience: parseInt(document.getElementById('editTherapistExperience').value),
-                email: document.getElementById('editTherapistEmail').value.trim(),
-                phone: document.getElementById('editTherapistPhone').value.trim(),
-                bio: document.getElementById('editTherapistBio').value.trim(),
-                status: document.getElementById('editTherapistStatus').value,
-                availability: getAvailabilityFromForm(this)
-            };
-
-            console.log('Sending update data:', formData); // Debug log
-
             const response = await fetch('../php/CRUDTherapist/update_therapist.php', {
                 method: 'POST',
                 headers: {
@@ -292,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            console.log('Server response:', data); // Debug log
 
             if (data.success) {
                 await fetchTherapists();
@@ -303,72 +287,54 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error updating therapist:', error);
-            alert('Error updating therapist: ' + error.message);
+            alert('Failed to update therapist');
         }
     });
 
     // Fix the editTherapist function
-    window.editTherapist = function(id) {
+    window.editTherapist = async function(id) {
         try {
-            console.log('Edit request for therapist ID:', id, typeof id);
-            
-            if (id === undefined || id === null) {
-                throw new Error('No therapist ID provided');
-            }
-
-            // Ensure id is a number
-            const numericId = Number(id);
-            if (isNaN(numericId)) {
-                console.error('Invalid ID format:', id);
-                throw new Error('Invalid numeric ID');
-            }
-
-            // Find therapist using the numeric ID
-            const therapist = therapists.find(t => Number(t.therapist_id) === numericId);
+            const therapist = therapists.find(t => String(t.therapist_id) === String(id));
             
             if (!therapist) {
-                console.error('Available therapists:', therapists);
-                throw new Error(`Therapist not found with ID: ${numericId}`);
+                console.error('No therapist found with ID:', id);
+                console.error('Available therapist IDs:', therapists.map(t => t.therapist_id));
+                throw new Error('Therapist not found');
             }
 
             console.log('Found therapist:', therapist);
 
-            // Update form fields
+            // Populate form fields
             document.getElementById('editTherapistId').value = therapist.therapist_id;
-            document.getElementById('editTherapistFirstName').value = therapist.firstName || '';
-            document.getElementById('editTherapistLastName').value = therapist.lastName || '';
-            document.getElementById('editTherapistEmail').value = therapist.email || '';
-            document.getElementById('editTherapistPhone').value = therapist.phone || '';
-            document.getElementById('editTherapistSpecialization').value = therapist.specialization || '';
-            document.getElementById('editTherapistExperience').value = therapist.experience || '';
+            document.getElementById('editTherapistFirstName').value = therapist.firstName;
+            document.getElementById('editTherapistLastName').value = therapist.lastName;
+            document.getElementById('editTherapistEmail').value = therapist.email;
+            document.getElementById('editTherapistPhone').value = therapist.phone;
+            document.getElementById('editTherapistSpecialization').value = therapist.specialization;
+            document.getElementById('editTherapistExperience').value = therapist.experience;
             document.getElementById('editTherapistBio').value = therapist.bio || '';
-            document.getElementById('editTherapistStatus').value = therapist.status || 'Active';
+            document.getElementById('editTherapistStatus').value = therapist.status;
 
-            // Set availability checkboxes
-            const dayCheckboxes = document.querySelectorAll('#editTherapistForm input[name="availableDays"]');
-            dayCheckboxes.forEach(checkbox => {
-                checkbox.checked = therapist.availability?.days?.includes(checkbox.value) || false;
-            });
+            // Update availability checkboxes
+            if (Array.isArray(therapist.availability.days)) {
+                document.querySelectorAll('#editTherapistForm input[name="availableDays"]').forEach(checkbox => {
+                    checkbox.checked = therapist.availability.days.includes(checkbox.value);
+                });
+            }
 
-            // Set time inputs
+            // Update time inputs
             const form = document.getElementById('editTherapistForm');
-            form.querySelector('input[name="startTime"]').value = therapist.availability?.hours?.start || '';
-            form.querySelector('input[name="endTime"]').value = therapist.availability?.hours?.end || '';
-            form.querySelector('input[name="breakStart"]').value = therapist.availability?.hours?.break?.start || '';
-            form.querySelector('input[name="breakEnd"]').value = therapist.availability?.hours?.break?.end || '';
+            if (therapist.availability.hours) {
+                form.querySelector('input[name="startTime"]').value = therapist.availability.hours.start || '';
+                form.querySelector('input[name="endTime"]').value = therapist.availability.hours.end || '';
+                form.querySelector('input[name="breakStart"]').value = therapist.availability.hours.break?.start || '';
+                form.querySelector('input[name="breakEnd"]').value = therapist.availability.hours.break?.end || '';
+            }
 
             toggleEditModal();
         } catch (error) {
-            console.error('Error in editTherapist:', error, {
-                providedId: id,
-                idType: typeof id,
-                therapistsCount: therapists.length,
-                availableIds: therapists.map(t => ({
-                    id: t.therapist_id,
-                    type: typeof t.therapist_id
-                }))
-            });
-            alert('Error loading therapist: ' + error.message);
+            console.error('Error in editTherapist:', error);
+            alert('Failed to load therapist data: ' + error.message);
         }
     };
 

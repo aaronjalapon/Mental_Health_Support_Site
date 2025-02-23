@@ -51,9 +51,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <select class="status-filter" id="statusFilter">
                     <option value="all">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="onleave">On Leave</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="OnLeave">On Leave</option>
                 </select>
             </div>
 

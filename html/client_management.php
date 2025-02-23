@@ -107,10 +107,10 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                     <label for="pronouns">Pronouns</label>
                                     <select class="form-input" id="pronouns" required>
                                         <option value="">Select pronouns</option>
-                                        <option value="he/him/his">He/Him/His</option>
-                                        <option value="she/her/hers">She/Her/Hers</option>
-                                        <option value="they/them/theirs">They/Them/Theirs</option>
-                                        <option value="i_prefer_not_to_say">I prefer not to say</option>
+                                        <option value="He/Him/His">He/Him/His</option>
+                                        <option value="She/Her/Hers">She/Her/Hers</option>
+                                        <option value="Others">Others</option>
+                                        <option value="I prefer not to say">I prefer not to say</option>
                                     </select>
                                 </div>
                             </div>
@@ -194,11 +194,11 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                             </div>
                             <div class="form-group">
                                 <label for="editPronouns">Pronouns</label>
-                                <select class="form-input" id="editPronouns" required>
-                                    <option value="he/him/his">He/Him/His</option>
-                                    <option value="she/her/hers">She/Her/Hers</option>
-                                    <option value="they/them/theirs">They/Them/Theirs</option>
-                                    <option value="i_prefer_not_to_say">I prefer not to say</option>
+                                <select class="form-input" id="editPronouns" required="">
+                                    <option value="He/Him/His">He/Him/His</option>
+                                    <option value="She/Her/Hers">She/Her/Hers</option>
+                                    <option value="Others">Others</option>
+                                    <option value="I prefer not to say">I prefer not to say</option>
                                 </select>
                             </div>
                         </div>
@@ -215,6 +215,20 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                 <option value="blocked">Blocked</option>
                                 <option value="pending">Pending</option>
                             </select>
+                        </div>
+
+                        <!-- Add ValidID display container -->
+                        <div class="form-group">
+                            <label>Current Valid ID</label>
+                            <div class="valid-id-container">
+                                <img id="currentValidId" src="" alt="Valid ID" class="valid-id-preview">
+                            </div>
+                            <div class="form-group file-upload">
+                                <input type="file" id="editFileInput" name="ValidID" accept="image/jpeg,image/png">
+                                <label for="editFileInput" class="file-label">Update Valid ID</label>
+                                <span class="file-name">No file chosen</span>
+                                <small class="help-text">Leave empty to keep existing ID</small>
+                            </div>
                         </div>
 
                         <div class="form-actions">

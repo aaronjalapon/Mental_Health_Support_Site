@@ -120,6 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Debug log to check pronouns value
+        console.log('Client pronouns:', client.pronouns);
+
         // Populate edit form
         document.getElementById('editClientId').value = client.id;
         document.getElementById('editFirstName').value = client.firstName;
@@ -127,9 +130,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('editUsername').value = client.username;
         document.getElementById('editEmail').value = client.email;
         document.getElementById('editContact').value = client.contact;
-        document.getElementById('editPronouns').value = client.pronouns;
+        document.getElementById('editPronouns').value = client.pronouns || 'I prefer not to say'; // Set pronouns directly
         document.getElementById('editAddress').value = client.address;
         document.getElementById('editStatus').value = client.status.toLowerCase();
+
+        // Set ValidID preview and filename
+        const validIdImg = document.getElementById('currentValidId');
+        const fileLabel = document.querySelector('#editClientModal .file-name');
+        
+        validIdImg.src = `../ImagesForValidID/${client.validId}`;
+        fileLabel.textContent = client.validId; // Show current filename
+        
+        validIdImg.onerror = function() {
+            this.src = '../images/default-id.png';
+            fileLabel.textContent = 'No file chosen';
+        };
 
         toggleModal(editClientModal);
     };
@@ -164,7 +179,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form submission handlers
     editClientForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const formData = new FormData(this);
+        const formData = new FormData();
+        
+        // Add all form fields to FormData with correct names
+        formData.append('editClientId', document.getElementById('editClientId').value);
+        formData.append('firstName', document.getElementById('editFirstName').value);
+        formData.append('lastName', document.getElementById('editLastName').value);
+        formData.append('username', document.getElementById('editUsername').value);
+        formData.append('email', document.getElementById('editEmail').value);
+        formData.append('contact', document.getElementById('editContact').value);
+        formData.append('pronouns', document.getElementById('editPronouns').value);
+        formData.append('address', document.getElementById('editAddress').value);
+        formData.append('status', document.getElementById('editStatus').value);
+
+        // Add ValidID file if selected
+        const validIdFile = document.getElementById('editFileInput').files[0];
+        if (validIdFile) {
+            formData.append('ValidID', validIdFile);
+        }
         
         try {
             const response = await fetch('../php/CRUDClient/update_client.php', {
@@ -173,6 +205,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const data = await response.json();
+            console.log('Server response:', data); // Debug log
+            
             if (data.success) {
                 await fetchClients();
                 toggleModal(editClientModal);
@@ -185,6 +219,53 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Failed to update client');
         }
     });
+
+    // Add file upload preview for add form
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        previewFile(this, 'addValidIdPreview');
+    });
+
+    // Add file upload preview for edit form
+    document.getElementById('editFileInput').addEventListener('change', function(e) {
+        previewFile(this, 'currentValidId');
+    });
+
+    // File preview function
+    function previewFile(input, imgId) {
+        const file = input.files[0];
+        const fileLabel = input.closest('.file-upload');
+        const fileName = fileLabel.querySelector('.file-name');
+        const preview = document.getElementById(imgId);
+        
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!validTypes.includes(file.type)) {
+                alert('Please select a valid image file (JPG or PNG)');
+                input.value = '';
+                return;
+            }
+
+            if (file.size > maxSize) {
+                alert('File size must be less than 5MB');
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            fileName.textContent = file.name;
+            fileLabel.classList.add('has-file');
+        } else {
+            fileName.textContent = 'Upload Valid ID';
+            fileLabel.classList.remove('has-file');
+        }
+    }
 
     // Initial fetch
     fetchClients();
