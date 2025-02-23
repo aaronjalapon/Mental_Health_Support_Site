@@ -650,13 +650,15 @@ body {
   border-radius: 50px;
   text-align: center;
   width: 22rem;
-  height: auto; /* Changed from fixed height */
   min-height: 19rem;
-  padding: 2rem 1.5rem; /* Added padding */
+  padding: 2rem 1.5rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 1;
   transition: ease-in-out 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .testimony:hover {
@@ -674,6 +676,13 @@ body {
 .testimony p {
   font-size: 1.3rem;
   margin: 1rem 0; /* Adjusted margins */
+}
+
+.testimony .rating {
+  color: #FFD700;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  letter-spacing: 2px;
 }
 
 @media (max-width: 768px) {

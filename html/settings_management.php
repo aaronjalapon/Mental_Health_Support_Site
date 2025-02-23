@@ -61,26 +61,33 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 <div class="modal-overlay" id="testimonialForm">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h2>Add New Testimonial</h2>
+                            <h2 id="formTitle">Add New Testimonial</h2>
                             <span class="close-modal" id="closeTestimonialBtn">&times;</span>
                         </div>
                         <div class="modal-body">
                             <form id="addTestimonialForm">
+                                
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" class="form-input" id="clientName" 
                                            placeholder="Enter username (first name only)" required>
                                     <small class="form-hint">For privacy, use first name or nickname only</small>
                                 </div>
+
                                 <div class="form-group">
                                     <label class="form-label">Testimonial Content</label>
-                                    <textarea class="form-input" id="testimonialContent" rows="4" required></textarea>
+                                    <textarea class="form-input" id="testimonialContent" rows="4" required 
+                                        placeholder="Enter testimonial content (minimum 10 characters)"></textarea>
                                 </div>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Rating (1-5)</label>
-                                        <input type="number" class="form-input" id="rating" min="1" max="5" required>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="form-label">Rating</label>
+                                    <select class="form-input" id="rating" required>
+                                        <option value="5">★★★★★ (5)</option>
+                                        <option value="4">★★★★ (4)</option>
+                                        <option value="3">★★★ (3)</option>
+                                        <option value="2">★★ (2)</option>
+                                        <option value="1">★ (1)</option>
+                                    </select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Save Testimonial</button>

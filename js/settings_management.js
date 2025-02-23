@@ -48,97 +48,145 @@ document.addEventListener('DOMContentLoaded', function() {
     // Testimonials Management
     const testimonialForm = document.getElementById('testimonialForm');
     const addTestimonialBtn = document.getElementById('addTestimonialBtn');
-    const cancelTestimonialBtn = document.getElementById('cancelTestimonialBtn');
     const closeTestimonialBtn = document.getElementById('closeTestimonialBtn');
+    const cancelTestimonialBtn = document.getElementById('cancelTestimonialBtn');
     const addTestimonialForm = document.getElementById('addTestimonialForm');
+    const formTitle = document.getElementById('formTitle');
+    let editingId = null;
 
-    // Sample testimonials data
-    let testimonials = [
-        {
-            id: 1,
-            clientName: "John",
-            content: "Amazing therapy sessions!",
-            rating: 5
-        }
-    ];
-
-    // Toggle testimonial form
+    // Show form when clicking Add New Testimonial
     addTestimonialBtn.addEventListener('click', () => {
+        formTitle.textContent = 'Add New Testimonial';
+        editingId = null;
+        addTestimonialForm.reset();
         testimonialForm.style.display = 'flex';
     });
 
-    [cancelTestimonialBtn, closeTestimonialBtn].forEach(btn => {
-        if (btn) {
-            btn.addEventListener('click', () => {
-                testimonialForm.style.display = 'none';
-                addTestimonialForm.reset();
-            });
-        }
+    // Close form handlers
+    [closeTestimonialBtn, cancelTestimonialBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+            testimonialForm.style.display = 'none';
+            addTestimonialForm.reset();
+            editingId = null;
+        });
     });
 
-    // Update add testimonial button visibility
-    function updateAddTestimonialButtonState() {
-        addTestimonialBtn.style.display = testimonials.length >= 6 ? 'none' : 'block';
-    }
-
-    // Add formatUsername function
-    function formatUsername(username) {
-        // Remove any email format if entered
-        username = username.split('@')[0];
-        // Take only the first name if full name is entered
-        username = username.split(' ')[0];
-        // Capitalize first letter
-        return username.charAt(0).toUpperCase() + username.slice(1);
-    }
-
-    // Handle testimonial form submission
-    addTestimonialForm.addEventListener('submit', (e) => {
+    // Form submission handler
+    addTestimonialForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        if (testimonials.length >= 6) {
-            alert('Maximum of 6 testimonials reached. Please delete some to add more.');
-            return;
+        const formData = new FormData();
+        formData.append('username', document.getElementById('clientName').value);
+        formData.append('content', document.getElementById('testimonialContent').value);
+        formData.append('rating', document.getElementById('rating').value);
+        formData.append('action', editingId ? 'update' : 'create');
+        if (editingId) formData.append('id', editingId);
+
+        try {
+            const response = await fetch('../php/CRUDSettings/testimonial_functions.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                testimonialForm.style.display = 'none';
+                addTestimonialForm.reset();
+                editingId = null;
+                loadTestimonials();
+                alert(data.message);
+            } else {
+                alert(data.message || 'Failed to save testimonial');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to save testimonial');
         }
-
-        const username = formatUsername(document.getElementById('clientName').value);
-        
-        const newTestimonial = {
-            id: Date.now(),
-            clientName: username,
-            content: document.getElementById('testimonialContent').value,
-            rating: document.getElementById('rating').value
-        };
-
-        testimonials.push(newTestimonial);
-        updateTestimonialsTable();
-        updateAddTestimonialButtonState();
-        testimonialForm.style.display = 'none';
-        addTestimonialForm.reset();
     });
 
-    // Update testimonials table
-    function updateTestimonialsTable() {
-        const tbody = document.getElementById('testimonialsTableBody');
-        tbody.innerHTML = '';
+    // Edit testimonial function
+    window.editTestimonial = function(id) {
+        fetch(`../php/CRUDSettings/testimonial_functions.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.data) {
+                    formTitle.textContent = 'Edit Testimonial';
+                    // Populate the form with existing data
+                    document.getElementById('clientName').value = data.data.username;
+                    document.getElementById('testimonialContent').value = data.data.content;
+                    document.getElementById('rating').value = data.data.rating;
+                    editingId = id;
+                    testimonialForm.style.display = 'flex';
+                } else {
+                    throw new Error(data.message || 'Failed to load testimonial');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load testimonial: ' + error.message);
+            });
+    };
 
-        testimonials.forEach(testimonial => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${testimonial.clientName}</td>
-                <td>${testimonial.content}</td>
-                <td>${"★".repeat(testimonial.rating)}</td>
-                <td>
-                    <button class="btn btn-primary btn-sm" onclick="editTestimonial(${testimonial.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-secondary btn-sm" onclick="deleteTestimonial(${testimonial.id})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(row);
+    // Delete testimonial function
+    window.deleteTestimonial = function(id) {
+        if (!confirm('Are you sure you want to delete this testimonial?')) return;
+
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', id);
+
+        fetch('../php/CRUDSettings/testimonial_functions.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                loadTestimonials();
+                alert('Testimonial deleted successfully!');
+            } else {
+                alert(data.message || 'Failed to delete testimonial');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete testimonial');
         });
+    };
+
+    // Function to load and display testimonials
+    function loadTestimonials() {
+        fetch('../php/CRUDSettings/testimonial_functions.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const tbody = document.getElementById('testimonialsTableBody');
+                    tbody.innerHTML = '';
+                    
+                    data.data.forEach(item => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${item.username || 'Anonymous'}</td>
+                                <td>${item.content}</td>
+                                <td>${"★".repeat(item.rating)}</td>
+                                <td>
+                                    <button onclick="editTestimonial(${item.testimonial_id})" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteTestimonial(${item.testimonial_id})" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
+
+    // Load testimonials when page loads
+    loadTestimonials();
 
     // Word of the Day Management
     const wordForm = document.getElementById('wordForm');
@@ -227,30 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Initialize tables
-    updateTestimonialsTable();
     updateWordsTable();
-    updateAddTestimonialButtonState();
 
     // Make functions globally available
-    window.editTestimonial = (id) => {
-        const testimonial = testimonials.find(t => t.id === id);
-        if (testimonial) {
-            document.getElementById('clientName').value = testimonial.clientName;
-            document.getElementById('testimonialContent').value = testimonial.content;
-            document.getElementById('rating').value = testimonial.rating;
-            testimonialForm.style.display = 'flex';
-            testimonial._editing = true;
-        }
-    };
-
-    window.deleteTestimonial = (id) => {
-        if (confirm('Are you sure you want to delete this testimonial?')) {
-            testimonials = testimonials.filter(t => t.id !== id);
-            updateTestimonialsTable();
-            updateAddTestimonialButtonState();
-        }
-    };
-
     window.editWord = (id) => {
         const word = words.find(w => w.id === id);
         if (word) {

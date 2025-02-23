@@ -91,6 +91,22 @@ CREATE TABLE `therapist_availability` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `testimonials`
+--
+
+CREATE TABLE `testimonials` (
+  `testimonial_id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `rating` tinyint(1) NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`testimonial_id`),
+  FOREIGN KEY (`client_id`) REFERENCES `client`(`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
