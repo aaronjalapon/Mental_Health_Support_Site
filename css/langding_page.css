@@ -649,7 +649,7 @@ body {
   border: 1px solid white;
   border-radius: 50px;
   text-align: center;
-  width: 22rem;
+  width: 23rem;
   min-height: 19rem;
   padding: 2rem 1.5rem;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
@@ -924,43 +924,53 @@ body {
   margin: 4rem 0;
   padding: 0 2rem;
   will-change: transform;
+  cursor: grab;
 }
 
 .testimony {
-  flex: 0 0 300px; /* Fixed width for each testimony */
+  flex: 0 0 auto;
+  width: 300px;
   min-width: 300px;
-  margin: 0;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.testimony:hover {
+  transform: translateY(-5px);
+  border-color: #1e9160;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
   width: 40px;
   height: 40px;
+  border: none;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  font-size: 20px;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
   z-index: 2;
+  transition: all 0.3s ease;
 }
 
 .carousel-btn:hover {
-  background: #1e916066;
-}
-.carousel-btn:active {
-  background: #11553766;
+  background: rgba(30, 145, 96, 0.4);
 }
 
 .carousel-btn.prev {
-  left: 0;
+  left: 10px;
 }
 
 .carousel-btn.next {
-  right: 0;
+  right: 10px;
 }
 
 .carousel-dots {
