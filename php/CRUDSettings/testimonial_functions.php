@@ -12,6 +12,16 @@ require_once __DIR__ . '/../db.php';
 // Basic CRUD functions
 function createTestimonial($username, $content, $rating) {
     global $conn;
+    
+    // Check if the number of testimonials is less than or equal to 6
+    $countQuery = "SELECT COUNT(*) as count FROM testimonials";
+    $countResult = $conn->query($countQuery);
+    $count = $countResult->fetch_assoc()['count'];
+    
+    if ($count >= 6) {
+        return false; // Limit reached
+    }
+
     $stmt = $conn->prepare("INSERT INTO testimonials (username, content, rating) VALUES (?, ?, ?)");
     $stmt->bind_param("ssi", $username, $content, $rating);
     return $stmt->execute();
@@ -91,7 +101,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
                     if (createTestimonial($username, $content, $rating)) {
                         echo json_encode(['status' => 'success', 'message' => 'Testimonial added successfully']);
                     } else {
-                        throw new Exception('Failed to add testimonial');
+                        throw new Exception('Failed to add testimonial or limit reached');
                     }
                     break;
 
