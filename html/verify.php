@@ -4,14 +4,14 @@
 
     // Redirect if not logged in
     if(!isset($_SESSION['unique_id'])){
-        header('Location: ../html/login.html');
+        header('Location: ../html/login.php');
         exit();
     }
 
     $unique_id = $_SESSION['unique_id'];
     
     // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT verification_status FROM users WHERE unique_id = ?");
+    $stmt = $conn->prepare("SELECT verification_status FROM client WHERE unique_id = ?");
     $stmt->bind_param("i", $unique_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -32,7 +32,7 @@
         $otp = $_POST['otp1'] . $_POST['otp2'] . $_POST['otp3'] . $_POST['otp4'] . $_POST['otp5'] . $_POST['otp6'];
         
         // Verify OTP against the stored value in database
-        $stmt = $conn->prepare("SELECT otp FROM users WHERE unique_id = ?");
+        $stmt = $conn->prepare("SELECT otp FROM client WHERE unique_id = ?");
         $stmt->bind_param("i", $unique_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -40,12 +40,12 @@
         
         if ($result->num_rows > 0 && $otp === $row['otp']) {
             // Update verification status in the database
-            $stmt = $conn->prepare("UPDATE users SET verification_status = '1' WHERE unique_id = ?");
+            $stmt = $conn->prepare("UPDATE client SET verification_status = '1' WHERE unique_id = ?");
             $stmt->bind_param("i", $unique_id);
             $stmt->execute();
 
             // Optionally, clear the OTP from database after successful verification
-            $stmt = $conn->prepare("UPDATE users SET otp = NULL WHERE unique_id = ?");
+            $stmt = $conn->prepare("UPDATE client SET otp = NULL WHERE unique_id = ?");
             $stmt->bind_param("i", $unique_id);
             $stmt->execute();
 

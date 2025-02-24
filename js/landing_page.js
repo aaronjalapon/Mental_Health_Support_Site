@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Handle auth button click
   authButton.addEventListener('click', function() {
       if (authButton.textContent === 'Log In') {
-          window.location.href = '/html/login.html';
+          window.location.href = '/html/login.php';
       } else {
           logout();
       }
@@ -246,7 +246,7 @@ function handleLogout(event) {
                 }
                 
                 // Redirect to landing page
-                window.location.href = '/index.html';
+                window.location.href = '/index.php';
             } else {
                 throw new Error(data.message || 'Logout failed');
             }
@@ -255,7 +255,7 @@ function handleLogout(event) {
             console.error('Logout error:', error);
             alert('Logout failed. Please try again.');
             // Redirect anyway as fallback
-            window.location.href = '/index.html';
+            window.location.href = '/index.php';
         });
 }
 

@@ -1,3 +1,11 @@
+<?php
+// Simple check if user is already logged in
+if(isset($_COOKIE['user_logged'])) {
+    header("Location: /index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +26,7 @@
         
         <h2 class="login-into-account">Login into account</h2>
         
-        <form id="loginForm" action="">
+        <form id="loginForm" action="/php/login.php" method="POST" autocomplete="off">
             <div class="input-fields">
                 
                 <div class="form-group">
@@ -36,7 +44,7 @@
         
         <div class="dont-have-an-account-parent">
             <b class="dont-have-an">Don't have an account?</b>
-            <b class="register-here"><a href="/html/signup.html">Register Here</a></b>
+            <b class="register-here"><a href="/html/signup.php">Register Here</a></b>
         </div>
     </div>
 

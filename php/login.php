@@ -22,7 +22,7 @@ try {
         if (password_verify($password, ADMIN_PASSWORD_HASH)) {
             $_SESSION['unique_id'] = 'admin';
             $_SESSION['email'] = ADMIN_USERNAME;
-            $_SESSION['username'] = 'Administrator';
+            $_SESSION['username'] = 'admin';
             $_SESSION['role'] = 'admin';
             echo json_encode(['status' => 'success', 'role' => 'admin', 'message' => 'Admin Login Successful!']);
             exit();
@@ -30,7 +30,7 @@ try {
     }
 
     // Rest of your existing authentication code...
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? OR username = ?");
+    $stmt = $conn->prepare("SELECT * FROM client WHERE email = ? OR username = ?");
     $stmt->bind_param("ss", $login_input, $login_input);
     $stmt->execute();
     $result = $stmt->get_result();

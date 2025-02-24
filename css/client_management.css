@@ -40,10 +40,6 @@ textarea.form-input {
     composes: status-badge;
 }
 
-.sidebar-menu a.active {
-    background-color: rgba(255, 255, 255, 0.2);
-    font-weight: 500;
-}
 
 .sidebar-menu a.active:hover {
     background-color: rgba(255, 255, 255, 0.25);
@@ -147,4 +143,28 @@ textarea.form-input {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+}
+
+
+/* Status badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-approved {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-blocked {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.status-pending, .status-onleave {
+    background-color: #fff3e0;
+    color: #ef6c00;
 }

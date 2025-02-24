@@ -18,7 +18,7 @@ $OTP = $otp1.$otp2.$otp3.$otp4.$otp5.$otp6;
 
 if(!empty($OTP)){
     // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM users WHERE unique_id = ? AND otp = ?");
+    $stmt = $conn->prepare("SELECT * FROM client WHERE unique_id = ? AND otp = ?");
     $stmt->bind_param("is", $unique_id, $OTP);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -28,7 +28,7 @@ if(!empty($OTP)){
         $row = $result->fetch_assoc();
         
         // Update user verification status
-        $stmt2 = $conn->prepare("UPDATE users SET verification_status = '1', otp = '0' WHERE unique_id = ?");
+        $stmt2 = $conn->prepare("UPDATE client SET verification_status = '1', otp = '0' WHERE unique_id = ?");
         $stmt2->bind_param("i", $unique_id);
         
         if($stmt2->execute()){

@@ -1,3 +1,15 @@
+<?php
+session_start();
+// Redirect if already logged in
+if(isset($_SESSION['unique_id'])) {
+    if($_SESSION['role'] === 'admin') {
+        header("Location: ../html/admin_panel.php");
+    } else {
+        header("Location: /index.php");
+    }
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +101,7 @@
 
         <div class="already-have-an-account-parent">
             <span class="already-have-an">Already have an Account?</span>
-            <span class="sign-in"><a href="/html/login.html">Sign In</a></span>
+            <span class="sign-in"><a href="/html/login.php">Sign In</a></span>
         </div>
     </div>
     <script src="../js/signup.js"></script>

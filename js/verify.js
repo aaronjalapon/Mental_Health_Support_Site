@@ -48,7 +48,7 @@ form.onsubmit = (e) => {
                     // Redirect after successful verification
                     setTimeout(() => {
                         alert("You are now Successfully Register\nPlease login your account.");
-                        window.location.href = "/index.html";
+                        window.location.href = "/index.php";
                     }, 1500);
                 } else {
                     // Show error in alert instead of error text
