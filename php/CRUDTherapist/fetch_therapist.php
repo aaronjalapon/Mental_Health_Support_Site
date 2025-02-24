@@ -28,8 +28,9 @@ try {
     $therapists = [];
     while($row = $result->fetch_assoc()) {
         $therapists[] = [
-            'id' => $row['therapist_id'],
-            'name' => htmlspecialchars($row['first_name'] . ' ' . $row['last_name']),
+            'therapist_id' => (int)$row['therapist_id'], // Ensure ID is numeric
+            'firstName' => htmlspecialchars($row['first_name']),
+            'lastName' => htmlspecialchars($row['last_name']),
             'specialization' => htmlspecialchars($row['specialization']),
             'experience' => (int)$row['experience_years'],
             'email' => htmlspecialchars($row['email']),
@@ -49,6 +50,8 @@ try {
             ]
         ];
     }
+    
+    error_log("Fetched therapists data: " . json_encode($therapists));
     
     header('Content-Type: application/json');
     echo json_encode($therapists);

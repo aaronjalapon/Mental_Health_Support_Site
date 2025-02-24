@@ -108,41 +108,50 @@ function redirectToLogin() {
       </div>
     </section>
     <section class="testimonials">
-      <div class="client-testimonies">
+    <div class="client-testimonies">
         <h2>Client Testimonies</h2>
-      </div>
-      <div class="carousel-container">
+    </div>
+    <div class="carousel-container">
         <button class="carousel-btn prev">❮</button>
-        <div class="testimonial-cards">
-          <div class="testimony">
-            <h2>Anonymous 1</h2>
-            <p>Relax and recharge with our curated meditations.</p>
-          </div>
-          <div class="testimony">
-            <h2>Anonymous 2</h2>
-            <p>Connect with mental health professionals and resources.</p>
-          </div>
-          <div class="testimony">
-            <h2>Anonymous 3</h2>
-            <p>Join a safe and supportive online space for peer support.</p>
-          </div>
-          <div class="testimony">
-            <h2>Anonymous 4</h2>
-            <p>Relax and recharge with our curated meditations.</p>
-          </div>
-          <div class="testimony">
-            <h2>Anonymous 5</h2>
-            <p>Connect with mental health professionals and resources.</p>
-          </div>
-          <div class="testimony">
-            <h2>Anonymous 6</h2>
-            <p>Join a safe and supportive online space for peer support.</p>
-          </div>
+        <div class="testimonial-cards" id="testimonialContainer">
+            <?php
+            require_once 'php/CRUDSettings/testimonial_functions.php';
+            $testimonials = getPublicTestimonials();
+            
+            if (!empty($testimonials)): 
+                foreach ($testimonials as $testimonial): ?>
+                    <div class="testimony">
+                        <h2><?php echo htmlspecialchars($testimonial['username']); ?></h2>
+                        <p><?php echo htmlspecialchars($testimonial['content']); ?></p>
+                        <div class="rating">
+                            <?php echo str_repeat('★', intval($testimonial['rating'])); ?>
+                        </div>
+                    </div>
+                <?php endforeach;
+            endif; ?>
+            
+            <!-- Fallback static testimonials if no dynamic ones are loaded -->
+            <?php if (empty($testimonials)): ?>
+                <div class="testimony">
+                    <h2>John D.</h2>
+                    <p>Found great support here. The community is amazing!</p>
+                    <div class="rating">★★★★★</div>
+                </div>
+                <div class="testimony">
+                    <h2>Sarah M.</h2>
+                    <p>The therapists are very professional and caring.</p>
+                    <div class="rating">★★★★★</div>
+                </div>
+                <div class="testimony">
+                    <h2>Michael R.</h2>
+                    <p>Life-changing experience. Highly recommended!</p>
+                    <div class="rating">★★★★★</div>
+                </div>
+            <?php endif; ?>
         </div>
         <button class="carousel-btn next">❯</button>
-        <div class="carousel-dots"></div>
-      </div>
-    </section>
+    </div>
+</section>
   </main>
   <footer class="footer">
     <p>© 2025 MindCare. All rights reserved. | <a href="#">Privacy Policy</a></p>
@@ -151,8 +160,3 @@ function redirectToLogin() {
   
 </body>
 </html>
-
-
-
-
-

@@ -2,6 +2,8 @@
 session_start();
 include_once '../db.php';
 
+header('Content-Type: application/json');
+
 if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['error' => 'Unauthorized']);
     exit();
@@ -9,7 +11,24 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
+// Validate required fields
+if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['email'])) {
+    echo json_encode(['error' => 'Missing required fields']);
+    exit();
+}
+
 try {
+    // Check if email already exists
+    $stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE email = ?");
+    $stmt->bind_param("s", $data['email']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        echo json_encode(['error' => 'Email already exists']);
+        exit();
+    }
+
     $conn->begin_transaction();
 
     // Insert therapist basic info
@@ -17,6 +36,8 @@ try {
         first_name, last_name, specialization, experience_years,
         email, phone, bio, status
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+    $status = $data['status'] ?? 'Active';
 
     $stmt->bind_param("sssissss",
         $data['firstName'],
@@ -26,7 +47,7 @@ try {
         $data['email'],
         $data['phone'],
         $data['bio'],
-        $data['status']
+        $status
     );
 
     if(!$stmt->execute()) {
