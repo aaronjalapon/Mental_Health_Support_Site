@@ -22,7 +22,7 @@ function redirectToLogin() {
   <title>MindCare - Mental Health Support</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/langding_page.css">
+  <link rel="stylesheet" href="css/landing_page.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -108,6 +108,7 @@ function redirectToLogin() {
       </div>
     </section>
     <section class="testimonials">
+<<<<<<< HEAD
     <div class="client-testimonies">
         <h2>Client Testimonies</h2>
     </div>
@@ -148,10 +149,53 @@ function redirectToLogin() {
                     <div class="rating">★★★★★</div>
                 </div>
             <?php endif; ?>
+=======
+        <div class="client-testimonies">
+            <h2>Client Testimonies</h2>
+>>>>>>> d0a6f2a11916bb6135df556092d70219966c23f3
         </div>
-        <button class="carousel-btn next">❯</button>
-    </div>
-</section>
+        <div class="carousel-container">
+            <button class="carousel-btn prev">❮</button>
+            <div class="testimonial-cards" id="testimonialContainer">
+                <?php
+                require_once 'php/CRUDSettings/testimonial_functions.php';
+                $testimonials = getPublicTestimonials();
+                
+                if (!empty($testimonials)): 
+                    foreach ($testimonials as $testimonial): ?>
+                        <div class="testimony">
+                            <h2><?php echo htmlspecialchars($testimonial['username']); ?></h2>
+                            <p><?php echo htmlspecialchars($testimonial['content']); ?></p>
+                            <div class="rating">
+                                <?php 
+                                $rating = intval($testimonial['rating']);
+                                echo str_repeat('★', $rating);
+                                ?>
+                            </div>
+                        </div>
+                    <?php endforeach;
+                else: ?>
+                    <!-- Fallback testimonials if no dynamic ones are available -->
+                    <div class="testimony">
+                        <h2>HearthFelt</h2>
+                        <p>Found great support here. The community is amazing!</p>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <div class="testimony">
+                        <h2>WarmIronheart</h2>
+                        <p>The therapists are very professional and caring.</p>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                    <div class="testimony">
+                        <h2>Peacefinder</h2>
+                        <p>Life-changing experience. Highly recommended!</p>
+                        <div class="rating">★★★★★</div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <button class="carousel-btn next">❯</button>
+        </div>
+    </section>
   </main>
   <footer class="footer">
     <p>© 2025 MindCare. All rights reserved. | <a href="#">Privacy Policy</a></p>

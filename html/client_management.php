@@ -64,48 +64,48 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         <span class="close-modal">&times;</span>
                     </div>
                     <div class="modal-body">
-                        <form id="addClientForm">
+                        <form id="addClientForm" enctype="multipart/form-data">
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="firstName">First Name</label>
-                                    <input type="text" class="form-input" id="firstName" placeholder="John" required>
+                                    <input type="text" class="form-input" id="firstName" name="firstName" placeholder="John" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="lastName">Last Name</label>
-                                    <input type="text" class="form-input" id="lastName" placeholder="Doe" required>
+                                    <input type="text" class="form-input" id="lastName" name="lastName" placeholder="Doe" required>
                                 </div>
                             </div>
 
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="username">Username</label>
-                                    <input type="text" class="form-input" id="username" placeholder="johndoe123" required>
+                                    <input type="text" class="form-input" id="username" name="username" placeholder="johndoe123" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" class="form-input" id="email" placeholder="johndoe@email.com" required>
+                                    <input type="email" class="form-input" id="email" name="email" placeholder="johndoe@email.com" required>
                                 </div>
                             </div>
 
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input type="password" class="form-input" id="password" placeholder="password123" required>
+                                    <input type="password" class="form-input" id="password" name="password" placeholder="password123" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="confirmPassword">Confirm Password</label>
-                                    <input type="password" class="form-input" id="confirmPassword" placeholder="password123" required>
+                                    <input type="password" class="form-input" id="confirmPassword" name="confirmPassword" placeholder="password123" required>
                                 </div>
                             </div>
 
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="contact">Contact Number</label>
-                                    <input type="tel" class="form-input" id="contact" placeholder="09123456789" required>
+                                    <input type="tel" class="form-input" id="contact" name="contact" placeholder="09123456789" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="pronouns">Pronouns</label>
-                                    <select class="form-input" id="pronouns" required>
+                                    <select class="form-input" id="pronouns" name="pronouns" required>
                                         <option value="">Select pronouns</option>
                                         <option value="He/Him/His">He/Him/His</option>
                                         <option value="She/Her/Hers">She/Her/Hers</option>
@@ -117,11 +117,11 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 
                             <div class="form-group">
                                 <label for="address">Address</label>
-                                <input type="text" class="form-input" id="address" placeholder="Matina, Davao City" required>
+                                <input type="text" class="form-input" id="address" name="address" placeholder="Matina, Davao City" required>
                             </div>
 
                             <div class="form-group file-upload">
-                                <input type="file" id="fileInput" accept="image/jpeg,image/png" required>
+                                <input type="file" id="fileInput" name="fileInput" accept="image/jpeg,image/png" required>
                                 <label for="fileInput" class="file-label">Choose Image</label>
                                 <span class="file-name">Upload Valid ID</span>
                             </div>
@@ -164,37 +164,37 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <div class="modal-body">
                     <form id="editClientForm">
-                        <input type="hidden" id="editClientId">
+                        <input type="hidden" id="editClientId" name="editClientId">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="editFirstName">First Name</label>
-                                <input type="text" class="form-input" id="editFirstName" required>
+                                <input type="text" class="form-input" id="editFirstName" name="editFirstName" required>
                             </div>
                             <div class="form-group">
                                 <label for="editLastName">Last Name</label>
-                                <input type="text" class="form-input" id="editLastName" required>
+                                <input type="text" class="form-input" id="editLastName" name="editLastName" required>
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="editUsername">Username</label>
-                                <input type="text" class="form-input" id="editUsername" required>
+                                <input type="text" class="form-input" id="editUsername" name="editUsername" required>
                             </div>
                             <div class="form-group">
                                 <label for="editEmail">Email</label>
-                                <input type="email" class="form-input" id="editEmail" required>
+                                <input type="email" class="form-input" id="editEmail" name="editEmail" required>
                             </div>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="editContact">Contact Number</label>
-                                <input type="tel" class="form-input" id="editContact" required>
+                                <input type="tel" class="form-input" id="editContact" name="editContact" required>
                             </div>
                             <div class="form-group">
                                 <label for="editPronouns">Pronouns</label>
-                                <select class="form-input" id="editPronouns" required="">
+                                <select class="form-input" id="editPronouns" name="editPronouns" required="">
                                     <option value="He/Him/His">He/Him/His</option>
                                     <option value="She/Her/Hers">She/Her/Hers</option>
                                     <option value="Others">Others</option>
@@ -205,12 +205,12 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 
                         <div class="form-group">
                             <label for="editAddress">Address</label>
-                            <input type="text" class="form-input" id="editAddress" required>
+                            <input type="text" class="form-input" id="editAddress" name="editAddress" required>
                         </div>
 
                         <div class="form-group">
                             <label for="editStatus">Status</label>
-                            <select class="form-input" id="editStatus" required>
+                            <select class="form-input" id="editStatus" name="editStatus" required>
                                 <option value="approved">Approved</option>
                                 <option value="blocked">Blocked</option>
                                 <option value="pending">Pending</option>

@@ -605,7 +605,7 @@ body {
 }
 
 .client-testimonies {
-  padding: 8rem 4rem 1rem 8rem;
+  padding: 5rem 4rem 1rem 8rem;
   font-size: 3.125rem;
   text-align: left;
   align-items: center;
@@ -929,8 +929,9 @@ body {
 
 .testimony {
   flex: 0 0 auto;
-  width: 300px;
-  min-width: 300px;
+  width: 400px;
+  height: 25rem;
+  min-width: 400px;
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
