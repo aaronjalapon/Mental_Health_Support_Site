@@ -84,62 +84,7 @@
             </aside>
 
             <section class="posts" aria-label="Community Posts">
-                <article class="post2">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <i class="circle-user-solid-1-icon fa-solid fa-circle-user"></i>
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <button class="ellipsis-solid-1">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <i class="heart-regular-1-icon fa-regular fa-heart"></i>
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <i class="heart-regular-1-icon fa-regular fa-comment"></i>
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article class="post1">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <i class="circle-user-solid-1-icon fa-solid fa-circle-user"></i>
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <button class="ellipsis-solid-1">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <i class="heart-regular-1-icon fa-solid fa-heart"></i>
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <i class="heart-regular-1-icon fa-regular fa-comment"></i>
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                <!-- Posts will be dynamically inserted here by JavaScript -->
             </section>
 
             <aside class="wordoftheday">
@@ -157,6 +102,65 @@
            
         </main>
     </div>
-	<script src="/js/landing_page.js"></script>
+
+    <!-- Add the modal template -->
+    <template id="post-modal-template">
+        <div class="post-modal">
+            <div class="post-modal-content">
+                <h3>Create a Post</h3>
+                <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+                <div class="modal-actions">
+                    <button id="submit-post" class="btn-primary">Post</button>
+                    <button id="cancel-post" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Add the post template -->
+    <template id="post-template">
+        <article class="post2">
+            <div class="post-header">
+                <div class="post-info">
+                    <i class="circle-user-solid-1-icon fa-solid fa-circle-user"></i>
+                    <b class="username"></b>
+                    <div class="div post-date"></div>
+                </div>
+                <div class="post-options">
+                    <button class="options-btn">
+                        <i class="fas fa-ellipsis"></i>
+                    </button>
+                    <div class="options-dropdown">
+                        <button class="report-btn">Report</button>
+                    </div>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="post-text"></div>
+            </div>
+            <div class="post-actions">
+                <div class="actions-group">
+                    <button class="heart-btn">
+                        <i class="fa-regular fa-heart"></i>
+                        <span class="heart-count">0</span>
+                    </button>
+                    <button class="comment-btn">
+                        <i class="fa-regular fa-comment"></i>
+                        <span>0 comments</span>
+                    </button>
+                </div>
+            </div>
+            <div class="comments-section" style="display: none;">
+                <div class="comments-list"></div>
+                <div class="add-comment">
+                    <textarea placeholder="Add a comment"></textarea>
+                    <button class="submit-comment">Comment</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="/js/landing_page.js"></script>
+    <script src="/js/community.js"></script>
 </body>
 </html>

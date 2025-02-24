@@ -115,11 +115,11 @@ function redirectToLogin() {
         <button class="carousel-btn prev">❮</button>
         <div class="testimonial-cards" id="testimonialContainer">
             <?php
-            require_once 'php/CRUDSettings/testimonial_functions.php';
-            $testimonials = getPublicTestimonials();
+            // require_once 'php/CRUDSettings/testimonial_functions.php';
+            // $testimonials = getPublicTestimonials();
             
-            if (!empty($testimonials)): 
-                foreach ($testimonials as $testimonial): ?>
+            // if (!empty($testimonials)): 
+            //     foreach ($testimonials as $testimonial): ?>
                     <div class="testimony">
                         <h2><?php echo htmlspecialchars($testimonial['username']); ?></h2>
                         <p><?php echo htmlspecialchars($testimonial['content']); ?></p>
@@ -127,8 +127,8 @@ function redirectToLogin() {
                             <?php echo str_repeat('★', intval($testimonial['rating'])); ?>
                         </div>
                     </div>
-                <?php endforeach;
-            endif; ?>
+                <?php //endforeach;
+            //endif; ?>
             
             <!-- Fallback static testimonials if no dynamic ones are loaded -->
             <?php if (empty($testimonials)): ?>
