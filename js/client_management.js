@@ -220,6 +220,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Add Client form submission handler
+    addClientForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validate password match
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        const formData = new FormData();
+        
+        // Add form fields to FormData
+        formData.append('firstName', document.getElementById('firstName').value);
+        formData.append('lastName', document.getElementById('lastName').value);
+        formData.append('username', document.getElementById('username').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('password', password);
+        formData.append('contact', document.getElementById('contact').value);
+        formData.append('pronouns', document.getElementById('pronouns').value);
+        formData.append('address', document.getElementById('address').value);
+        
+        // Add ValidID file
+        const validIdFile = document.getElementById('fileInput').files[0];
+        if (validIdFile) {
+            formData.append('ValidID', validIdFile);
+        }
+
+        try {
+            const response = await fetch('../php/CRUDClient/add_client.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                await fetchClients(); // Refresh the client list
+                toggleModal(clientFormModal);
+                addClientForm.reset();
+                alert('Client added successfully');
+            } else {
+                alert(data.error || 'Failed to add client');
+            }
+        } catch (error) {
+            console.error('Error adding client:', error);
+            alert('Failed to add client');
+        }
+    });
+
     // Add file upload preview for add form
     document.getElementById('fileInput').addEventListener('change', function(e) {
         previewFile(this, 'addValidIdPreview');
