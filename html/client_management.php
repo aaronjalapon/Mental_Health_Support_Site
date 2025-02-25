@@ -109,7 +109,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                         <option value="">Select pronouns</option>
                                         <option value="He/Him/His">He/Him/His</option>
                                         <option value="She/Her/Hers">She/Her/Hers</option>
-                                        <option value="Others">Others</option>
+                                        <option value="They/Them/Theirs">They/Them/Theirs</option>
                                         <option value="I prefer not to say">I prefer not to say</option>
                                     </select>
                                 </div>
@@ -197,7 +197,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                 <select class="form-input" id="editPronouns" name="editPronouns" required="">
                                     <option value="He/Him/His">He/Him/His</option>
                                     <option value="She/Her/Hers">She/Her/Hers</option>
-                                    <option value="Others">Others</option>
+                                    <option value="They/Them/Theirs">They/Them/Theirs</option>
                                     <option value="I prefer not to say">I prefer not to say</option>
                                 </select>
                             </div>

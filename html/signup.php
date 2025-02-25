@@ -74,12 +74,12 @@ if(isset($_SESSION['unique_id'])) {
                     </div>
                     <div class="form-group">
                         <label for="pronouns">Pronouns:</label>
-                        <select id="pronouns" name="Pronouns" required>
+                        <select id="pronouns" name="pronouns" required>
                             <option value="">Select pronouns</option>
-                            <option value="he/him/his">He/Him/His</option>
-                            <option value="she/her/hers">She/Her/Hers</option>
-                            <option value="they/them/theirs">They/Them/Theirs</option>
-                            <option value="i_prefer_not_to_say">I prefer not to say</option>
+                            <option value="He/Him/His">He/Him/His</option>
+                            <option value="She/Her/Hers">She/Her/Hers</option>
+                            <option value="They/Them/Theirs">They/Them/Theirs</option>
+                            <option value="I prefer not to say">I prefer not to say</option>
                         </select>
                     </div>
                 </div>

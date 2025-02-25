@@ -23,7 +23,7 @@ try {
         Address,
         ValidID     /* Added ValidID field */
         FROM client 
-        WHERE Role = 'user'
+        WHERE Role = 'client'
         ORDER BY RegisterDate DESC";
         
     $result = $conn->query($query);

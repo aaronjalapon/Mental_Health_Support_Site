@@ -33,7 +33,7 @@ try {
     $pronouns = filter_input(INPUT_POST, 'pronouns', FILTER_SANITIZE_STRING);
     $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
     $status = "Pending";
-    $Role = 'user';
+    $Role = 'client';
     $verification_status = '1'; // Auto-verified since admin is creating
 
     // Validate required fields
