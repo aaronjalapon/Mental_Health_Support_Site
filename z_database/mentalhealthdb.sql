@@ -36,7 +36,7 @@ CREATE TABLE `client` (
   `password` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `contactNumber` varchar(15) NOT NULL,
-  `Pronouns` enum('He/Him/His','She/Her/Hers','Others','I prefer not to say') NOT NULL,
+  `Pronouns` enum('He/Him/His','She/Her/Hers','They/Them/Theirs','I prefer not to say') NOT NULL,
   `Address` text NOT NULL,
   `ValidID` varchar(255) NOT NULL,
   `otp` int(50) NOT NULL,

@@ -32,7 +32,7 @@ try {
     $pronouns = isset($_POST['pronouns']) && in_array($_POST['pronouns'], [
         'He/Him/His',
         'She/Her/Hers',
-        'Others',
+        'They/Them/Theirs',
         'I prefer not to say'
     ]) ? $_POST['pronouns'] : 'I prefer not to say';
 
