@@ -601,7 +601,7 @@ body {
   background-position: center;
   background-color: #fff;
   background-size: cover;
-  box-shadow: inset 0px 4px 4px 800px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0px 4px 4px 800px rgba(0, 0, 0, 0.8);
 }
 
 .client-testimonies {
@@ -929,12 +929,11 @@ body {
 
 .testimony {
   flex: 0 0 auto;
-  width: 400px;
-  height: 25rem;
+  width: 360px;
   min-width: 400px;
   background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
+  border: 1px solid white
+  border-radius: 30px;
   padding: 2rem;
   margin: 1rem 0;
   transition: all 0.3s ease;
