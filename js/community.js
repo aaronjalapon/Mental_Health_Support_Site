@@ -10,7 +10,32 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCreatePost();
     setupHeartReaction();
     setupComments();
+    setupSidebarToggle();
 });
+
+function setupSidebarToggle() {
+    const toggleBtn = document.querySelector('.sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        // Toggle icon between bars and times
+        const icon = toggleBtn.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // Close sidebar when clicking overlay
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        const icon = toggleBtn.querySelector('i');
+        icon.classList.add('fa-bars');
+        icon.classList.remove('fa-times');
+    });
+}
 
 // Post creation
 function setupCreatePost() {
@@ -148,6 +173,9 @@ function renderPosts(append = false) {
     const postsContainer = document.querySelector('.posts');
     const postsToShow = posts.slice(0, currentPage * postsPerPage);
     
+    // Store create post button if it exists
+    const createPostBtn = postsContainer.querySelector('.create-post-btn');
+    
     const postsHTML = postsToShow.map(post => `
         <article class="post2" data-post-id="${post.id}">
             <div class="post-header">
@@ -200,7 +228,16 @@ function renderPosts(append = false) {
         // Append new posts
         postsContainer.insertAdjacentHTML('beforeend', postsHTML);
     } else {
-        postsContainer.innerHTML = postsHTML;
+        // Clear container but preserve create post button if it exists
+        postsContainer.innerHTML = '';
+        
+        // Re-add create post button if it existed
+        if (createPostBtn) {
+            postsContainer.appendChild(createPostBtn);
+        }
+        
+        // Add posts
+        postsContainer.insertAdjacentHTML('beforeend', postsHTML);
     }
 
     // Add loading indicator if there are more posts
@@ -259,14 +296,34 @@ document.addEventListener('click', (e) => {
         if (content) {
             const postIndex = posts.findIndex(p => p.id.toString() === postId);
             if (postIndex !== -1) {
-                posts[postIndex].comments.push({
+                const newComment = {
                     id: Date.now(),
                     content,
                     author: 'Current User',
                     timestamp: new Date()
-                });
+                };
+                posts[postIndex].comments.push(newComment);
+                
+                // Update comment count
+                const commentCount = post.querySelector('.comment-btn span');
+                commentCount.textContent = `${posts[postIndex].comments.length} comments`;
+                
+                // Add new comment to DOM
+                const commentsList = post.querySelector('.comments-list');
+                const commentHTML = `
+                    <div class="comment">
+                        <div class="comment-header">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="comment-author">${newComment.author}</span>
+                            <span class="comment-date">${formatDate(newComment.timestamp)}</span>
+                        </div>
+                        <div class="comment-content">${newComment.content}</div>
+                    </div>
+                `;
+                commentsList.insertAdjacentHTML('beforeend', commentHTML);
+                
+                // Clear textarea
                 textarea.value = '';
-                renderPosts();
             }
         }
     }
