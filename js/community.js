@@ -352,11 +352,87 @@ document.addEventListener('click', (e) => {
 });
 
 function handleReport(postId) {
-    // You can customize this function to handle reports
-    alert('Post reported. Our moderators will review it.');
-    // Close the dropdown
-    const dropdown = document.querySelector(`[data-post-id="${postId}"] .options-dropdown`);
-    dropdown.classList.remove('show');
+    const reportModal = `
+        <div class="report-modal">
+            <div class="report-modal-content">
+                <h3>Report Post</h3>
+                <form id="report-form">
+                    <div class="form-group">
+                        <label for="report-reason">Reason for reporting:</label>
+                        <select id="report-reason" required>
+                            <option value="">Select a reason</option>
+                            <option value="harassment">Harassment or Bullying</option>
+                            <option value="harmful_content">Harmful Content</option>
+                            <option value="misinformation">Misinformation</option>
+                            <option value="hate_speech">Hate Speech</option>
+                            <option value="violence">Violence</option>
+                            <option value="spam">Spam</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-description">Additional details:</label>
+                        <textarea id="report-description" placeholder="Please provide more details about your report..." rows="4"></textarea>
+                    </div>
+                    <div class="report-actions">
+                        <button type="button" class="btn-secondary" id="cancel-report">Cancel</button>
+                        <button type="submit" class="btn-primary" id="submit-report">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', reportModal);
+    setupReportModalListeners(postId);
+}
+
+function setupReportModalListeners(postId) {
+    const modal = document.querySelector('.report-modal');
+    const form = document.getElementById('report-form');
+    const cancelBtn = document.getElementById('cancel-report');
+
+    cancelBtn.addEventListener('click', () => {
+        modal.remove();
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const reason = document.getElementById('report-reason').value;
+        const description = document.getElementById('report-description').value;
+
+        if (!reason) {
+            alert('Please select a reason for reporting');
+            return;
+        }
+
+        submitReport(postId, reason, description);
+        modal.remove();
+    });
+}
+
+function submitReport(postId, reason, description) {
+    // Here you would typically send the report to your backend
+    console.log('Report submitted:', { postId, reason, description });
+    
+    // Show confirmation to user
+    alert('Thank you for your report. Our moderators will review it shortly.');
+    
+    // Store report in localStorage for demo purposes
+    const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+    reports.push({
+        id: Date.now(),
+        postId,
+        reason,
+        description,
+        timestamp: new Date(),
+        status: 'pending'
+    });
+    localStorage.setItem('reports', JSON.stringify(reports));
 }
 
 // Initialize with sample data
