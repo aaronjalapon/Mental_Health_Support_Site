@@ -59,14 +59,11 @@ function redirectToLogin() {
           <!-- Replace login button with user dropdown -->
           <button id="btn-login" class="auth-button">Log In</button>
           <div class="user-dropdown" style="display: none;">
-
-            <button class="dropdown-btn"> Welcome, Username</button>
+            <button class="dropdown-btn"> Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></button>
             <div class="dropdown-logout">
               <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
               <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>
             </div>
-
-
           </div>
         </nav>
       </header>

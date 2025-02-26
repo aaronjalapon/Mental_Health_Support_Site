@@ -19,11 +19,11 @@
     if($result->num_rows > 0){
         $row = $result->fetch_assoc();
         if($row['verification_status'] == '1'){
-            header('Location: ../html/login.html');
+            header('Location: ../html/login.php');
             exit();
         }
     } else {
-        header('Location: login.html');
+        header('Location: login.php');
         exit();
     }
 
@@ -32,7 +32,7 @@
         $otp = $_POST['otp1'] . $_POST['otp2'] . $_POST['otp3'] . $_POST['otp4'] . $_POST['otp5'] . $_POST['otp6'];
         
         // Verify OTP against the stored value in database
-        $stmt = $conn->prepare("SELECT otp FROM client WHERE unique_id = ?");
+        $stmt = $conn->prepare("SELECT otp, username FROM client WHERE unique_id = ?");
         $stmt->bind_param("i", $unique_id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -49,8 +49,11 @@
             $stmt->bind_param("i", $unique_id);
             $stmt->execute();
 
-            // Redirect to index page after successful verification
-            header('Location: ../index.html');
+            // Set the username session variable
+            $_SESSION['username'] = $row['username'];
+
+            // Redirect to login page after successful verification
+            header('Location: ../html/login.php');
             exit();
         } else {
             $error = "Invalid OTP. Please try again.";

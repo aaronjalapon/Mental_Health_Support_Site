@@ -1,4 +1,7 @@
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', function() {
+    window.scrollTo(0, 0);  
     // Add null checks before accessing elements
     const burgerMenu = document.getElementById("burgerMenu");
     const navLinks = document.getElementById("navLinks");
@@ -301,3 +304,4 @@ function handleLogout(event) {
             window.location.href = '/index.php';
         });
 }
+
