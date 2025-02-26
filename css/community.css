@@ -21,6 +21,7 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+<<<<<<< HEAD
 /* Remove these old header-related styles */
 .logo-serrenity-1-1-icon,
 .mindspace,
@@ -51,6 +52,21 @@ body {
     z-index: 1000;
 }
 
+=======
+/* Add the navbar styles from landing page */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 4rem;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
 .logo {
     font-family: 'Potta One', cursive;
     display: flex;
@@ -265,6 +281,7 @@ body {
     color: var(--primary-color);
 }
 .plus-icon {
+    color: #1e9160;
     width: 20px;
     position: relative;
     height: 20px;
@@ -272,6 +289,8 @@ body {
     flex-shrink: 0;
 }
 .create-a-community-parent {
+    color: black;
+    text-decoration: none;
     align-self: stretch;
     height: 40px;
     display: flex;
@@ -282,11 +301,10 @@ body {
     box-sizing: border-box;
     gap: 8px;
 }
-.join-a-community {
-    position: relative;
-    white-space: pre-wrap;
-}
+
 .join-a-community-wrapper {
+    color: black;
+    text-decoration: none;
     align-self: stretch;
     height: 44px;
     display: flex;
@@ -302,7 +320,6 @@ body {
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 16px;
 }
 .resources-wrapper {
     width: 269px;
@@ -315,11 +332,17 @@ body {
     text-align: left;
     font-size: 25px;
     color: var(--primary-color);
+<<<<<<< HEAD
 }
 .about-community {
     margin: 0;
+=======
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
 }
+
 .about-community-mindspace-wrapper {
+    color: black;
+    text-decoration: none;
     width: 273px;
     display: flex;
     flex-direction: row;
@@ -370,6 +393,8 @@ body {
     font-size: 16px;
 }
 .circle-user-solid-1-icon {
+    font-size: 48px;
+    color: #1E9160;
     width: 48px;
     position: relative;
     height: 48px;
@@ -403,19 +428,30 @@ body {
     padding: 0px 10px;
     gap: 8px;
 }
-.vector-icon1 {
-    width: 22.8px;
-    position: relative;
-    height: 5.9px;
-}
+
 .ellipsis-solid-1 {
-    width: 23.6px;
+    font-size: 23px;
+    width: 24px;
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
+    border: none;
+    background: white;  
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    outline: none; 
+    transition: ease-in-out 0.1s;
+}
+
+.ellipsis-solid-1:hover{
+    border-radius: 20px;
+    background: hsl(0, 0%, 80%);
+}
+.ellipsis-solid-1:active, .ellipsis-solid-1:focus{
+    outline: none; 
+    border-radius: 20px;
+    background: hsl(0, 0%, 90%);
 }
 .post-header {
     align-self: stretch;
@@ -448,6 +484,7 @@ body {
     max-height: 100%;
 }
 .heart-regular-1-icon {
+    font-size: 26px;
     width: 26px;
     position: relative;
     height: 26px;
@@ -455,6 +492,7 @@ body {
     flex-shrink: 0;
 }
 .heart {
+    color: #999999;
     width: 40px;
     position: relative;
     display: flex;
@@ -473,6 +511,7 @@ body {
     gap: 8px;
 }
 .comments {
+    color: #999999;
     width: 78px;
     position: relative;
     display: flex;
@@ -551,6 +590,8 @@ body {
     gap: 6px;
 }
 .posts {
+    display: flex;
+    flex-direction: column;
     width: 618px;
     position: relative;
     height: 691px;
@@ -661,11 +702,15 @@ body {
     align-items: flex-start;
     justify-content: flex-start;
     position: relative;
-    gap: 52px;
+    gap: 60px;
     text-align: left;
     font-size: 18px;
     color: var(--text-dark);
+<<<<<<< HEAD
     margin-left: 273px; /* Width of the sidebar */
+=======
+    margin-left: 330px; /* Width of the sidebar */
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
     padding: 20px;
 }
 .community-chat {
@@ -683,6 +728,7 @@ body {
     color: var(--text-light);
     font-family: Poppins;
     padding-top: 65px; /* Add space for fixed header */
+<<<<<<< HEAD
 }
 
 /* Accessibility improvements */
@@ -738,5 +784,54 @@ img {
         top: auto;
         z-index: 1000;
     }
+=======
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
 }
 
+/* Add hover states for interactive elements */
+.home-parent a:hover,
+.create-a-community-parent:hover,
+.join-a-community-wrapper:hover, 
+.about-community-mindspace-wrapper:hover {
+    opacity: 0.8;
+    background-color: #bbf1da;
+}
+.create-a-community-parent:active,.create-a-community-parent:focus,
+.join-a-community-wrapper:active, .join-a-community-wrapper:focus,
+.about-community-mindspace-wrapper:active, .about-community-mindspace-wrapper:focus {
+    outline: none;
+    background-color: #67e0ab;
+}
+/* Add focus styles for better accessibility */
+.rectangle-parent:focus {
+    outline: 2px solid var(--text-light);
+    outline-offset: 2px;
+}
+
+/* Add responsive design breakpoints */
+@media (max-width: 768px) {
+    .frame-parent {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .main {
+        flex-direction: column;
+        margin-left: 0;
+        margin-bottom: 80px; /* Add space for mobile sidebar */
+    }
+
+    .posts,
+    .wordoftheday {
+        width: 100%;
+    }
+
+    .sidebar {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        top: auto;
+        z-index: 1000;
+    }
+}

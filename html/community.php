@@ -8,7 +8,10 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 
 ?>
 <!DOCTYPE html>
+<<<<<<< HEAD
 <!DOCTYPE html>
+=======
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -94,6 +97,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                     </div>
                 </div>
             </aside>
+<<<<<<< HEAD
 
             <section class="posts" aria-label="Community Posts">
                 <article class="post2">
@@ -172,5 +176,83 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 	<script src="/js/landing_page.js"></script>
 </body>
 </html>
+=======
+>>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
 
-<html>
+            <section class="posts" aria-label="Community Posts">
+                <article class="post2">
+                    <div class="post-header">
+                        <div class="post-info">
+                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
+                            <b class="username">Username</b>
+                            <div class="div">01/01/25</div>
+                        </div>
+                        <div class="ellipsis-solid-1">
+                            <img class="vector-icon1" alt="" src="Vector.svg">
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="lorem-ipsum-dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
+                    </div>
+                    <div class="post-actions">
+                        <img class="post-actions-child" alt="" src="Line 3.svg">
+                        <div class="actoins-group">
+                            <div class="heart-action">
+                                <img class="heart-regular-1-icon" alt="" src="heart-regular 1.svg">
+                                <div class="heart">heart</div>
+                            </div>
+                            <div class="comments-action">
+                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
+                                <div class="comments">comments</div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <article class="post1">
+                    <div class="post-header">
+                        <div class="post-info">
+                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
+                            <b class="username">Username</b>
+                            <div class="div">01/01/25</div>
+                        </div>
+                        <div class="ellipsis-solid-1">
+                            <img class="vector-icon1" alt="" src="Vector.svg">
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="lorem-ipsum-dolor1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
+                    </div>
+                    <div class="post-actions">
+                        <img class="post-actions-child" alt="" src="Line 3.svg">
+                        <div class="actoins-group">
+                            <div class="heart-action">
+                                <img class="heart-regular-1-icon" alt="" src="heart-solid 1.svg">
+                                <div class="heart">heart</div>
+                            </div>
+                            <div class="comments-action">
+                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
+                                <div class="comments">comments</div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <aside class="wordoftheday">
+                <div class="wordoftheday-header">
+                    <h2 class="word-of-the">Word of the Day</h2>
+                    <time class="div2" datetime="2025-01-01">01/01/25</time>
+                    <hr class="wordoftheday-header-child">
+                </div>
+                <p class="wordofday">Mindfulness</p>
+                <div class="definition">
+                    <h3 class="definition1">DEFINITION:</h3>
+                    <p class="the-practice-of">-The practice of maintaining a nonjudgmental state of heightened awareness.</p>
+                </div>
+            </aside>
+           
+        </main>
+    </div>
+	<script src="/js/landing_page.js"></script>
+</body>
+</html>
