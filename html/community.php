@@ -9,9 +9,12 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 ?>
 <!DOCTYPE html>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!DOCTYPE html>
 =======
 >>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
+=======
+>>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -64,98 +67,30 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
         </nav>
     </header>
     
+    <div class="sidebar-overlay"></div>
+    
     <div class="community-chat">
         <main class="main">
             <aside class="sidebar">
-                <div class="sidebar-inner">
-                    <div class="frame-group">
-                        <div class="frame-container">
-                            <div class="communities-wrapper">
-                                <b class="about-us">Communities</b>
-                            </div>
-                            <div class="create-a-community-parent">
-                                <div class="about-us">Create a Community </div>
-                                <img class="plus-icon" alt="" src="Plus.svg">
-                            </div>
-                            <div class="join-a-community-wrapper">
-                                <div class="join-a-community">Join a Community  </div>
-                            </div>
-                        </div>
-                        <div class="frame-div">
-                            <div class="resources-wrapper">
-                                <b class="about-us">Resources</b>
-                            </div>
-                            <div class="about-community-mindspace-wrapper">
-                                <div class="about-us">
-                                    <a href="#" class="about-community">About Community MindSpace</a>
-                                </div>
-                            </div>
-                            <div class="about-community-mindspace-wrapper">
-                                <a href="#">Policies</a>
-                            </div>
-                        </div>
+                <div class="frame-div">
+                    <div class="resources-wrapper">
+                        <b>Resources</b>
                     </div>
+                    <a href="#" class="about-community-mindspace-wrapper">
+                        <p>About Community MindSpace</p>
+                    </a>
+                    <a href="#" class="about-community-mindspace-wrapper">
+                        <p>Policies</p>
+                    </a>
                 </div>
             </aside>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 
             <section class="posts" aria-label="Community Posts">
-                <article class="post2">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <div class="ellipsis-solid-1">
-                            <img class="vector-icon1" alt="" src="Vector.svg">
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <img class="heart-regular-1-icon" alt="" src="heart-regular 1.svg">
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article class="post1">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <div class="ellipsis-solid-1">
-                            <img class="vector-icon1" alt="" src="Vector.svg">
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <img class="heart-regular-1-icon" alt="" src="heart-solid 1.svg">
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                <!-- Posts will be dynamically inserted here by JavaScript -->
             </section>
 
             <aside class="wordoftheday">
@@ -173,86 +108,77 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
            
         </main>
     </div>
+<<<<<<< HEAD
 	<script src="/js/landing_page.js"></script>
 </body>
 </html>
 =======
 >>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
+=======
+>>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 
-            <section class="posts" aria-label="Community Posts">
-                <article class="post2">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <div class="ellipsis-solid-1">
-                            <img class="vector-icon1" alt="" src="Vector.svg">
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <img class="heart-regular-1-icon" alt="" src="heart-regular 1.svg">
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article class="post1">
-                    <div class="post-header">
-                        <div class="post-info">
-                            <img class="circle-user-solid-1-icon" alt="" src="circle-user-solid 1.svg">
-                            <b class="username">Username</b>
-                            <div class="div">01/01/25</div>
-                        </div>
-                        <div class="ellipsis-solid-1">
-                            <img class="vector-icon1" alt="" src="Vector.svg">
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="lorem-ipsum-dolor1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ac nunc condimentum, rhoncus neque id, euismod tellus. Nunc nec nisl in tellus hendrerit elementum quis et leo.</div>
-                    </div>
-                    <div class="post-actions">
-                        <img class="post-actions-child" alt="" src="Line 3.svg">
-                        <div class="actoins-group">
-                            <div class="heart-action">
-                                <img class="heart-regular-1-icon" alt="" src="heart-solid 1.svg">
-                                <div class="heart">heart</div>
-                            </div>
-                            <div class="comments-action">
-                                <img class="heart-regular-1-icon" alt="" src="comment-regular 1.svg">
-                                <div class="comments">comments</div>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            </section>
+    <!-- Add the modal template -->
+    <template id="post-modal-template">
+        <div class="post-modal">
+            <div class="post-modal-content">
+                <h3>Create a Post</h3>
+                <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+                <div class="modal-actions">
+                    <button id="submit-post" class="btn-primary">Post</button>
+                    <button id="cancel-post" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </template>
 
-            <aside class="wordoftheday">
-                <div class="wordoftheday-header">
-                    <h2 class="word-of-the">Word of the Day</h2>
-                    <time class="div2" datetime="2025-01-01">01/01/25</time>
-                    <hr class="wordoftheday-header-child">
+    <!-- Add the post template -->
+    <template id="post-template">
+        <article class="post2">
+            <div class="post-header">
+                <div class="post-info">
+                    <i class="circle-user-solid-1-icon fa-solid fa-circle-user"></i>
+                    <b class="username"></b>
+                    <div class="div post-date"></div>
                 </div>
-                <p class="wordofday">Mindfulness</p>
-                <div class="definition">
-                    <h3 class="definition1">DEFINITION:</h3>
-                    <p class="the-practice-of">-The practice of maintaining a nonjudgmental state of heightened awareness.</p>
+                <div class="post-options">
+                    <button class="options-btn">
+                        <i class="fas fa-ellipsis"></i>
+                    </button>
+                    <div class="options-dropdown">
+                        <button class="report-btn">Report</button>
+                    </div>
                 </div>
-            </aside>
-           
-        </main>
-    </div>
-	<script src="/js/landing_page.js"></script>
+            </div>
+            <div class="post-content">
+                <div class="post-text"></div>
+            </div>
+            <div class="post-actions">
+                <div class="actions-group">
+                    <button class="heart-btn">
+                        <i class="fa-regular fa-heart"></i>
+                        <span class="heart-count">0</span>
+                    </button>
+                    <button class="comment-btn">
+                        <i class="fa-regular fa-comment"></i>
+                        <span>0 comments</span>
+                    </button>
+                </div>
+            </div>
+            <div class="comments-section" style="display: none;">
+                <div class="comments-list"></div>
+                <div class="add-comment">
+                    <textarea placeholder="Add a comment"></textarea>
+                    <button class="submit-comment">Comment</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <button class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script src="/js/landing_page.js"></script>
+    <script src="/js/community.js"></script>
 </body>
 </html>
