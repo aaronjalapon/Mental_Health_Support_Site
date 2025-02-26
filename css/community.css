@@ -21,27 +21,6 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-/* Remove these old header-related styles */
-.logo-serrenity-1-1-icon,
-.mindspace,
-.logo-serrenity-1-1-parent,
-.group-wrapper,
-.home,
-.about-us,
-.vector-icon,
-.self-help-parent,
-.home-parent,
-.account-name,
-.rectangle-parent,
-.frame-parent,
-.header {
-    /* Delete these style blocks */
-}
-
-=======
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 /* Add the navbar styles from landing page */
 .navbar {
     display: flex;
@@ -55,24 +34,6 @@ body {
     z-index: 1000;
 }
 
-<<<<<<< HEAD
-=======
-/* Add the navbar styles from landing page */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 4rem;
-    background: linear-gradient(90deg, #6ee4c1, #1e9160);
-    color: #fff;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
->>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
-=======
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 .logo {
     font-family: 'Potta One', cursive;
     display: flex;
@@ -284,15 +245,6 @@ body {
     text-align: left;
     font-size: 25px;
     color: var(--primary-color);
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-.about-community {
-    margin: 0;
-=======
->>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
-=======
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 }
 
 .about-community-mindspace-wrapper {
@@ -654,15 +606,7 @@ body {
     text-align: left;
     font-size: 18px;
     color: var(--text-dark);
-<<<<<<< HEAD
-<<<<<<< HEAD
-    margin-left: 273px; /* Width of the sidebar */
-=======
     margin-left: 330px; /* Width of the sidebar */
->>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
-=======
-    margin-left: 330px; /* Width of the sidebar */
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
     padding: 20px;
     overflow-y: auto; /* Add scroll to main container */
 }
@@ -681,76 +625,10 @@ body {
     color: var(--text-light);
     font-family: Poppins;
     padding-top: 65px; /* Add space for fixed header */
-<<<<<<< HEAD
-<<<<<<< HEAD
-}
-
-/* Accessibility improvements */
-a:focus,
-button:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-/* Make images responsive */
-img {
-    max-width: 100%;
-    height: auto;
-=======
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 }
 
 /* Add hover states for interactive elements */
 .home-parent a:hover,
-<<<<<<< HEAD
-.create-a-community-parent:hover,
-.join-a-community-wrapper:hover {
-    opacity: 0.8;
-    text-decoration: underline;
-}
-
-/* Add focus styles for better accessibility */
-.rectangle-parent:focus {
-    outline: 2px solid var(--text-light);
-    outline-offset: 2px;
-}
-
-/* Add responsive design breakpoints */
-@media (max-width: 768px) {
-    .frame-parent {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .main {
-        flex-direction: column;
-        margin-left: 0;
-        margin-bottom: 80px; /* Add space for mobile sidebar */
-    }
-
-    .posts,
-    .wordoftheday {
-        width: 100%;
-    }
-
-    .sidebar {
-        position: fixed;
-        width: 100%;
-        height: auto;
-        bottom: 0;
-        top: auto;
-        z-index: 1000;
-    }
-=======
->>>>>>> c71376b6b6a2be8b5290e553121158f63c249d0a
-}
-
-/* Add hover states for interactive elements */
-.home-parent a:hover,
-.create-a-community-parent:hover,
-.join-a-community-wrapper:hover, 
-=======
->>>>>>> 53b2f8a8b17a20c5a7d9ab6baebace11fc62d03e
 .about-community-mindspace-wrapper:hover {
     opacity: 0.8;
     background-color: #bbf1da;
@@ -1190,6 +1068,49 @@ img {
 
 .sidebar-toggle i {
     font-size: 20px;
+}
+
+/* New Dropdown Menu Styles */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+}
+
+.dropdown-logout {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-logout a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-logout a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
 }
 
 /* Modify the existing media query */

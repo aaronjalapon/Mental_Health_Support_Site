@@ -305,3 +305,17 @@ function handleLogout(event) {
         });
 }
 
+
+function redirectToCommunity() {
+  fetch('/php/check_session.php')
+    .then(response => response.json())
+    .then(data => {
+      if (data.loggedIn) {
+        window.location.href = '/html/community.php';
+      } else {
+        window.location.href = '/html/login.php';
+        alert('Please log in first.');
+      }
+    })
+    .catch(error => console.error('Error:', error));
+}
