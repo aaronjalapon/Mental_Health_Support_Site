@@ -37,7 +37,7 @@ if(isset($_COOKIE['user_logged'])) {
                     <input type="password" id="password" name="password" placeholder="Password" required>
                     <i class="toggle-password fa-regular fa-eye" onclick="togglePassword('password')"></i>
                 </div>
-                <b class="forgot-password"><a href="verify.php" id="forgotPassworLink">Forgot password?</a></b>
+                <b class="forgot-password"><a href="#" id="forgotPasswordLink">Forgot password?</a></b>
             </div>
             <button type="submit" class="login-btn">Login</button>
         </form>

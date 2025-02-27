@@ -1,6 +1,5 @@
 const otp_fields = document.querySelectorAll('.otp_field');
 
-
 // Focus first input on load
 otp_fields[0].focus();
 
@@ -31,7 +30,6 @@ otp_fields.forEach((field, index) => {
 
 const form = document.querySelector('.form form');
 const submitBtn = form.querySelector('.submit .button');
-
 
 // Form submission
 form.onsubmit = (e) => {
@@ -66,3 +64,58 @@ form.onsubmit = (e) => {
     xhr.send(formData);
 }
 
+// Resend OTP functionality
+const resendLink = document.getElementById('resendCode');
+const resendTimer = document.getElementById('resendTimer');
+let timeLeft = 0;
+
+function startResendTimer() {
+    resendLink.style.display = 'none';
+    resendTimer.style.display = 'block';
+    timeLeft = 30;
+    
+    const timer = setInterval(() => {
+        resendTimer.textContent = `Resend in ${timeLeft}s`;
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+            clearInterval(timer);
+            resendLink.style.display = 'block';
+            resendTimer.style.display = 'none';
+        }
+    }, 1000);
+}
+
+// Start timer on page load
+startResendTimer();
+
+resendLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    resendLink.textContent = 'Sending...';
+    
+    fetch('../php/resend_otp.php', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response data:', data);
+        
+        if (data.status === 'success') {
+            alert('OTP has been sent to your email');
+            startResendTimer();
+        } else {
+            throw new Error(data.message || 'Failed to send OTP');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to send OTP. Please try again.');
+    })
+    .finally(() => {
+        resendLink.textContent = 'Resend verification code';
+    });
+});

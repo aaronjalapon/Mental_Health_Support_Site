@@ -5,7 +5,7 @@ body {
     justify-content: flex-end; /* Change from center to flex-end */
     align-items: center;
     min-height: 100vh;
-    background-image: url(/images/nature-bg.png);
+    background-image: url(/images/nature-bg.webp);
     background-size: cover;
     padding-right: 100px; /* Add padding to prevent sticking to the edge */
 }

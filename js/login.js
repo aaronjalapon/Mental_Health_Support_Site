@@ -20,8 +20,11 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'success') {
-            alert(data.message); // Show success message
+        if (data.status === 'pending_verification') {
+            alert(data.message);
+            window.location.href = data.redirect;
+        } else if (data.status === 'success') {
+            alert(data.message);
             if (data.role === 'admin') {
                 window.location.href = '../html/admin_panel.php';
             } else {
@@ -82,9 +85,26 @@ resetPasswordForm.addEventListener('submit', function (e) {
         return;
     }
 
-    // Simulate sending reset email
-    alert(`A reset link has been sent to ${resetEmail}.`);
-    forgotPasswordModal.classList.add('hidden');
+    const formData = new FormData();
+    formData.append('email', resetEmail);
+
+    fetch('../php/send_reset_otp.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            window.location.href = '../html/verify.php';
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
 });
 
 // File Input Handling
