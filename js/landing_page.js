@@ -1,4 +1,7 @@
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', function() {
+    window.scrollTo(0, 0);  
     // Add null checks before accessing elements
     const burgerMenu = document.getElementById("burgerMenu");
     const navLinks = document.getElementById("navLinks");
@@ -300,4 +303,19 @@ function handleLogout(event) {
             // Redirect anyway as fallback
             window.location.href = '/index.php';
         });
+}
+
+
+function redirectToCommunity() {
+  fetch('/php/check_session.php')
+    .then(response => response.json())
+    .then(data => {
+      if (data.loggedIn) {
+        window.location.href = '/html/community.php';
+      } else {
+        window.location.href = '/html/login.php';
+        alert('Please log in first.');
+      }
+    })
+    .catch(error => console.error('Error:', error));
 }

@@ -1,12 +1,16 @@
 <?php
 session_start();
-// Check if user is logged in and is admin
-if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
+// Check if user is logged in (but allow both admin and client)
+if(!isset($_SESSION['unique_id'])) {
     header("Location: ../html/login.php");
     exit();
 }
 
+// Optional: You can add role-specific features
+$isAdmin = $_SESSION['role'] === 'admin';
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +27,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 <body>
     <header class="navbar">
         <div class="logo">
-            <a href="../index.html">
+            <a href="../index.php">
                 <img class="logo-mindspace-1-1-icon" alt="" src="../images/Logo.svg">
                 <h1>MindSpace</h1>
             </a>
@@ -34,8 +38,8 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             <span class="bar"></span>
         </button>
         <nav class="nav-links" id="navLinks">
-            <a id="home" href="../index.html">Home</a>
-            <a id="about_us" href="../index.html#self-help">About us</a>
+            <a id="home" href="../index.php">Home</a>
+            <a id="about_us" href="../index.php#self-help">About us</a>
             <div class="dropdown">
                 <button class="dropbtn">
                     Self-Help
@@ -51,7 +55,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             </div>
             <button id="btn-login" class="auth-button">Log In</button>
             <div class="user-dropdown" style="display: none;">
-                <button class="dropdown-btn">Welcome, Username</button>
+                <button class="dropdown-btn">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></button>
                 <div class="dropdown-logout">
                     <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
                     <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>

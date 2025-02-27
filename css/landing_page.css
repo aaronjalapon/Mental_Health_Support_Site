@@ -274,7 +274,7 @@ body {
 /* Hero Section */
 .hero {
   text-align: center;
-  background-image: url(/images/Consult.png);
+  background-image: url(/images/Consult.webp);
   background-position: 75% 35%;
   background-repeat: no-repeat;
   background-color: #fff;
@@ -596,7 +596,7 @@ body {
 
 .testimonials{
   height: 810px;
-  background-image: url(/images/sunset.jpg);
+  background-image: url(/images/sunset.webp);
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fff;

@@ -39,20 +39,58 @@ try {
         $row = $result->fetch_assoc();
         
         if (password_verify($password, $row['password'])) {
-            if ($row['verification_status'] == '1') {
-                $_SESSION['unique_id'] = $row['unique_id'];
-                $_SESSION['email'] = $row['email'];
-                $_SESSION['firstName'] = $row['firstName'];
-                $_SESSION['lastName'] = $row['lastName'];
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['role'] = $row['Role'];
+            // Check verification status first
+            if ($row['verification_status'] != '1') {
+                // User account is not verified yet
                 
-                echo json_encode(['status' => 'success', 'role' => 'user', 'message' => 'Login Successful!']);
-            } else {
-                $_SESSION['email'] = $row['email'];
-                $_SESSION['otp'] = $row['otp'];
-                echo json_encode(['status' => 'error', 'message' => 'Please verify your email first!']);
+                // Check if there's a valid OTP for verification
+                if ($row['otp'] !== NULL && $row['otp'] !== '0') {
+                    // User has a pending OTP verification
+                    $_SESSION['unique_id'] = $row['unique_id'];
+                    $_SESSION['email'] = $row['email'];
+                    $_SESSION['otp'] = $row['otp'];
+                    echo json_encode([
+                        'status' => 'pending_verification',
+                        'message' => 'Please complete your email verification first.',
+                        'redirect' => '../html/verify.php'
+                    ]);
+                } else {
+                    // No OTP exists but verification status is still 0
+                    // Generate a new OTP and redirect to verification
+                    $otp = mt_rand(111111, 999999);
+                    
+                    // Update the OTP in the database
+                    $update_stmt = $conn->prepare("UPDATE client SET otp = ? WHERE unique_id = ?");
+                    $update_stmt->bind_param("si", $otp, $row['unique_id']);
+                    $update_stmt->execute();
+                    $update_stmt->close();
+                    
+                    // Set session variables for verification
+                    $_SESSION['unique_id'] = $row['unique_id'];
+                    $_SESSION['email'] = $row['email'];
+                    $_SESSION['otp'] = $otp;
+                    
+                    // You should also send the OTP via email here
+                    // sendOTPEmail($row['email'], $otp);
+                    
+                    echo json_encode([
+                        'status' => 'pending_verification',
+                        'message' => 'Please verify your email. A new OTP has been sent.',
+                        'redirect' => '../html/verify.php'
+                    ]);
+                }
+                exit();
             }
+            
+            // Account is verified, proceed with login
+            $_SESSION['unique_id'] = $row['unique_id'];
+            $_SESSION['email'] = $row['email'];
+            $_SESSION['firstName'] = $row['firstName'];
+            $_SESSION['lastName'] = $row['lastName'];
+            $_SESSION['username'] = $row['username'];
+            $_SESSION['role'] = $row['Role'];
+            
+            echo json_encode(['status' => 'success', 'role' => 'user', 'message' => 'Login Successful!']);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
         }
