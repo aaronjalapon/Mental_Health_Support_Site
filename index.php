@@ -108,7 +108,6 @@ function redirectToLogin() {
       </div>
     </section>
     <section class="testimonials">
-<<<<<<< HEAD
     <div class="client-testimonies">
         <h2>Client Testimonies</h2>
     </div>
@@ -149,10 +148,9 @@ function redirectToLogin() {
                     <div class="rating">★★★★★</div>
                 </div>
             <?php endif; ?>
-=======
         <div class="client-testimonies">
             <h2>Client Testimonies</h2>
->>>>>>> d0a6f2a11916bb6135df556092d70219966c23f3
+
         </div>
         <div class="carousel-container">
             <button class="carousel-btn prev">❮</button>

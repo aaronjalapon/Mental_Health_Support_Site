@@ -1,0 +1,639 @@
+:root {
+    --primary-color: #2a9d8f;
+    --primary-hover: #1f776d;
+    --secondary-color: #4a5568;
+    --success-color: #2f855a;
+    --error-color: #e53e3e;
+    --border-color: #e2e8f0;
+    --text-color: #2d3748;
+    --background-color: #f7fafc;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+.page-container {
+    padding-top: 85px; /* Increased padding to create space below navbar */
+    min-height: 100vh;
+    background-color: #dcfce7; /* Match the background color from landing page */
+}
+
+.booking-container {
+    max-width: 1200px;
+    margin: 100px auto 2rem;
+    padding: 3rem;
+    background: white;
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+}
+
+.booking-content {
+    margin-top: 2rem;
+}
+
+/* Booking Steps */
+.booking-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    position: relative;
+    padding: 0 2rem;
+}
+
+.booking-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.step-text {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.step.active .step-text {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Search and Filter Section */
+.search-section {
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    font-size: 1rem;
+}
+
+.search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+}
+
+.filter-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-tag {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-tag:hover,
+.filter-tag.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Therapist Grid */
+.therapists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.therapist-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+.therapist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.therapist-card.selected {
+    border-color: var(--primary-color);
+    background: rgba(30, 145, 96, 0.05);
+}
+
+/* Calendar Section - Updated */
+.calendar-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.calendar-grid {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    padding: 0.75rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-header button:hover {
+    background-color: rgba(42, 157, 143, 0.1);
+    transform: scale(1.1);
+}
+
+.calendar-header button:active {
+    transform: scale(0.95);
+}
+
+#currentMonth {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.calendar-body {
+    padding: 0.5rem;
+}
+
+.calendar {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.calendar-header-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    background: var(--background-color);
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.calendar-header-days div {
+    padding: 0.5rem;
+}
+
+.calendar-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 8px;
+    opacity: 1;
+    position: relative;
+}
+
+.calendar-day.available:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.calendar-day.selected {
+    background-color: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: var(--shadow-sm);
+}
+
+.calendar-day:not(.empty):hover {
+    background-color: rgba(42, 157, 143, 0.1);
+}
+
+.calendar-day.empty {
+    cursor: default;
+    background: none;
+    border: none;
+    pointer-events: none;
+}
+
+.calendar-day.today {
+    background-color: rgba(42, 157, 143, 0.1);
+    font-weight: bold;
+}
+
+.calendar-day.available {
+    border: 1px solid var(--primary-color);
+}
+
+.calendar-day[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--border-color);
+}
+
+/* Time Slots - Updated */
+.time-slots {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    margin-top: 2rem;
+    min-height: 200px;
+    display: block !important;
+}
+
+.time-slots h3 {
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 12px;
+    min-height: 100px;
+}
+
+.time-slot {
+    padding: 0.75rem;
+    text-align: center;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.time-slot:hover:not(.unavailable) {
+    background: rgba(42, 157, 143, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.time-slot.selected {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.time-slot.unavailable {
+    background: var(--background-color);
+    color: var(--secondary-color);
+    cursor: not-allowed;
+    opacity: 0.6;
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--border-color);
+}
+
+/* Booking Summary */
+.booking-summary {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.summary-content {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--background-color);
+    border-radius: 12px;
+}
+
+.summary-content p {
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+.summary-row .label {
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+/* Action Buttons */
+.booking-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 0.875rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: white;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background: var(--background-color);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Success Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    animation: modalFade 0.3s ease-out;
+}
+
+.success-animation {
+    color: var(--success-color);
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-container {
+        padding-top: 65px;
+    }
+
+    .booking-container {
+        margin: 80px 1rem 1rem;
+        padding: 1.5rem;
+    }
+
+    .booking-steps {
+        padding: 0 1rem;
+    }
+
+    .step-text {
+        font-size: 0.8rem;
+    }
+
+    .therapists-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .time-slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .booking-summary {
+        padding: 1rem;
+    }
+
+    .summary-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .calendar-day {
+        font-size: 0.875rem;
+    }
+
+    .therapist-filters {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .therapist-list {
+        grid-template-columns: 1fr;
+    }
+
+    #sessionDetailsForm {
+        padding: 1rem;
+    }
+}
+
+/* Form Elements */
+input, select, textarea {
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+    outline: none;
+}
+
+/* Therapist Selection Section */
+.therapist-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: 12px;
+}
+
+.therapist-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Session Details Form */
+#sessionDetailsForm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--background-color);
+    border-radius: 16px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Step Visibility */
+.booking-step {
+    display: none;
+}
+
+.booking-step.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* Remove these conflicting rules */
+/* .booking-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+} */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
