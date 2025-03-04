@@ -652,7 +652,7 @@ input[type="file"] {
     .login-btn, .register-btn {
         position: relative;
         top: 0;
-        left: 10%;
+        left: 1%;
         width: 100%;
         max-width: 351px;
         margin: 20px auto;

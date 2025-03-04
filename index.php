@@ -104,54 +104,8 @@ function redirectToLogin() {
       </div>
     </section>
     <section class="testimonials">
-<<<<<<< HEAD
-    <div class="client-testimonies">
-        <h2>Client Testimonies</h2>
-    </div>
-    <div class="carousel-container">
-        <button class="carousel-btn prev">❮</button>
-        <div class="testimonial-cards" id="testimonialContainer">
-            <?php
-            // require_once 'php/CRUDSettings/testimonial_functions.php';
-            // $testimonials = getPublicTestimonials();
-            
-            // if (!empty($testimonials)): 
-            //     foreach ($testimonials as $testimonial): ?>
-                    <div class="testimony">
-                        <h2><?php echo htmlspecialchars($testimonial['username']); ?></h2>
-                        <p><?php echo htmlspecialchars($testimonial['content']); ?></p>
-                        <div class="rating">
-                            <?php echo str_repeat('★', intval($testimonial['rating'])); ?>
-                        </div>
-                    </div>
-                <?php //endforeach;
-            //endif; ?>
-            
-            <!-- Fallback static testimonials if no dynamic ones are loaded -->
-            <?php if (empty($testimonials)): ?>
-                <div class="testimony">
-                    <h2>John D.</h2>
-                    <p>Found great support here. The community is amazing!</p>
-                    <div class="rating">★★★★★</div>
-                </div>
-                <div class="testimony">
-                    <h2>Sarah M.</h2>
-                    <p>The therapists are very professional and caring.</p>
-                    <div class="rating">★★★★★</div>
-                </div>
-                <div class="testimony">
-                    <h2>Michael R.</h2>
-                    <p>Life-changing experience. Highly recommended!</p>
-                    <div class="rating">★★★★★</div>
-                </div>
-            <?php endif; ?>
         <div class="client-testimonies">
             <h2>Client Testimonies</h2>
-
-=======
-        <div class="client-testimonies">
-            <h2>Client Testimonies</h2>
->>>>>>> 0e4beef1459d369ac546dfd2582575b889648ebf
         </div>
         <div class="carousel-container">
             <button class="carousel-btn prev">❮</button>
