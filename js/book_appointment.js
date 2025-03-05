@@ -221,16 +221,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderTimeSlots() {
         const timeSlotsContainer = document.getElementById('timeSlots');
-        if (!selectedTherapist || !selectedDate) {
-            timeSlotsContainer.querySelector('#appointmentTime').disabled = true;
+        const timeInput = timeSlotsContainer.querySelector('#appointmentTime');
+        
+        if (!selectedDate) {
+            timeInput.disabled = true;
             return;
         }
         
-        const timeInput = timeSlotsContainer.querySelector('#appointmentTime');
+        // Enable time input when date is selected
         timeInput.disabled = false;
         
+        // Keep the previously selected time if it exists
         if (selectedTime) {
             timeInput.value = selectedTime;
+        } else {
+            // Set a default time (e.g., 9:00 AM) when no time is selected
+            timeInput.value = '09:00';
         }
     }
 
