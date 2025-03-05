@@ -1049,3 +1049,149 @@ body {
 .show {
   display: block;
 }
+
+/* Profile Modal Styles */
+#editProfileModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+#editProfileModal .modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+#editProfileModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+#editProfileModal .modal-header h2 {
+    margin: 0;
+    color: #1e9160;
+    font-size: 1.5rem;
+}
+
+#editProfileModal .close-modal {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #666;
+    transition: color 0.3s;
+}
+
+#editProfileModal .close-modal:hover {
+    color: #1e9160;
+}
+
+#editProfileModal .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#editProfileModal .form-group {
+    margin-bottom: 1rem;
+}
+
+#editProfileModal label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+#editProfileModal .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+#editProfileModal .form-input:focus {
+    outline: none;
+    border-color: #1e9160;
+}
+
+#editProfileModal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+#editProfileModal .btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#editProfileModal .btn-primary {
+    background: #1e9160;
+    color: white;
+}
+
+#editProfileModal .btn-primary:hover {
+    background: #187a4d;
+}
+
+#editProfileModal .btn-secondary {
+    background: #e9ecef;
+    color: #333;
+}
+
+#editProfileModal .btn-secondary:hover {
+    background: #dee2e6;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    #editProfileModal .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #editProfileModal .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    #editProfileModal .form-actions {
+        flex-direction: column;
+    }
+
+    #editProfileModal .form-actions .btn {
+        width: 100%;
+    }
+}

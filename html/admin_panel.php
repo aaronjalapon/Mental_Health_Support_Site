@@ -19,6 +19,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 <body>
     <div class="admin-container">
         <?php include __DIR__ . '/admin_sidebar.php'; ?>
+        
         <main class="main-content">
             <div class="content-header">
                 <h1>Dashboard Overview</h1>
