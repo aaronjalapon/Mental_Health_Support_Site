@@ -30,7 +30,6 @@ function redirectToLogin() {
 
     <?php include 'components/header.php'; ?>
 
-    
   <main>
     <!-- Hero Section -->
     <section class="hero">
@@ -38,7 +37,7 @@ function redirectToLogin() {
         <p>Mental Health Support Site</p>
         <h1>Your Mental Health Matters</h1>
         <p>Discover resources, connect with professionals, and find community support in a safe and supportive space.</p>
-        <button class="btn-get-started">Make an Appointment</button>
+        <button class="btn-get-started" onclick="window.location.href='html/book_appointment.php'">Make an Appointment</button>
       </div>
     </section>
 
@@ -58,13 +57,13 @@ function redirectToLogin() {
         <img id="professional-support" src="/images/professional-support.png" alt="Professional Support">
         <h2>Professional Support</h2>
         <p>Connect with mental health professionals and resources.</p>
-        <a href="#" class="feature-link">Learn More</a>
+        <a href="html/book_appointment.php" class="feature-link">Learn More</a>
       </div>
       <div class="feature">
         <img id="community" src="/images/community.png">
         <h2>Community</h2>
         <p>Join a safe and supportive online space for peer support.</p>
-        <a href="#" onclick="redirectToCommunity()" class="feature-link">Join Now</a>
+        <a href="html/community.php" class="feature-link">Join Now</a>
       </div>
     </section>
     <section class="testimonials">

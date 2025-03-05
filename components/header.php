@@ -27,8 +27,8 @@ if (session_status() === PHP_SESSION_NONE) {
             </button>
             <div class="dropdown-content">
                 <a href="#">Self-Help</a>
-                <a href="#">Professional Support</a>
-                <a href="#" onclick="redirectToCommunity()">Community</a>
+                <a href="/html/book_appointment.php">Professional Support</a>
+                <a href="/html/community.php">Community</a>
             </div>
         </div>
         
