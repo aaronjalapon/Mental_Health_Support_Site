@@ -50,7 +50,7 @@ function redirectToLogin() {
               </svg>
             </button>
             <div class="dropdown-content">
-              <a href="#">Self-Help</a>
+              <a href="#">Guided Meditation</a>
               <a href="#">Professional Support</a>
               <a href="#" onclick="redirectToCommunity()">Community</a>
             </div>

@@ -49,7 +49,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
                     </svg>
                 </button>
                 <div class="dropdown-content">
-                    <a href="#">Self-Help</a>
+                    <a href="#">Guided Meditation</a>
                     <a href="#">Professional Support</a>
                     <a href="#">Community</a>
                 </div>
