@@ -1,0 +1,419 @@
+/* Add these new styles at the top */
+.page-container {
+    padding-top: 80px; /* Space for fixed header */
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.booking-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+.booking-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.booking-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.booking-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.booking-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    min-height: 800px;
+}
+
+.therapist-selection {
+    padding: 2rem;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+.therapist-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.therapist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.therapist-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.therapist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.therapist-card.selected {
+    border-color: #1e9160;
+    background: linear-gradient(135deg, #f0faf5, #e8f5e9);
+    box-shadow: 0 0 0 2px rgba(30, 145, 96, 0.2);
+}
+
+.appointment-scheduler {
+    padding: 2rem;
+    background-color: white;
+}
+
+.scheduler-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.date-picker {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.calendar-day:hover:not(.disabled) {
+    background-color: #e8f5e9;
+    border-color: #1e9160;
+}
+
+.calendar-day.selected {
+    background: #1e9160;
+    color: white;
+    border-color: #1e9160;
+    box-shadow: 0 2px 8px rgba(30, 145, 96, 0.3);
+    transform: scale(1.05);
+}
+
+.calendar-day.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Remove all time-slots related styles */
+
+.booking-form {
+    max-width: 600px;
+}
+
+.booking-summary {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e0e0e0;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.booking-summary h3 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Form Elements Styling */
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #333;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+input[type="text"]:hover,
+select:hover,
+textarea:hover {
+    border-color: #1e9160;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #1e9160;
+    box-shadow: 0 0 0 3px rgba(30, 145, 96, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+#therapistSearch {
+    margin-bottom: 1rem;
+}
+
+#specializationFilter {
+    padding-right: 32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M8 10L4 6h8l-4 4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Button styling */
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #1e9160;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #167d4f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 145, 96, 0.2);
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: #2c3e50;
+}
+
+.btn-secondary:hover {
+    background-color: #dee2e6;
+    transform: translateY(-1px);
+}
+
+/* Form actions spacing */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 968px) {
+    .page-container {
+        padding-top: 65px;
+    }
+
+    .booking-container {
+        padding: 1rem;
+    }
+
+    .booking-content {
+        min-height: auto;
+    }
+
+    .therapist-selection {
+        border-top: 1px solid #e9ecef;
+    }
+}
+
+@media (max-width: 576px) {
+    .calendar {
+        font-size: 0.875rem;
+    }
+
+    .booking-container {
+        padding: 1rem;
+    }
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #1e9160;
+    border-radius: 4px;
+}
+
+.calendar-nav button:hover {
+    background-color: #e8f5e9;
+}
+
+.current-month-year {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.weekday-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.weekday {
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+}
+
+.view-appointments-section {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e9ecef;
+    text-align: right;
+}
+
+.view-appointments-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.view-appointments-btn i {
+    font-size: 1.1rem;
+}
+
+.view-appointments-btn:hover {
+    background-color: #e9ecef;
+}
+
+.time-slots-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.time-slots-container input[type="time"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2c3e50;
+    background-color: white;
+}
+
+.time-slots-container input[type="time"]:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
