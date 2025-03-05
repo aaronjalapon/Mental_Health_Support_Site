@@ -26,9 +26,9 @@ if (session_status() === PHP_SESSION_NONE) {
                 </svg>
             </button>
             <div class="dropdown-content">
-                <a href="#">Self-Help</a>
-                <a href="/html/book_appointment.php">Professional Support</a>
-                <a href="/html/community.php">Community</a>
+                <a href="#">Guided Meditation</a>
+                <a href="#" onclick="redirectToAppointment()" >Professional Support</a>
+                <a href="#" onclick="redirectToCommunity()">Community</a>
             </div>
         </div>
         
