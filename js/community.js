@@ -15,97 +15,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupNavbar() {
-    const profileLink = document.querySelector('a.dropdown-item:not(.logout-link)');
-    const modal = document.getElementById('editProfileModal');
-    const closeBtn = modal.querySelector('.close-modal');
-    const cancelBtn = modal.querySelector('.edit-cancel-btn');
-    const form = document.getElementById('editProfileForm');
-    const formInputs = form.querySelectorAll('input, select');
+    const authButton = document.getElementById('btn-login');
+    const userDropdown = document.querySelector('.user-dropdown');
+    const dropdownBtn = document.querySelector('.dropdown-btn');
+    const dropdownContent = document.querySelector('.dropdown-content');
 
-    // Profile link click handler
-    if (profileLink) {
-        profileLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            openProfileModal();
-        });
-    }
-
-    async function openProfileModal() {
-        modal.style.display = 'flex';
-        formInputs.forEach(input => input.disabled = true);
-        
-        try {
-            const response = await fetch('/php/get_user_data.php');
-            const data = await response.json();
-            
-            if (data.success) {
-                formInputs.forEach(input => {
-                    input.disabled = false;
-                    if (data.user[input.name]) {
-                        input.value = data.user[input.name];
-                    }
-                });
-            } else {
-                alert('Failed to load profile data');
-                closeModal();
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to load profile data');
-            closeModal();
-        }
-    }
-
-    function closeModal() {
-        modal.style.display = 'none';
-        form.reset();
-    }
-
-    // Close modal handlers
-    closeBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    // Handle form submission
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        formInputs.forEach(input => input.disabled = true);
-        
-        const formData = new FormData();
-        formData.append('editFirstName', form.querySelector('[name="firstName"]').value);
-        formData.append('editLastName', form.querySelector('[name="lastName"]').value);
-        formData.append('editUsername', form.querySelector('[name="username"]').value);
-        formData.append('editContact', form.querySelector('[name="contact"]').value);
-        formData.append('editPronouns', form.querySelector('[name="pronouns"]').value);
-        formData.append('editAddress', form.querySelector('[name="address"]').value);
-
-        try {
-            const response = await fetch('/php/update_profile.php', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            
-            if (data.success) {
-                closeModal();
-                // Refresh session data and reinitialize dropdown
-                await checkSession();
-            } else {
-                alert(data.message || 'Failed to update profile');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Failed to update profile');
-        } finally {
-            formInputs.forEach(input => input.disabled = false);
-        }
-    });
-
-    // Initialize checkSession
+    // Check session status when page loads
     checkSession();
+
+    // Handle auth button click
+    authButton.addEventListener('click', function () {
+        if (authButton.textContent === 'Log In') {
+            window.location.href = '/html/login.php';
+        } else {
+            logout();
+        }
+    });
+
+    // Handle dropdown button click
+    dropdownBtn.addEventListener('click', () => {
+        dropdownContent.classList.toggle('show');
+    });
+
+    // Close the dropdown when clicking outside
+    window.addEventListener('click', (event) => {
+        if (!event.target.matches('.dropdown-btn')) {
+            if (dropdownContent.classList.contains('show')) {
+                dropdownContent.classList.remove('show');
+            }
+        }
+    });
 }
 
 function checkSession() {
@@ -117,24 +56,22 @@ function checkSession() {
             const dropdownLogout = document.querySelector('.dropdown-logout');
 
             if (data.loggedIn) {
+                // Hide login button and show user dropdown
                 authButton.style.display = 'none';
                 userDropdown.style.display = 'block';
 
+                // Update welcome message with user's name
                 const username = `${data.user.username}`;
                 const dropdownBtn = document.querySelector('.dropdown-btn');
-                
-                // Remove existing event listeners
-                dropdownBtn.replaceWith(dropdownBtn.cloneNode(true));
-                
-                // Re-add event listener to the new button
-                const newDropdownBtn = document.querySelector('.dropdown-btn');
-                newDropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${username}`;
-                newDropdownBtn.addEventListener('click', (e) => {
+                dropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${username}`;
+
+                // Setup dropdown toggle
+                dropdownBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     dropdownLogout.classList.toggle('show');
                 });
 
-                // Ensure document click listener is set
+                // Close dropdown when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!userDropdown.contains(e.target)) {
                         dropdownLogout.classList.remove('show');
@@ -263,30 +200,17 @@ function closeModal(modal) {
 
 // Handle post creation
 function submitPost(content) {
-    const formData = new FormData();
-    formData.append('content', content);
-
-    return fetch('/php/api/posts.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            loadPosts(); // Reload posts after successful submission
-            return true;
-        }
-        throw new Error(data.message || 'Failed to create post');
-    });
-}
-
-function loadPosts() {
-    fetch('/php/api/posts.php')
-        .then(response => response.json())
-        .then(posts => {
-            renderPosts(posts);
-        })
-        .catch(error => console.error('Error:', error));
+    const newPost = {
+        id: Date.now(),
+        content,
+        author: 'Current User', // Replace with actual user
+        timestamp: new Date(),
+        votes: 0,
+        hearts: 0,
+        comments: [],
+    };
+    posts.unshift(newPost);
+    renderPosts();
 }
 
 // Replace setupVoting with setupHeartReaction
@@ -301,20 +225,11 @@ function setupHeartReaction() {
 }
 
 function toggleHeart(postId) {
-    fetch('/php/api/reactions.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ post_id: postId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            loadPosts();
-        }
-    })
-    .catch(error => console.error('Error:', error));
+    const post = posts.find(p => p.id.toString() === postId.toString());
+    if (post) {
+        post.hearts = post.hearts ? 0 : 1; // Toggle between 0 and 1
+        renderPosts();
+    }
 }
 
 // Comment system
@@ -353,33 +268,16 @@ function toggleCommentSection(postId) {
 }
 
 function addComment(postId, content) {
-    fetch('/php/api/comments.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ post_id: postId, content })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            loadComments(postId);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function loadComments(postId) {
-    fetch(`/php/api/comments.php?post_id=${postId}`)
-        .then(response => response.json())
-        .then(data => {
-            const post = document.querySelector(`[data-post-id="${postId}"]`);
-            if (post) {
-                const commentsList = post.querySelector('.comments-list');
-                commentsList.innerHTML = renderComments(data);
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    const post = posts.find(p => p.id.toString() === postId.toString());
+    if (post) {
+        post.comments.push({
+            id: Date.now(),
+            content,
+            author: 'Current User', // Replace with actual user later
+            timestamp: new Date()
+        });
+        renderPosts();
+    }
 }
 
 // Render posts

@@ -1,5 +1,5 @@
 <?php
-require_once '../../php/db.php'; // Fix path
+require_once '../db.php'; // Fix path
 
 header('Content-Type: application/json');
 error_reporting(E_ALL);

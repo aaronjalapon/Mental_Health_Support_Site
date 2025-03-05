@@ -1,5 +1,5 @@
 <?php
-require_once '../../php/db.php'; // Fix path
+require_once '../db.php'; // Fix path
 
 header('Content-Type: application/json');
 error_reporting(E_ALL);
@@ -25,17 +25,16 @@ try {
     $conn->begin_transaction();
 
     // Check if reaction exists
-    $check = $conn->prepare("SELECT reaction_id FROM reactions WHERE post_id = ? AND user_id = ?");
-    if (!$check) {
+    $stmt = $conn->prepare("SELECT * FROM reactions WHERE post_id = ? AND user_id = ?");
+    if (!$stmt) {
         throw new Exception('Failed to prepare check statement: ' . $conn->error);
     }
 
-    $check->bind_param("ii", $post_id, $user_id);
-    $check->execute();
-    $existing = $check->get_result()->fetch_assoc();
-    $check->close();
+    $stmt->bind_param("ii", $post_id, $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($existing) {
+    if ($result->num_rows > 0) {
         // Remove reaction
         $stmt = $conn->prepare("DELETE FROM reactions WHERE post_id = ? AND user_id = ?");
         $action = 'removed';
