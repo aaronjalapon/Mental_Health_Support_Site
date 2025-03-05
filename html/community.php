@@ -20,6 +20,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <title>MindSpace Community</title>
     
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/landing_page.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

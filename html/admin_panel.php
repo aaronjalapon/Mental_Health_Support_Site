@@ -1,11 +1,9 @@
 <?php
 session_start();
-// Check if user is logged in and is admin
 if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../html/login.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -20,21 +18,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 </head>
 <body>
     <div class="admin-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">
-                <h2>MindSpace</h2>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="admin_panel.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="client_management.php"><i class="fas fa-users"></i> Clients</a></li>
-                <li><a href="therapist_management.php"><i class="fas fa-user-md"></i> Therapists</a></li>
-                <li><a href="appointment_management.php"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
-                <li><a href="community_management.php"><i class="fas fa-comments"></i> Community</a></li>
-                <li><a href="settings_management.php"><i class="fas fa-cog"></i> Settings</a></li>
-                <li><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt" ></i> Logout</a></li>
-            </ul>
-        </aside>
+        <?php include __DIR__ . '/admin_sidebar.php'; ?>
         <main class="main-content">
             <div class="content-header">
                 <h1>Dashboard Overview</h1>
@@ -83,18 +67,13 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             <div class="charts-container">
                 <div class="chart-card full-width">
                     <h3>Monthly Statistics</h3>
-                    <canvas id="monthlyStatsChart"></canvas>
+                    <canvas id="monthlyStatsChart"></canvas> 
                 </div>
             </div>
         </main>
     </div>
-
-    <!-- Add Chart.js before your custom scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/landing_page.js"></script>
     <script src="/js/admin_panel.js"></script>
-   
-
-    
 </body>
 </html>
