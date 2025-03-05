@@ -9,7 +9,6 @@ if(!isset($_SESSION['unique_id'])) {
 // Optional: You can add role-specific features
 $isAdmin = $_SESSION['role'] === 'admin';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,7 +123,35 @@ $isAdmin = $_SESSION['role'] === 'admin';
     </main>
 
     <footer class="footer">
-        <p>© 2025 MindSpace. All rights reserved. | <a href="#">Privacy Policy</a></p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About MindSpace</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="#">Guided Meditation</a></li>
+                    <li><a href="#">Professional Support</a></li>
+                    <li><a href="#">Community Forum</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <p>Follow us on social media</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MindSpace. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="../js/guided_meditation.js"></script>

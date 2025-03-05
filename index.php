@@ -21,7 +21,7 @@ function redirectToLogin() {
   <title>MindCare - Mental Health Support</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/landing_page.css">
+  <link rel="stylesheet" href="../css/landing_page.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -151,9 +151,37 @@ function redirectToLogin() {
     </section>
   </main>
   <footer class="footer">
-    <p>© 2025 MindCare. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About MindSpace</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="#">Guided Meditation</a></li>
+          <li><a href="#">Professional Support</a></li>
+          <li><a href="#">Community Forum</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect With Us</h3>
+        <p>Follow us on social media</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 MindSpace. All rights reserved.</p>
+    </div>
   </footer>
-  <script src="js/landing_page.js"></script>
+  <script src="../js/landing_page.js"></script>
  
 </body>
 </html>

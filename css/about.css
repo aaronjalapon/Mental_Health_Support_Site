@@ -11,7 +11,7 @@ body {
     background-color: rgb(211, 248, 226);
 }
 
-/* Navbar Styles */
+/* Navbar Styles - Copied from landing_page.css */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -96,25 +96,7 @@ body {
     background-color: hsl(144, 73%, 70%);
 }
 
-.burger-menu {
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 20px;
-    width: 30px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-}
-
-.burger-menu .bar {
-    height: 3px;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 2px;
-}
-
+/* Dropdown styles from landing_page.css */
 .dropbtn {
     background-color: transparent;
     color: white;
@@ -128,13 +110,7 @@ body {
     transition: 300ms;
 }
 
-.dropdown-arrow {
-    height: 10px;
-    width: 10px;
-    fill: white;
-    transition: transform 300ms;
-}
-
+/* Dropdown styles - synced with landing_page.css */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -157,13 +133,41 @@ body {
     transition: opacity 300ms, top 300ms;
 }
 
+.dropdown-content a {
+    padding: 5px;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+    transition: 300ms;
+}
+
+.dropdown-content a:hover {
+    background-color: #188162;
+}
+
 .dropdown:hover .dropdown-content {
     display: block;
     opacity: 1;
     top: 100%;
 }
 
-/* User dropdown styles */
+.dropdown-arrow {
+    height: 10px;
+    width: 10px;
+    fill: white;
+    transition: transform 300ms;
+}
+
+.dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Burger menu styles */
+.burger-menu {
+    // ...existing code...
+}
+
+/* User dropdown styles - Copied from landing_page.css */
 .user-dropdown {
     position: relative;
     display: inline-block;
@@ -191,25 +195,29 @@ body {
     border-radius: 5px;
 }
 
-.dropdown-logout.show {
+.dropdown-logout a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-logout a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
     display: block;
 }
 
 /* Hero Section */
 .hero {
     text-align: center;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/meditation.webp');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/about.webp');
     background-size: cover;
-    background-position: center;
-    background-attachment: relative;
+    background-position: center bottom;
     padding: 8rem 2rem 4rem;
     color: white;
-    position: relative;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 1;
 }
 
 .hero h1 {
@@ -223,67 +231,118 @@ body {
     margin: 0 auto;
 }
 
-/* Categories Section */
-.categories {
-    padding: 4rem 2rem;
+/* Mission Section */
+.mission {
+    padding: 4rem 0;
+    background-color: #fff;
+}
+
+.container {
     max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.mission h2 {
+    color: #1e9160;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.mission p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    text-align: center;
+    max-width: 800px;
     margin: 0 auto;
 }
 
-.categories h2 {
-    text-align: center;
+/* Values Section */
+.values {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.values h2 {
+    color: #1e9160;
     font-size: 2.5rem;
     margin-bottom: 3rem;
-    color: #1e9160;
+    text-align: center;
 }
 
-.category-grid {
+.values-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
-    padding: 0 1rem;
 }
 
-.category-card {
+.value-card {
     background: white;
+    padding: 2rem;
     border-radius: 15px;
-    padding: 1.5rem;
+    text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
 
-.category-card:hover {
+.value-card:hover {
     transform: translateY(-5px);
 }
 
-.category-card h3 {
+.value-card i {
+    font-size: 2.5rem;
     color: #1e9160;
-    font-size: 1.5rem;
     margin-bottom: 1rem;
 }
 
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
-    height: 0;
+.value-card h3 {
+    color: #333;
     margin-bottom: 1rem;
 }
 
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
+/* Team Section */
+.team {
+    padding: 4rem 0;
+    background-color: #fff;
 }
 
-.category-card p {
+.team h2 {
+    color: #1e9160;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-member img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.team-member p {
     color: #666;
-    font-size: 1rem;
 }
 
-/* Footer Styles */
+/* Footer Styles - Copied from landing_page.css */
 .footer {
     background-image: linear-gradient(90deg, #6ee4c1, #1e9160);
     color: #fff;
@@ -356,32 +415,8 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 768px) {
-    .footer-content {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .footer-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .footer-section {
-        text-align: center;
-    }
-    
-    .social-links {
-        justify-content: center;
-    }
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-    .navbar {
-        padding: 1rem 2rem;
-    }
-
     .hero h1 {
         font-size: 2.5rem;
     }
@@ -390,48 +425,16 @@ body {
         font-size: 1rem;
     }
 
-    .categories {
-        padding: 2rem 1rem;
+    .mission h2,
+    .values h2,
+    .team h2 {
+        font-size: 2rem;
     }
 
-    .category-grid {
+    .values-grid,
+    .team-grid {
         grid-template-columns: 1fr;
-    }
-
-    .burger-menu {
-        display: flex;
-    }
-
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: #1e9160;
-        width: 100%;
-        padding: 2rem;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) inset;
-        transform-origin: top;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .nav-links.show {
-        display: flex;
-        animation: slideDown 0.3s ease forwards;
-    }
-
-    .burger-menu.active .bar:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-    }
-
-    .burger-menu.active .bar:nth-child(2) {
-        opacity: 0;
-    }
-
-    .burger-menu.active .bar:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
+        gap: 1.5rem;
     }
 }
 
@@ -440,11 +443,16 @@ body {
         font-size: 2rem;
     }
 
-    .categories h2 {
-        font-size: 2rem;
+    .mission p {
+        font-size: 1rem;
     }
 
-    .category-card h3 {
-        font-size: 1.25rem;
+    .value-card {
+        padding: 1.5rem;
+    }
+
+    .team-member img {
+        width: 150px;
+        height: 150px;
     }
 }
