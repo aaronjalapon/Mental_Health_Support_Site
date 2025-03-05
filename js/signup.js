@@ -72,4 +72,31 @@ document.addEventListener('DOMContentLoaded', function() {
             registerBtn.disabled = false;
         }, 2000);
     });
+
+    // Terms and Conditions Modal
+    const modal = document.getElementById('termsModal');
+    const termsLink = document.querySelector('.terms-link');
+    const closeBtn = document.querySelector('.close');
+    const acceptTermsBtn = document.querySelector('.accept-terms-btn');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+
+    termsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        modal.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', function() {
+        modal.classList.add('hidden');
+    });
+
+    acceptTermsBtn.addEventListener('click', function() {
+        termsCheckbox.checked = true;
+        modal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
 });

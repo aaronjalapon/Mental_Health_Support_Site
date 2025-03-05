@@ -94,10 +94,40 @@ if(isset($_SESSION['unique_id'])) {
                     <label for="fileInput" class="file-label">Choose Image</label>
                     <span class="file-name">Upload Valid ID</span>
                 </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="termsCheckbox" required>
+                    <label for="termsCheckbox">I agree to the <span class="terms-link">Terms and Conditions</span></label>
+                </div>
         
                 <input type="submit" value="Register" class="register-btn"></button>
             </div>
         </form>
+
+        <!-- Terms and Conditions Modal -->
+        <div id="termsModal" class="modal hidden">
+            <div class="modal-content terms-modal-content">
+                <span class="close">&times;</span>
+                <h2>Terms and Conditions</h2>
+                <div class="terms-content">
+                    <h3>1. Acceptance of Terms</h3>
+                    <p>By accessing and using MindSpace, you agree to be bound by these Terms and Conditions.</p>
+
+                    <h3>2. Privacy Policy</h3>
+                    <p>Your use of MindSpace is also governed by our Privacy Policy, which covers how we collect and use your information.</p>
+
+                    <h3>3. User Responsibilities</h3>
+                    <p>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
+
+                    <h3>4. Prohibited Activities</h3>
+                    <p>Users are prohibited from engaging in any unlawful or harmful activities while using MindSpace.</p>
+
+                    <h3>5. Content Guidelines</h3>
+                    <p>Users must ensure that all content shared on MindSpace complies with our community guidelines and does not violate any laws.</p>
+                </div>
+                <button class="accept-terms-btn">Accept Terms</button>
+            </div>
+        </div>
 
         <div class="already-have-an-account-parent">
             <span class="already-have-an">Already have an Account?</span>
