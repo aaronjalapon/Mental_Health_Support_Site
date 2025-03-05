@@ -15,37 +15,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupNavbar() {
-    const authButton = document.getElementById('btn-login');
-    const userDropdown = document.querySelector('.user-dropdown');
-    const dropdownBtn = document.querySelector('.dropdown-btn');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    // Check session status when page loads
+    // Reuse checkSession from landing_page.js
     checkSession();
 
-    // Handle auth button click
-    authButton.addEventListener('click', function () {
-        if (authButton.textContent === 'Log In') {
-            window.location.href = '/html/login.php';
-        } else {
-            logout();
-        }
-    });
-
-    // Handle dropdown button click
-    dropdownBtn.addEventListener('click', () => {
-        dropdownContent.classList.toggle('show');
-    });
-
-    // Close the dropdown when clicking outside
-    window.addEventListener('click', (event) => {
-        if (!event.target.matches('.dropdown-btn')) {
-            if (dropdownContent.classList.contains('show')) {
-                dropdownContent.classList.remove('show');
-            }
-        }
+    // Add logout event listeners
+    const logoutLinks = document.querySelectorAll('.logout-link');
+    logoutLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleLogout();
+        });
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    setupNavbar();
+    // Other community-specific initializations
+    loadInitialPosts();
+    setupCreatePost();
+    setupHeartReaction();
+    setupComments();
+    setupSidebarToggle();
+});
+
+
 
 function checkSession() {
     fetch('/php/check_session.php')
@@ -200,17 +192,30 @@ function closeModal(modal) {
 
 // Handle post creation
 function submitPost(content) {
-    const newPost = {
-        id: Date.now(),
-        content,
-        author: 'Current User', // Replace with actual user
-        timestamp: new Date(),
-        votes: 0,
-        hearts: 0,
-        comments: [],
-    };
-    posts.unshift(newPost);
-    renderPosts();
+    fetch('/php/api/posts.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            loadPosts();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function loadPosts(page = 1) {
+    fetch(`/php/api/posts.php?page=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            posts = data;
+            renderPosts();
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Replace setupVoting with setupHeartReaction
@@ -225,11 +230,20 @@ function setupHeartReaction() {
 }
 
 function toggleHeart(postId) {
-    const post = posts.find(p => p.id.toString() === postId.toString());
-    if (post) {
-        post.hearts = post.hearts ? 0 : 1; // Toggle between 0 and 1
-        renderPosts();
-    }
+    fetch('/php/api/reactions.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ post_id: postId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            loadPosts();
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 // Comment system
@@ -268,16 +282,33 @@ function toggleCommentSection(postId) {
 }
 
 function addComment(postId, content) {
-    const post = posts.find(p => p.id.toString() === postId.toString());
-    if (post) {
-        post.comments.push({
-            id: Date.now(),
-            content,
-            author: 'Current User', // Replace with actual user later
-            timestamp: new Date()
-        });
-        renderPosts();
-    }
+    fetch('/php/api/comments.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ post_id: postId, content })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            loadComments(postId);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function loadComments(postId) {
+    fetch(`/php/api/comments.php?post_id=${postId}`)
+        .then(response => response.json())
+        .then(data => {
+            const post = document.querySelector(`[data-post-id="${postId}"]`);
+            if (post) {
+                const commentsList = post.querySelector('.comments-list');
+                commentsList.innerHTML = renderComments(data);
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Render posts

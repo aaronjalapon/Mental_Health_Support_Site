@@ -1,15 +1,22 @@
 <?php
 session_start();
-// Check if user is logged in (but allow both admin and client)
+
+// Debug logging
+error_log('Community page loaded. Session data: ' . print_r($_SESSION, true));
+
 if(!isset($_SESSION['unique_id'])) {
     header("Location: ../html/login.php");
     exit();
 }
 
+// Make sure client_id is set
+if(!isset($_SESSION['client_id'])) {
+    $_SESSION['client_id'] = $_SESSION['unique_id']; // or however you get the client_id
+}
+
 // Optional: You can add role-specific features
 $isAdmin = $_SESSION['role'] === 'admin';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +27,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <title>MindSpace Community</title>
     
     <link rel="stylesheet" href="/css/community.css">
-    <link rel="stylesheet" href="/css/landing_page.css">
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -54,12 +61,16 @@ $isAdmin = $_SESSION['role'] === 'admin';
                     <a href="#">Community</a>
                 </div>
             </div>
-            <button id="btn-login" class="auth-button">Log In</button>
+            
+            <!-- Unified Authentication Section -->
+            <button id="btn-login" class="auth-button" style="display: none;">Log In</button>
             <div class="user-dropdown" style="display: none;">
-                <button class="dropdown-btn">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></button>
+                <button class="dropdown-btn">
+                    <i class="fas fa-user"></i> Welcome
+                </button>
                 <div class="dropdown-logout">
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>
+                    <a href="/html/profile.php" class="dropdown-item">Profile</a>
+                    <a href="#" class="dropdown-item logout-link">Logout</a>
                 </div>
             </div>
         </nav>
@@ -84,7 +95,46 @@ $isAdmin = $_SESSION['role'] === 'admin';
             </aside>
 
             <section class="posts" aria-label="Community Posts">
-                <!-- Posts will be dynamically inserted here by JavaScript -->
+                <?php
+                // This div will be used as a container for dynamically loaded posts
+                echo '<div class="posts-container"></div>';
+                
+                // Add loading indicator
+                echo '<div class="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading more posts...
+                </div>';
+                
+                // Add a template for new posts
+                echo '<template id="post-template">
+                    <article class="post" data-post-id="">
+                        <div class="post-header">
+                            <div class="user-info">
+                                <img src="" alt="User avatar" class="user-avatar">
+                                <span class="username"></span>
+                                <span class="post-date"></span>
+                            </div>
+                            <div class="post-actions">
+                                <button class="heart-btn">
+                                    <i class="far fa-heart"></i>
+                                    <span class="heart-count">0</span>
+                                </button>
+                                <button class="comment-btn">
+                                    <i class="far fa-comment"></i>
+                                    <span class="comment-count">0</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="post-content"></div>
+                        <div class="comments-section">
+                            <div class="comments-container"></div>
+                            <form class="comment-form">
+                                <textarea placeholder="Write a comment..."></textarea>
+                                <button type="submit">Post</button>
+                            </form>
+                        </div>
+                    </article>
+                </template>';
+                ?>
             </section>
 
             <aside class="wordoftheday">
@@ -163,8 +213,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <button class="sidebar-toggle">
         <i class="fas fa-bars"></i>
     </button>
-
-    <script src="/js/landing_page.js"></script>
     <script src="/js/community.js"></script>
+    <script src="/js/landing_page.js"></script>
+    
 </body>
 </html>
