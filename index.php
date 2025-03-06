@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Function to check if user is logged in
 function isLoggedIn() {
@@ -16,56 +18,17 @@ function redirectToLogin() {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MindCare - Mental Health Support</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/landing_page.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare - Mental Health Support</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/landing_page.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="navbar">
-      
-        <div class="logo">
-          <a href="index.php">
-            <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">
-            <h1>MindSpace</h1>
-          </a>
-        </div>
-        <button class="burger-menu" id="burgerMenu">
-          <!-- 3-bar lines icon -->
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </button>
-        <nav class="nav-links" id="navLinks">
-          <a id="home" href="index.php">Home</a>
-          <a id="about_us" href="#self-help">About us</a>
-          <div class="dropdown">
-            <button class="dropbtn">
-              Self-Help
-              <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
-              </svg>
-            </button>
-            <div class="dropdown-content">
-              <a href="#">Guided Meditation</a>
-              <a href="#">Professional Support</a>
-              <a href="#" onclick="redirectToCommunity()">Community</a>
-            </div>
-          </div>
-          <!-- Replace login button with user dropdown -->
-          <button id="btn-login" class="auth-button">Log In</button>
-          <div class="user-dropdown" style="display: none;">
-            <button class="dropdown-btn"> Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></button>
-            <div class="dropdown-logout">
-              <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
-              <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>
-            </div>
-          </div>
-        </nav>
-      </header>
+
+    <?php include 'components/header.php'; ?>
 
   <main>
     <!-- Hero Section -->
@@ -74,7 +37,7 @@ function redirectToLogin() {
         <p>Mental Health Support Site</p>
         <h1>Your Mental Health Matters</h1>
         <p>Discover resources, connect with professionals, and find community support in a safe and supportive space.</p>
-        <button class="btn-get-started">Make an Appointment</button>
+        <button class="btn-get-started" onclick="redirectToAppointment()">Make an Appointment</button>
       </div>
     </section>
 
@@ -94,7 +57,7 @@ function redirectToLogin() {
         <img id="professional-support" src="/images/professional-support.png" alt="Professional Support">
         <h2>Professional Support</h2>
         <p>Connect with mental health professionals and resources.</p>
-        <a href="#" class="feature-link">Learn More</a>
+        <a href="#" onclick="redirectToAppointment()" class="feature-link">Learn More</a>
       </div>
       <div class="feature">
         <img id="community" src="/images/community.png">

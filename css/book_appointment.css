@@ -417,3 +417,36 @@ textarea {
     color: #6c757d;
     font-size: 0.875rem;
 }
+
+.availability-message {
+    background-color: #e8f5e9;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    border: 1px solid #1e9160;
+}
+
+.availability-message p {
+    color: #1e9160;
+    margin: 0;
+    font-weight: 500;
+}
+
+.no-therapists-message {
+    text-align: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.no-therapists-message i {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.no-therapists-message p {
+    color: #6c757d;
+    margin: 0.5rem 0;
+}
