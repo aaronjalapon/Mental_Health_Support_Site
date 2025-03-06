@@ -21,7 +21,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
         <i class="fas fa-bars"></i>
     </button>
     <div class="admin-container">
-        <?php include 'admin_sidebar.php'; ?>
+        <?php include dirname(__DIR__) . '/components/admin_sidebar.php'; ?>
         <main class="main-content">
             <div class="settings-tabs">
                 <button class="tab-btn active" data-tab="testimonials">

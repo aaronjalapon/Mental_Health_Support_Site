@@ -1,4 +1,3 @@
-
 <aside class="sidebar">
             <div class="sidebar-header">
                 <img class="logo-mindspace-1-1-icon" alt="" src="/images/Logo.svg">

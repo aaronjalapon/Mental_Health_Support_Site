@@ -23,7 +23,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
         <button class="mobile-toggle" id="mobileMenuToggle">
             <i class="fas fa-bars"></i>
         </button>
-        <?php include 'admin_sidebar.php'; ?>
+        <?php include dirname(__DIR__) . '/components/admin_sidebar.php'; ?>
 
         <main class="main-content">
             <div class="content-header">

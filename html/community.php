@@ -1,15 +1,24 @@
 <?php
-session_start();
-// Check if user is logged in (but allow both admin and client)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Debug logging
+error_log('Community page loaded. Session data: ' . print_r($_SESSION, true));
+
 if(!isset($_SESSION['unique_id'])) {
     header("Location: ../html/login.php");
     exit();
 }
 
+// Make sure client_id is set
+if(!isset($_SESSION['client_id'])) {
+    $_SESSION['client_id'] = $_SESSION['unique_id']; // or however you get the client_id
+}
+
 // Optional: You can add role-specific features
 $isAdmin = $_SESSION['role'] === 'admin';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,51 +29,14 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <title>MindSpace Community</title>
     
     <link rel="stylesheet" href="/css/community.css">
-    <link rel="stylesheet" href="/css/landing_page.css">
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">
-            <a href="../index.php">
-                <img class="logo-mindspace-1-1-icon" alt="" src="../images/Logo.svg">
-                <h1>MindSpace</h1>
-            </a>
-        </div>
-        <button class="burger-menu" id="burgerMenu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <nav class="nav-links" id="navLinks">
-            <a id="home" href="../index.php">Home</a>
-            <a id="about_us" href="../index.php#self-help">About us</a>
-            <div class="dropdown">
-                <button class="dropbtn">
-                    Self-Help
-                    <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
-                    </svg>
-                </button>
-                <div class="dropdown-content">
-                    <a href="#">Guided Meditation</a>
-                    <a href="#">Professional Support</a>
-                    <a href="#">Community</a>
-                </div>
-            </div>
-            <button id="btn-login" class="auth-button">Log In</button>
-            <div class="user-dropdown" style="display: none;">
-                <button class="dropdown-btn">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></button>
-                <div class="dropdown-logout">
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
+    <?php include '/components/header.php'; ?>
+
     <div class="sidebar-overlay"></div>
     
     <div class="community-chat">
@@ -84,7 +56,46 @@ $isAdmin = $_SESSION['role'] === 'admin';
             </aside>
 
             <section class="posts" aria-label="Community Posts">
-                <!-- Posts will be dynamically inserted here by JavaScript -->
+                <?php
+                // This div will be used as a container for dynamically loaded posts
+                echo '<div class="posts-container"></div>';
+                
+                // Add loading indicator
+                echo '<div class="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading more posts...
+                </div>';
+                
+                // Add a template for new posts
+                echo '<template id="post-template">
+                    <article class="post" data-post-id="">
+                        <div class="post-header">
+                            <div class="user-info">
+                                <img src="" alt="User avatar" class="user-avatar">
+                                <span class="username"></span>
+                                <span class="post-date"></span>
+                            </div>
+                            <div class="post-actions">
+                                <button class="heart-btn">
+                                    <i class="far fa-heart"></i>
+                                    <span class="heart-count">0</span>
+                                </button>
+                                <button class="comment-btn">
+                                    <i class="far fa-comment"></i>
+                                    <span class="comment-count">0</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="post-content"></div>
+                        <div class="comments-section">
+                            <div class="comments-container"></div>
+                            <form class="comment-form">
+                                <textarea placeholder="Write a comment..."></textarea>
+                                <button type="submit">Post</button>
+                            </form>
+                        </div>
+                    </article>
+                </template>';
+                ?>
             </section>
 
             <aside class="wordoftheday">
@@ -163,8 +174,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <button class="sidebar-toggle">
         <i class="fas fa-bars"></i>
     </button>
-
-    <script src="/js/landing_page.js"></script>
     <script src="/js/community.js"></script>
+    <script src="/js/landing_page.js"></script>
+    
 </body>
 </html>

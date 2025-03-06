@@ -23,44 +23,9 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">
-            <a href="../index.html">
-                <img class="logo-mindspace-1-1-icon" alt="" src="../images/Logo.svg">
-                <h1>MindSpace</h1>
-            </a>
-        </div>
-        <button class="burger-menu" id="burgerMenu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <nav class="nav-links" id="navLinks">
-            <a id="home" href="../index.html">Home</a>
-            <a id="about_us" href="../index.html#self-help">About us</a>
-            <div class="dropdown">
-                <button class="dropbtn">
-                    Self-Help
-                    <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
-                    </svg>
-                </button>
-                <div class="dropdown-content">
-                    <a href="#">Self-Help</a>
-                    <a href="#">Professional Support</a>
-                    <a href="#">Community</a>
-                </div>
-            </div>
-            <button id="btn-login" class="auth-button">Log In</button>
-            <div class="user-dropdown" style="display: none;">
-                <button class="dropdown-btn">Welcome, Username</button>
-                <div class="dropdown-logout">
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Profile</a>
-                    <a href="#" class="dropdown-item" onclick="handleLogout()">Logout</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    
+
+    <?php include '../components/header.php'; ?>
 
     <div class="page-container">
         <div class="booking-container">
@@ -71,7 +36,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
 
             <div class="booking-content">
                 <div class="view-appointments-section">
-                    <a href="my_appointments.html" class="btn btn-secondary view-appointments-btn">
+                    <a href="client_appointments.php" class="btn btn-secondary view-appointments-btn">
                         <i class="fas fa-calendar-check"></i> View My Appointments
                     </a>
                 </div>
@@ -79,28 +44,31 @@ $isAdmin = $_SESSION['role'] === 'admin';
                     <h2>Schedule Your Session</h2>
                     <div class="scheduler-content">
                         <div class="date-picker">
-                            <h3>Select Date</h3>
+                            <h3>Select Date & Time</h3>
                             <div class="calendar" id="appointmentCalendar">
-                                <!-- Calendar will be populated here -->
+                                <!-- Calendar will be populated by JavaScript -->
                             </div>
-                        </div>
-                        <div class="time-slots-container">
-                            <h3>Select Time</h3>
-                            <div id="timeSlots">
-                                <div class="form-group">
-                                    <input type="time" 
-                                           id="appointmentTime" 
-                                           class="form-input" 
-                                           min="09:00" 
-                                           max="17:00" 
-                                           step="1800"
-                                           required>
-                                    <small class="form-text">Available hours: 9:00 AM - 5:00 PM</small>
-                                </div>
+                            <div class="time-selection">
+                                <label for="appointmentTime">Select Time:</label>
+                                <input type="time" 
+                                       id="appointmentTime" 
+                                       class="form-input" 
+                                       min="09:00" 
+                                       max="17:00" 
+                                       step="1800"
+                                       required>
+                                <small class="form-text">Available hours: 9:00 AM - 5:00 PM (maximum of 1-hour per session)</small>
+                                <!-- <button type="button" id="checkAvailability" class="btn btn-secondary">
+                                    Check Available Therapists
+                                </button> -->
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- <div id="availabilityMessage" class="availability-message" style="display: none;">
+                    <p>Showing therapists available on <span id="selectedDateTime"></span></p>
+                </div> -->
 
                 <div class="therapist-selection">
                     <h2>Select a Therapist</h2>
@@ -152,7 +120,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <h2>Booking Confirmed!</h2>
-            <p>Your appointment has been successfully scheduled.</p>
+            <p>Your appointment is waiting for the therapist's approval.<br></p>
             <div id="appointmentDetails">
                 <!-- Appointment details will be shown here -->
             </div>
@@ -160,7 +128,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
         </div>
     </div>
 
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/book_appointment.js"></script>
+    <!-- Update script paths to use relative paths -->
+    <script src="../js/landing_page.js"></script>
+    <script src="../js/book_appointment.js"></script>
 </body>
 </html>

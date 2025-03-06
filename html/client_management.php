@@ -20,7 +20,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 </head>
 <body>
     <div class="admin-container">
-        <?php include 'admin_sidebar.php'; ?>
+        <?php include dirname(__DIR__) . '/components/admin_sidebar.php'; ?>
         <main class="main-content">
             <div class="content-header">
                 <h1>Client Management</h1>
