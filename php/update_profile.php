@@ -1,51 +1,88 @@
 <?php
 session_start();
-include_once "db.php";
+require_once __DIR__ . '/db.php';
 
-if (!isset($_SESSION['unique_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Not logged in']);
-    exit;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+    
+    try {
+        if (!isset($_SESSION['unique_id'])) {
+            throw new Exception("Not logged in");
+        }
 
-$userId = $_SESSION['unique_id'];
+        $userId = $_SESSION['unique_id'];
+        $firstName = trim($_POST['firstName']);
+        $lastName = trim($_POST['lastName']);
+        $username = trim($_POST['username']);
+        $contact = trim($_POST['contact']);
+        $pronouns = trim($_POST['pronouns']);
+        $address = trim($_POST['address']);
 
-// Check if username is unique (excluding current user)
-$stmt = $conn->prepare("SELECT unique_id FROM client WHERE username = ? AND unique_id != ?");
-$stmt->bind_param("ss", $_POST['editUsername'], $userId);
-$stmt->execute();
-if ($stmt->get_result()->num_rows > 0) {
-    echo json_encode(['success' => false, 'message' => 'Username already taken']);
-    exit;
-}
+        // Validate inputs
+        if (empty($firstName) || empty($lastName) || empty($username) || 
+            empty($contact) || empty($pronouns) || empty($address)) {
+            throw new Exception("All fields are required");
+        }
 
-// Update user data
-$sql = "UPDATE client SET 
-        firstName = ?, 
-        lastName = ?, 
-        username = ?, 
-        contactNumber = ?, 
-        Pronouns = ?, 
-        Address = ? 
-        WHERE unique_id = ?";
+        // Check if username already exists for other users
+        $checkStmt = $conn->prepare("SELECT unique_id FROM client WHERE username = ? AND unique_id != ?");
+        $checkStmt->bind_param("si", $username, $userId);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            throw new Exception("Username already exists");
+        }
+        $checkStmt->close();
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssss", 
-    $_POST['editFirstName'],     // Changed from firstName to editFirstName
-    $_POST['editLastName'],      // Changed from lastName to editLastName
-    $_POST['editUsername'],      // Changed from username to editUsername
-    $_POST['editContact'],       // Changed from contact to editContact
-    $_POST['editPronouns'],      // Changed from pronouns to editPronouns
-    $_POST['editAddress'],       // Changed from address to editAddress
-    $userId
-);
+        $sql = "UPDATE client SET 
+                firstName = ?, 
+                lastName = ?, 
+                username = ?, 
+                contactNumber = ?, 
+                Pronouns = ?, 
+                Address = ? 
+                WHERE unique_id = ?";
 
-if ($stmt->execute()) {
-    // Update session data
-    $_SESSION['username'] = $_POST['editUsername'];
-    echo json_encode(['success' => true]);
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssssi", 
+            $firstName, 
+            $lastName, 
+            $username, 
+            $contact, 
+            $pronouns, 
+            $address, 
+            $userId
+        );
+        
+        if ($stmt->execute()) {
+            // Update session data
+            $_SESSION['username'] = $username;
+            $_SESSION['firstName'] = $firstName;
+            $_SESSION['lastName'] = $lastName;
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Profile updated successfully'
+            ]);
+        } else {
+            throw new Exception("Failed to update profile");
+        }
+        $stmt->close();
+
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
 } else {
+    http_response_code(405);
     echo json_encode([
         'success' => false,
-        'message' => 'Failed to update profile: ' . $stmt->error
+        'message' => 'Invalid request method'
     ]);
 }
+
+$conn->close();

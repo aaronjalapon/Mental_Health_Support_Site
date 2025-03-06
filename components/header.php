@@ -3,6 +3,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
+
+<link rel="stylesheet" href="/css/header.css">
+
 <header class="navbar">
     <div class="logo">
         <a href="/index.php">
@@ -101,3 +104,5 @@ if (session_status() === PHP_SESSION_NONE) {
         </div>
     </div>
 </div>
+
+<script src="/js/header.js"></script>

@@ -83,9 +83,12 @@ try {
             }
         }
         
+        // Format time in 24-hour format for consistency
+        $formatted_slot = date('H:i:s', strtotime($slot));
+        
         // Skip if slot is already booked
-        if (!in_array($slot, $booked_slots)) {
-            $available_slots[] = $slot;
+        if (!in_array($formatted_slot, $booked_slots)) {
+            $available_slots[] = $formatted_slot;
         }
     }
 

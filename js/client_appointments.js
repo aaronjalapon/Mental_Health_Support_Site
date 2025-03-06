@@ -114,10 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }[appointment.session_type.toLowerCase()] || 'fa-video';
 
             actions = `
-                <button class="btn btn-primary join-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
+                <button class="appointment-btn appointment-btn-primary join-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
                     <i class="fas ${sessionIcon}"></i> Join Session
                 </button>
-                <button class="btn btn-secondary reschedule" data-id="${appointment.id}">
+                <button class="appointment-btn appointment-btn-secondary reschedule" data-id="${appointment.id}">
                     <i class="fas fa-calendar-alt"></i> Reschedule
                 </button>
             `;
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add cancel button for pending and upcoming appointments
         actions += `
-            <button class="btn btn-danger cancel" data-id="${appointment.id}">
+            <button class="appointment-btn appointment-btn-danger cancel" data-id="${appointment.id}">
                 <i class="fas fa-times"></i> Cancel
             </button>
         `;
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleCancel(event) {
-        const appointmentId = event.target.dataset.id;
+        const appointmentId = event.target.closest('.cancel').dataset.id;
         showCancellationModal(appointmentId);
     }
 
@@ -291,51 +291,54 @@ document.addEventListener('DOMContentLoaded', function() {
     function showCancellationModal(appointmentId) {
         const modal = document.getElementById('cancellationModal');
         const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
-        const appointmentInfo = modal.querySelector('.appointment-info');
         
-        // Get appointment details from the card
+        if (!modal || !appointmentCard) return;
+        
+        // Get appointment details
         const therapistName = appointmentCard.querySelector('h3').textContent;
         const date = appointmentCard.querySelector('.detail-value').textContent;
         const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
         
-        // Update modal with appointment details
+        // Update appointment info
+        const appointmentInfo = modal.querySelector('.cancel-appointment-info');
         appointmentInfo.innerHTML = `
             <p><strong>${therapistName}</strong></p>
             <p><i class="fas fa-calendar"></i> ${date}</p>
             <p><i class="fas fa-clock"></i> ${time}</p>
         `;
         
-        modal.classList.add('active');
+        // Show modal
+        modal.classList.add('show');
         
-        // Focus on the reason textarea
-        setTimeout(() => {
-            document.getElementById('cancellationReason').focus();
-        }, 300);
-        
-        // Add event listeners for both buttons
+        // Setup event listeners
         document.getElementById('confirmCancel').onclick = () => {
-            const reason = document.getElementById('cancellationReason').value.trim();
-            cancelAppointment(appointmentId, reason); // Remove validation check
+            // Add confirmation alert
+            if (confirm("Are you absolutely sure you want to cancel this appointment? This action cannot be undone.")) {
+                const reason = document.getElementById('cancelReason').value.trim();
+                cancelAppointment(appointmentId, reason);
+            }
         };
-
-        // Add event listener for the "No, Keep" button
-        document.querySelector('button[onclick="closeModal()"]').onclick = (e) => {
-            e.preventDefault();
-            closeModalWithAnimation();
-        };
-    }
-
-    function closeModalWithAnimation() {
-        const modal = document.getElementById('cancellationModal');
-        modal.classList.add('fade-out');
         
-        setTimeout(() => {
-            modal.classList.remove('active', 'fade-out');
-            document.getElementById('cancellationReason').value = '';
-        }, 300); // Match this with your CSS transition duration
+        document.getElementById('keepAppointment').onclick = closeModal;
+        
+        // Focus on textarea
+        document.getElementById('cancelReason').focus();
     }
 
     function closeModal() {
-        closeModalWithAnimation();
+        const modal = document.getElementById('cancellationModal');
+        if (!modal) return;
+        
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.querySelector('#cancelReason').value = '';
+        }, 300);
     }
+
+    // Add event listener for clicking outside modal to close
+    document.getElementById('cancellationModal').addEventListener('click', (event) => {
+        if (event.target.id === 'cancellationModal') {
+            closeModal();
+        }
+    });
 });

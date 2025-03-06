@@ -6,124 +6,12 @@ const postsPerPage = 5;
 
 // Initialize the community features
 document.addEventListener('DOMContentLoaded', () => {
-    setupNavbar();
     initializePosts();
     setupCreatePost();
     setupHeartReaction();
     setupComments();
     setupSidebarToggle();
 });
-
-function setupNavbar() {
-    const authButton = document.getElementById('btn-login');
-    const userDropdown = document.querySelector('.user-dropdown');
-    const dropdownBtn = document.querySelector('.dropdown-btn');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    // Check session status when page loads
-    checkSession();
-
-    // Handle auth button click
-    authButton.addEventListener('click', function () {
-        if (authButton.textContent === 'Log In') {
-            window.location.href = '/html/login.php';
-        } else {
-            logout();
-        }
-    });
-
-    // Handle dropdown button click
-    dropdownBtn.addEventListener('click', () => {
-        dropdownContent.classList.toggle('show');
-    });
-
-    // Close the dropdown when clicking outside
-    window.addEventListener('click', (event) => {
-        if (!event.target.matches('.dropdown-btn')) {
-            if (dropdownContent.classList.contains('show')) {
-                dropdownContent.classList.remove('show');
-            }
-        }
-    });
-}
-
-function checkSession() {
-    fetch('/php/check_session.php')
-        .then(response => response.json())
-        .then(data => {
-            const authButton = document.getElementById('btn-login');
-            const userDropdown = document.querySelector('.user-dropdown');
-            const dropdownLogout = document.querySelector('.dropdown-logout');
-
-            if (data.loggedIn) {
-                // Hide login button and show user dropdown
-                authButton.style.display = 'none';
-                userDropdown.style.display = 'block';
-
-                // Update welcome message with user's name
-                const username = `${data.user.username}`;
-                const dropdownBtn = document.querySelector('.dropdown-btn');
-                dropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${username}`;
-
-                // Setup dropdown toggle
-                dropdownBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdownLogout.classList.toggle('show');
-                });
-
-                // Close dropdown when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!userDropdown.contains(e.target)) {
-                        dropdownLogout.classList.remove('show');
-                    }
-                });
-            } else {
-                authButton.style.display = 'block';
-                userDropdown.style.display = 'none';
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-function handleLogout(event) {
-    if (event) {
-        event.preventDefault();
-    }
-
-    fetch('/php/logout.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Clear any stored session data
-                sessionStorage.clear();
-                localStorage.clear();
-
-                // Update UI if on main site
-                const userDropdown = document.querySelector('.user-dropdown');
-                const loginButton = document.getElementById('btn-login');
-                if (userDropdown && loginButton) {
-                    userDropdown.style.display = 'none';
-                    loginButton.style.display = 'block';
-                }
-
-                // Redirect to landing page
-                window.location.href = '/index.php';
-            } else {
-                throw new Error(data.message || 'Logout failed');
-            }
-        })
-        .catch(error => {
-            console.error('Logout error:', error);
-            alert('Logout failed. Please try again.');
-            // Redirect anyway as fallback
-            window.location.href = '/index.php';
-        });
-}
 
 function setupSidebarToggle() {
     const toggleBtn = document.querySelector('.sidebar-toggle');

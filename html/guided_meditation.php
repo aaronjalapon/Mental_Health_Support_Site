@@ -15,9 +15,11 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guided Meditation - MindSpace</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
+    <link rel="stylesheet" href="/css/guided_meditation.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="../css/community.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/guided_meditation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -118,7 +120,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
         </div>
     </footer>
 
-    <script src="../js/guided_meditation.js"></script>
+   
+    <script src="/js/guided_meditation.js"></script>
     <script src="../js/landing_page.js"></script>
 </body>
 </html>

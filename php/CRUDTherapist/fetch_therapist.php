@@ -6,12 +6,13 @@ header('Content-Type: application/json');
 
 try {
     $sql = "SELECT t.*, 
-            GROUP_CONCAT(ta.day) as working_days,
+            GROUP_CONCAT(DISTINCT ta.day) as working_days,
             MIN(ta.start_time) as start_time,
             MAX(ta.end_time) as end_time
             FROM therapists t
             LEFT JOIN therapist_availability ta ON t.therapist_id = ta.therapist_id
-            GROUP BY t.therapist_id";  // Removed the WHERE clause that was filtering by Active status
+            WHERE t.status = 'Active'
+            GROUP BY t.therapist_id";
 
     $result = $conn->query($sql);
     $therapists = [];

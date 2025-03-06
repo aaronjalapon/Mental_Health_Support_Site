@@ -184,12 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Therapist selection
         document.getElementById('therapistList').addEventListener('click', handleTherapistSelection);
         
-        // Calendar day selection
-        document.getElementById('appointmentCalendar').addEventListener('click', handleDateSelection);
-        
         // Form submission
         document.getElementById('bookingForm').addEventListener('submit', handleBookingSubmission);
-        
         
         // Cancel booking
         document.getElementById('cancelBooking').addEventListener('click', resetBooking);
@@ -197,8 +193,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add time input handler
         document.getElementById('appointmentTime').addEventListener('change', handleTimeSelection);
 
-        // Add check availability button handler
-        document.getElementById('checkAvailability').addEventListener('click', handleCheckAvailability);
+        // Remove this since the button might not exist
+        // document.getElementById('checkAvailability').addEventListener('click', handleCheckAvailability);
     }
 
     async function handleTherapistSelection(event) {
@@ -318,6 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!slots || slots.length === 0) {
             timeInput.disabled = true;
             timeInput.value = '';
+            showError('No available time slots for this date');
             return;
         }
 
@@ -333,9 +330,11 @@ document.addEventListener('DOMContentLoaded', function() {
             timeInput.parentNode.appendChild(datalist);
         }
 
-        datalist.innerHTML = slots.map(slot => 
-            `<option value="${slot}">${formatTime(slot)}</option>`
-        ).join('');
+        datalist.innerHTML = slots.map(slot => {
+            // Convert the time to HH:mm format for the input
+            const timeForInput = slot.substring(0, 5);
+            return `<option value="${timeForInput}">${formatTime(slot)}</option>`;
+        }).join('');
         
         timeInput.setAttribute('list', datalistId);
     }
@@ -343,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleTimeSelection(event) {
         selectedTime = event.target.value;
         if (selectedTime && selectedDate) {
-            filterTherapists(); // This will refresh the therapist list based on availability
+            filterTherapists();
         }
         updateBookingSummary();
     }
@@ -404,48 +403,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Update modal related functions to use new class names
     function showConfirmation(booking) {
         const modal = document.getElementById('confirmationModal');
         const details = document.getElementById('appointmentDetails');
         
         details.innerHTML = `
-            <div class="confirmation-details">
-                <div class="detail-item">
-                    <i class="fas fa-user-md"></i>
-                    <span><strong>Therapist:</strong> ${booking.therapist.firstName} ${booking.therapist.lastName}</span>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-calendar"></i>
-                    <span><strong>Date:</strong> ${formatDate(booking.appointment_date)}</span>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-clock"></i>
-                    <span><strong>Time:</strong> ${formatTimeSlot(booking.appointment_time)}</span>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-video"></i>
-                    <span><strong>Session Type:</strong> ${capitalizeFirst(booking.session_type)}</span>
-                </div>
-                ${booking.notes ? `
-                <div class="detail-item">
-                    <i class="fas fa-sticky-note"></i>
-                    <span><strong>Notes:</strong> ${booking.notes}</span>
-                </div>
-                ` : ''}
-            </div>
-            <div class="confirmation-notice">
-                <i class="fas fa-info-circle"></i>
-                <p>You will receive an email notification once the therapist confirms your appointment.</p>
+            <div class="booking-details-item">
+                <p><strong>Date:</strong> ${formatDate(booking.appointment_date)}</p>
+                <p><strong>Time:</strong> ${formatTimeSlot(booking.appointment_time)}</p>
+                <p><strong>Therapist:</strong> ${booking.therapist.firstName} ${booking.therapist.lastName}</p>
+                <p><strong>Session Type:</strong> ${capitalizeFirst(booking.session_type)}</p>
             </div>
         `;
         
-        // Add animation class
-        modal.classList.add('active', 'fade-in');
+        modal.style.display = 'flex'; // Change to flex to make modal visible
+        modal.classList.add('booking-modal-active'); // Add new active class
+    }
+
+    // Replace the old closeModal function
+    function closeBookingModal() {
+        const modal = document.getElementById('confirmationModal');
+        modal.classList.remove('booking-modal-active');
+        modal.style.display = 'none';
         
-        // Add event listener for the Done button
-        modal.querySelector('.btn-primary').addEventListener('click', () => {
-            closeModalWithRedirect();
-        });
+        setTimeout(() => {
+            window.location.href = 'client_appointments.php';
+        }, 300);
+    }
+
+    // Update the window.closeModal function
+    window.closeModal = closeBookingModal;
+
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     function closeModalWithRedirect() {
@@ -457,15 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Redirect to appointments page
             window.location.href = 'client_appointments.php';
         }, 300); // Match this with your CSS transition duration
-    }
-
-    function capitalizeFirst(str) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    function closeModal() {
-        document.getElementById('confirmationModal').classList.remove('active');
-        resetBooking();
     }
 
     function resetBooking() {
@@ -540,6 +522,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Format time to ensure it includes seconds
+        const formattedTime = selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
+
         try {
             const response = await fetch('../php/appointments/fetch_available_therapists.php', {
                 method: 'POST',
@@ -548,25 +533,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({
                     date: selectedDate,
-                    time: selectedTime,
-                    specialization: specialization,
-                    searchTerm: searchTerm
+                    time: formattedTime,
+                    specialization: specialization || '',
+                    searchTerm: searchTerm || ''
                 })
             });
 
             const result = await response.json();
-            const therapistList = document.getElementById('therapistList');
+            console.log('API Response:', result); // Add this for debugging
             
-            if (result.success && result.data.length > 0) {
+            if (result.success) {
                 renderTherapistList(result.data);
             } else {
-                therapistList.innerHTML = `
-                    <div class="no-therapists-message">
-                        <i class="fas fa-user-md"></i>
-                        <p>No therapists available for the selected time slot.</p>
-                        <p>Please try a different date or time.</p>
-                    </div>
-                `;
+                throw new Error(result.error || 'Failed to fetch available therapists');
             }
         } catch (error) {
             console.error('Error filtering therapists:', error);
@@ -648,3 +627,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Move closeModal outside the main event listener to make it globally accessible
+window.closeModal = function() {
+    const modal = document.getElementById('confirmationModal');
+    modal.classList.remove('active');
+    setTimeout(() => {
+        window.location.href = 'client_appointments.php';
+    }, 300);
+};

@@ -36,6 +36,7 @@ CREATE TABLE `appointments` (
   `session_type` enum('video','voice','chat') NOT NULL,
   `status` enum('pending','confirmed','cancelled','completed') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
+  `cancellation_reason` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
