@@ -24,7 +24,7 @@ try {
     // Get day name (Monday, Tuesday, etc.)
     $dayName = strtolower(date('l', strtotime($data['date'])));
     
-    // Updated query to properly check availability and active status
+    // Updated query to handle time slots properly
     $sql = "SELECT DISTINCT t.*, 
             GROUP_CONCAT(DISTINCT ta.day) as working_days,
             ta.start_time,
@@ -35,17 +35,30 @@ try {
             INNER JOIN therapist_availability ta ON t.therapist_id = ta.therapist_id
             LEFT JOIN appointments a ON t.therapist_id = a.therapist_id 
                 AND a.appointment_date = ? 
-                AND TIME(?) BETWEEN a.appointment_time AND ADDTIME(a.appointment_time, '01:00:00')
+                AND a.appointment_time = ?
                 AND a.status NOT IN ('cancelled', 'rejected')
             WHERE t.status = 'Active'
             AND LOWER(ta.day) = ?
             AND ? >= ta.start_time 
-            AND ? <= ta.end_time
-            AND (ta.break_start IS NULL 
-                OR ? NOT BETWEEN ta.break_start AND ta.break_end)
+            -- Allow booking at any time where the full hour appointment fits in the schedule
+            AND ADDTIME(?, '01:00:00') <= ta.end_time
+            -- Ensure the appointment doesn't start during break time
+            AND (
+                ta.break_start IS NULL 
+                OR ta.break_end IS NULL
+                OR ? NOT BETWEEN ta.break_start AND SUBTIME(ta.break_end, '00:00:01')
+            )
+            -- Check there's no existing appointment at this time
             AND (a.appointment_id IS NULL OR a.status IN ('cancelled', 'rejected'))";
 
-    $params = [$data['date'], $data['time'], $dayName, $data['time'], $data['time'], $data['time']];
+    $params = [
+        $data['date'], 
+        $data['time'],
+        strtolower($dayName),
+        $data['time'],
+        $data['time'],
+        $data['time']
+    ];
     $types = "ssssss";
 
     // Add search filters if provided
@@ -72,22 +85,43 @@ try {
     }
 
     $stmt->bind_param($types, ...$params);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        throw new Exception("Query execution failed: " . $stmt->error);
+    }
+
     $result = $stmt->get_result();
 
     $therapists = [];
     while ($row = $result->fetch_assoc()) {
+        // Parse times for accurate comparison
+        $appointmentTime = strtotime($data['time']);
+        $appointmentEndTime = strtotime("+1 hour", $appointmentTime);
+        $endTime = strtotime($row['end_time']);
+        
+        // Double-check availability with more precise time calculations
         $available = true;
         
-        // Additional availability check for break time
-        if ($row['break_start'] && $row['break_end']) {
-            $appointmentTime = strtotime($data['time']);
+        // Check end time constraint - appointment end time must not exceed work end time
+        if ($appointmentEndTime > $endTime) {
+            $available = false;
+        }
+        
+        // Check break time constraint
+        if ($available && $row['break_start'] && $row['break_end']) {
             $breakStart = strtotime($row['break_start']);
             $breakEnd = strtotime($row['break_end']);
             
+            // Case 1: Appointment starts during break
             if ($appointmentTime >= $breakStart && $appointmentTime < $breakEnd) {
                 $available = false;
             }
+            
+            // Case 2: Appointment spans across break time
+            if ($appointmentTime < $breakStart && $appointmentEndTime > $breakStart) {
+                $available = false;
+            }
+            
+            // Note: Allowing booking exactly at the end of break time (breakEnd == appointmentTime is allowed)
         }
 
         if ($available) {
@@ -123,10 +157,12 @@ try {
     ]);
 
 } catch (Exception $e) {
+    error_log("Error in fetch_available_therapists.php: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()
     ]);
+} finally {
+    if (isset($stmt)) $stmt->close();
+    $conn->close();
 }
-
-$conn->close();

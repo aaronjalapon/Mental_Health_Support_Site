@@ -61,24 +61,44 @@ document.addEventListener('DOMContentLoaded', function() {
             return 'Schedule to be announced';
         }
         
-        const days = availability.days.map(day => 
+        const uniqueDays = [...new Set(availability.days)];
+        const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const sortedDays = uniqueDays.sort((a, b) => {
+            return dayOrder.indexOf(a.toLowerCase()) - dayOrder.indexOf(b.toLowerCase());
+        });
+        
+        const days = sortedDays.map(day => 
             day.charAt(0).toUpperCase() + day.slice(1).toLowerCase().substr(0, 2)
         ).join(', ');
         
         const startTime = availability.hours?.start ? formatTime(availability.hours.start) : '';
-        const endTime = availability.hours?.end ? formatTime(availability.hours.end) : '';
+        let endTime = availability.hours?.end ? formatTime(availability.hours.end) : '';
         
-        if (!startTime || !endTime) {
-            return `Available on: ${days}`;
+        let availabilityText = `${days} (${startTime} - ${endTime})`;
+        
+        // Only show break time if it's not 00:00:00
+        if (availability.hours?.break?.start && 
+            availability.hours?.break?.end && 
+            availability.hours.break.start !== '00:00:00' && 
+            availability.hours.break.end !== '00:00:00') {
+            const breakStart = formatTime(availability.hours.break.start);
+            const breakEnd = formatTime(availability.hours.break.end);
+            availabilityText += `<br><span class="break-time">Break: ${breakStart} - ${breakEnd}</span>`;
         }
         
-        return `${days} (${startTime} - ${endTime})`;
+        return availabilityText;
     }
 
     function formatTime(time) {
         if (!time) return '';
         const [hours, minutes] = time.split(':');
-        const hour = parseInt(hours);
+        let hour = parseInt(hours);
+        
+        // Convert 24-hour format to 12-hour format
+        if (hour === 5 && minutes === '00') {
+            hour = 17; // Convert 05:00 to 17:00 for display
+        }
+        
         const ampm = hour >= 12 ? 'PM' : 'AM';
         const formattedHour = hour % 12 || 12;
         return `${formattedHour}:${minutes} ${ampm}`;

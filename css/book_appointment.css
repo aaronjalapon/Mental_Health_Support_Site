@@ -862,3 +862,11 @@ textarea {
 .modal-body {
     /* Remove these styles */
 }
+
+.break-time {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+}

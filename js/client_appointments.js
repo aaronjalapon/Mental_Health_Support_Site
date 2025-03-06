@@ -49,7 +49,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         list.innerHTML = appointments.map(appointment => {
-            const status = appointment.status.toLowerCase();
+            // Add null checks and default values
+            const therapistName = appointment.therapist_name || 'Not Assigned';
+            const status = (appointment.status || 'pending').toLowerCase();
+            const sessionType = appointment.session_type || 'video';
+            const appointmentDate = appointment.date ? formatDate(appointment.date) : 'Date not set';
+            const appointmentTime = appointment.time ? formatTime(appointment.time) : 'Time not set';
+            
             const statusIcon = {
                 'pending': 'fa-clock',
                 'upcoming': 'fa-calendar-check',
@@ -62,12 +68,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 'video': 'fa-video',
                 'voice': 'fa-microphone',
                 'chat': 'fa-comments'
-            }[appointment.session_type.toLowerCase()] || 'fa-video';
+            }[sessionType.toLowerCase()] || 'fa-video';
     
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
-                        <h3>Session with ${appointment.therapist_name}</h3>
+                        <h3>Session with ${therapistName}</h3>
                         <span class="appointment-status status-${status}">
                             <i class="fas ${statusIcon}"></i> ${status}
                         </span>
@@ -76,17 +82,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
                             <span class="detail-label">Date:</span>
-                            <span class="detail-value">${formatDate(appointment.date)}</span>
+                            <span class="detail-value">${appointmentDate}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-clock"></i>
                             <span class="detail-label">Time:</span>
-                            <span class="detail-value">${formatTime(appointment.time)}</span>
+                            <span class="detail-value">${appointmentTime}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas ${sessionIcon}"></i>
                             <span class="detail-label">Type:</span>
-                            <span class="detail-value">${formatSessionType(appointment.session_type)}</span>
+                            <span class="detail-value">${formatSessionType(sessionType)}</span>
                         </div>
                     </div>
                     ${renderAppointmentActions(appointment)}
@@ -257,7 +263,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper functions
     function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        if (!dateString) return 'Date not set';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Invalid Date';
+        
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -266,11 +276,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatTime(timeString) {
-        return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
+        if (!timeString) return 'Time not set';
+        try {
+            return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
+        }
     }
 
     function showError(message) {

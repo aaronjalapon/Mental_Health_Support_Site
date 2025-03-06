@@ -342,7 +342,8 @@ ALTER TABLE `therapists`
 --
 ALTER TABLE `therapist_availability`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `therapist_day` (`therapist_id`,`day`);
+  ADD KEY `therapist_day` (`therapist_id`,`day`),
+  ADD UNIQUE KEY `unique_therapist_day` (`therapist_id`, `day`);
 
 --
 -- AUTO_INCREMENT for dumped tables

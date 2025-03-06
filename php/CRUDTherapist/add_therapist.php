@@ -79,6 +79,13 @@ try {
         // Handle availability if provided
         if (!empty($_POST['availableDays'])) {
             $therapist_id = $stmt->insert_id;
+            
+            // First delete existing availability for this therapist
+            $delete_stmt = $conn->prepare("DELETE FROM therapist_availability WHERE therapist_id = ?");
+            $delete_stmt->bind_param("i", $therapist_id);
+            $delete_stmt->execute();
+
+            // Then insert new availability
             $avail_stmt = $conn->prepare("
                 INSERT INTO therapist_availability 
                 (therapist_id, day, start_time, end_time, break_start, break_end)
@@ -91,8 +98,8 @@ try {
                     $day,
                     $_POST['startTime'],
                     $_POST['endTime'],
-                    $_POST['breakStart'],
-                    $_POST['breakEnd']
+                    $_POST['breakStart'] ?: null,
+                    $_POST['breakEnd'] ?: null
                 );
                 $avail_stmt->execute();
             }
