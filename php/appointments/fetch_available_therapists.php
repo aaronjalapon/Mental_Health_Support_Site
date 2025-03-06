@@ -12,16 +12,48 @@ if (!isset($data['date']) || !isset($data['time'])) {
 }
 
 try {
+    // Basic validation
+    if (empty($data['date']) || empty($data['time'])) {
+        throw new Exception('Date and time are required');
+    }
+    
+    if (strtotime($data['date']) < strtotime(date('Y-m-d'))) {
+        throw new Exception('Cannot book appointments in the past');
+    }
+    
+    // Get day name (Monday, Tuesday, etc.)
     $dayName = strtolower(date('l', strtotime($data['date'])));
     
-    // First get all active therapists
-    $sql = "SELECT t.* 
-            FROM therapists t 
-            WHERE t.status = 'Active'";
+    // Base query to get available therapists
+    $sql = "SELECT DISTINCT t.*, 
+            GROUP_CONCAT(DISTINCT ta.day) as working_days,
+            ta.start_time,
+            ta.end_time
+            FROM therapists t
+            INNER JOIN therapist_availability ta ON t.therapist_id = ta.therapist_id
+            LEFT JOIN appointments a ON t.therapist_id = a.therapist_id 
+                AND a.appointment_date = ? 
+                AND a.appointment_time = ?
+                AND a.status NOT IN ('cancelled', 'rejected')
+            WHERE t.status = 'Active'
+            AND LOWER(ta.day) = ?
+            AND TIME(?) BETWEEN ta.start_time AND ta.end_time
+            AND (ta.break_start IS NULL 
+                OR TIME(?) NOT BETWEEN ta.break_start AND ta.break_end)
+            AND a.appointment_id IS NULL";
+
+    $params = [$data['date'], $data['time'], $dayName, $data['time'], $data['time']];
+    $types = "sssss";
 
     // Add search filters if provided
-    $params = [];
-    $types = "";
+    if (!empty($data['searchTerm'])) {
+        $searchTerm = "%" . strtolower($data['searchTerm']) . "%";
+        $sql .= " AND (LOWER(t.first_name) LIKE ? 
+                      OR LOWER(t.last_name) LIKE ? 
+                      OR LOWER(t.specialization) LIKE ?)";
+        $params = array_merge($params, [$searchTerm, $searchTerm, $searchTerm]);
+        $types .= "sss";
+    }
 
     if (!empty($data['specialization'])) {
         $sql .= " AND LOWER(t.specialization) = LOWER(?)";
@@ -29,106 +61,43 @@ try {
         $types .= "s";
     }
 
-    if (!empty($data['searchTerm'])) {
-        $sql .= " AND (
-            LOWER(t.first_name) LIKE ? OR 
-            LOWER(t.last_name) LIKE ? OR 
-            LOWER(t.specialization) LIKE ?
-        )";
-        $searchTerm = "%" . strtolower($data['searchTerm']) . "%";
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $types .= "sss";
+    $sql .= " GROUP BY t.therapist_id";
+    
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        throw new Exception("Database error: " . $conn->error);
     }
 
-    // Prepare and execute the query
-    $stmt = $conn->prepare($sql);
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $therapists = [];
     while ($row = $result->fetch_assoc()) {
-        // Check availability for each therapist
-        $availSql = "SELECT * FROM therapist_availability 
-                     WHERE therapist_id = ? 
-                     AND day = ?
-                     AND ? BETWEEN start_time AND end_time
-                     AND (? NOT BETWEEN COALESCE(break_start, '00:00:00') 
-                         AND COALESCE(break_end, '00:00:00') 
-                         OR break_start IS NULL)";
-        
-        $availStmt = $conn->prepare($availSql);
-        $availStmt->bind_param("isss", 
-            $row['therapist_id'], 
-            $dayName,
-            $data['time'],
-            $data['time']
-        );
-        $availStmt->execute();
-        $availResult = $availStmt->get_result();
-
-        // Check if there are no conflicting appointments
-        $appointmentSql = "SELECT 1 FROM appointments 
-                          WHERE therapist_id = ? 
-                          AND appointment_date = ?
-                          AND appointment_time = ?
-                          AND status != 'cancelled'";
-        
-        $apptStmt = $conn->prepare($appointmentSql);
-        $apptStmt->bind_param("iss", 
-            $row['therapist_id'],
-            $data['date'],
-            $data['time']
-        );
-        $apptStmt->execute();
-        $apptResult = $apptStmt->get_result();
-
-        // Only add therapist if they are available and have no conflicting appointments
-        if ($availResult->num_rows > 0 && $apptResult->num_rows === 0) {
-            // Get full availability schedule
-            $scheduleSql = "SELECT day, start_time, end_time, break_start, break_end 
-                           FROM therapist_availability 
-                           WHERE therapist_id = ?
-                           ORDER BY FIELD(day, 'monday', 'tuesday', 'wednesday', 
-                                        'thursday', 'friday', 'saturday', 'sunday')";
-            
-            $scheduleStmt = $conn->prepare($scheduleSql);
-            $scheduleStmt->bind_param("i", $row['therapist_id']);
-            $scheduleStmt->execute();
-            $scheduleResult = $scheduleStmt->get_result();
-            
-            $schedule = [];
-            while ($scheduleRow = $scheduleResult->fetch_assoc()) {
-                $schedule[] = $scheduleRow;
-            }
-
-            $therapists[] = [
-                'therapist_id' => $row['therapist_id'],
-                'firstName' => $row['first_name'],
-                'lastName' => $row['last_name'],
-                'specialization' => $row['specialization'],
-                'experience' => (int)$row['experience_years'],
-                'email' => $row['email'],
-                'bio' => $row['bio'],
-                'availability' => [
-                    'days' => array_column($schedule, 'day'),
-                    'hours' => [
-                        'start' => $schedule[0]['start_time'] ?? null,
-                        'end' => $schedule[0]['end_time'] ?? null
-                    ],
-                    'schedule' => $schedule
+        $therapists[] = [
+            'therapist_id' => $row['therapist_id'],
+            'firstName' => $row['first_name'],
+            'lastName' => $row['last_name'],
+            'specialization' => $row['specialization'],
+            'experience' => (int)$row['experience_years'],
+            'email' => $row['email'],
+            'phone' => $row['phone'],
+            'bio' => $row['bio'],
+            'status' => $row['status'],
+            'availability' => [
+                'days' => explode(',', $row['working_days'] ?? ''),
+                'hours' => [
+                    'start' => $row['start_time'],
+                    'end' => $row['end_time']
                 ]
-            ];
-        }
+            ]
+        ];
     }
 
     echo json_encode([
         'success' => true,
-        'data' => $therapists
+        'data' => $therapists,
+        'message' => empty($therapists) ? 'No therapists available for the selected time slot' : null
     ]);
 
 } catch (Exception $e) {

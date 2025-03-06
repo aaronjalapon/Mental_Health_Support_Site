@@ -57,18 +57,18 @@ $isAdmin = $_SESSION['role'] === 'admin';
                                        max="17:00" 
                                        step="1800"
                                        required>
-                                <small class="form-text">Available hours: 9:00 AM - 5:00 PM (30-minute slots)</small>
-                                <button type="button" id="checkAvailability" class="btn btn-secondary">
+                                <small class="form-text">Available hours: 9:00 AM - 5:00 PM (maximum of 1-hour per session)</small>
+                                <!-- <button type="button" id="checkAvailability" class="btn btn-secondary">
                                     Check Available Therapists
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="availabilityMessage" class="availability-message" style="display: none;">
+                <!-- <div id="availabilityMessage" class="availability-message" style="display: none;">
                     <p>Showing therapists available on <span id="selectedDateTime"></span></p>
-                </div>
+                </div> -->
 
                 <div class="therapist-selection">
                     <h2>Select a Therapist</h2>
@@ -120,7 +120,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <h2>Booking Confirmed!</h2>
-            <p>Your appointment has been successfully scheduled.</p>
+            <p>Your appointment is waiting for the therapist's approval.<br></p>
             <div id="appointmentDetails">
                 <!-- Appointment details will be shown here -->
             </div>

@@ -51,7 +51,7 @@ function redirectToLogin() {
         <img id="guided-meditation" src="/images/guided-meditation.png" alt="Guided Meditation">
         <h2>Guided Meditations</h2>
         <p>Relax and recharge with our curated meditations.</p>
-        <a href="#" class="feature-link">Explore</a>
+        <a href="#" onclick="redirectToGuidedMeditations()" class="feature-link">Explore</a>
       </div>
       <div class="feature">
         <img id="professional-support" src="/images/professional-support.png" alt="Professional Support">

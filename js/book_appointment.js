@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Form submission
         document.getElementById('bookingForm').addEventListener('submit', handleBookingSubmission);
         
+        
         // Cancel booking
         document.getElementById('cancelBooking').addEventListener('click', resetBooking);
 
@@ -409,13 +410,57 @@ document.addEventListener('DOMContentLoaded', function() {
         
         details.innerHTML = `
             <div class="confirmation-details">
-                <p><strong>Therapist:</strong> ${selectedTherapist.firstName} ${selectedTherapist.lastName}</p>
-                <p><strong>Date:</strong> ${formatDate(booking.date)}</p>
-                <p><strong>Session Type:</strong> ${booking.sessionType}</p>
+                <div class="detail-item">
+                    <i class="fas fa-user-md"></i>
+                    <span><strong>Therapist:</strong> ${booking.therapist.firstName} ${booking.therapist.lastName}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar"></i>
+                    <span><strong>Date:</strong> ${formatDate(booking.appointment_date)}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-clock"></i>
+                    <span><strong>Time:</strong> ${formatTimeSlot(booking.appointment_time)}</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-video"></i>
+                    <span><strong>Session Type:</strong> ${capitalizeFirst(booking.session_type)}</span>
+                </div>
+                ${booking.notes ? `
+                <div class="detail-item">
+                    <i class="fas fa-sticky-note"></i>
+                    <span><strong>Notes:</strong> ${booking.notes}</span>
+                </div>
+                ` : ''}
+            </div>
+            <div class="confirmation-notice">
+                <i class="fas fa-info-circle"></i>
+                <p>You will receive an email notification once the therapist confirms your appointment.</p>
             </div>
         `;
         
-        modal.classList.add('active');
+        // Add animation class
+        modal.classList.add('active', 'fade-in');
+        
+        // Add event listener for the Done button
+        modal.querySelector('.btn-primary').addEventListener('click', () => {
+            closeModalWithRedirect();
+        });
+    }
+
+    function closeModalWithRedirect() {
+        const modal = document.getElementById('confirmationModal');
+        modal.classList.add('fade-out');
+        
+        setTimeout(() => {
+            modal.classList.remove('active', 'fade-in', 'fade-out');
+            // Redirect to appointments page
+            window.location.href = 'client_appointments.php';
+        }, 300); // Match this with your CSS transition duration
+    }
+
+    function capitalizeFirst(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
     function closeModal() {

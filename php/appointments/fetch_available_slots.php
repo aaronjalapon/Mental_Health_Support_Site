@@ -18,68 +18,87 @@ if (!$therapist_id || !$date) {
 }
 
 try {
-    // Get therapist's availability for the given day
-    $sql = "SELECT start_time, end_time, break_start, break_end 
-            FROM therapist_availability 
-            WHERE therapist_id = ? 
-            AND LOWER(day) = LOWER(DAYNAME(?))";
+    // Get day name from date
+    $dayName = date('l', strtotime($date));
+    
+    // Get therapist's schedule for the given day
+    $sql = "SELECT start_time, end_time, break_start, break_end
+            FROM therapist_availability
+            WHERE therapist_id = ?
+            AND LOWER(day) = LOWER(?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $therapist_id, $date);
+    $stmt->bind_param("is", $therapist_id, $dayName);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        echo json_encode(['success' => false, 'error' => 'Therapist not available on this day']);
+        echo json_encode(['success' => false, 'error' => 'No availability found for this day']);
         exit();
     }
 
-    $availability = $result->fetch_assoc();
-
-    // Get existing appointments for the day
+    $schedule = $result->fetch_assoc();
+    
+    // Get already booked appointments
     $sql = "SELECT appointment_time 
             FROM appointments 
             WHERE therapist_id = ? 
             AND appointment_date = ? 
-            AND status != 'cancelled'";
-
+            AND status NOT IN ('cancelled', 'rejected')";
+            
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $therapist_id, $date);
     $stmt->execute();
     $result = $stmt->get_result();
-
+    
     $booked_slots = [];
     while ($row = $result->fetch_assoc()) {
         $booked_slots[] = $row['appointment_time'];
     }
-
-    // Generate available time slots (30-minute intervals)
+    
+    // Generate available slots (30-minute intervals)
     $available_slots = [];
-    $start = strtotime($availability['start_time']);
-    $end = strtotime($availability['end_time']);
-    $break_start = $availability['break_start'] ? strtotime($availability['break_start']) : null;
-    $break_end = $availability['break_end'] ? strtotime($availability['break_end']) : null;
-
-    for ($time = $start; $time < $end; $time += 1800) {
+    $start = strtotime($schedule['start_time']);
+    $end = strtotime($schedule['end_time']);
+    
+    // Fix for some therapists having incorrect time ranges (start > end)
+    if ($start > $end) {
+        // Swap start and end times
+        $temp = $start;
+        $start = $end;
+        $end = $temp;
+    }
+    
+    for ($time = $start; $time < $end; $time += 1800) { // 1800 seconds = 30 minutes
         $slot = date('H:i:s', $time);
         
         // Skip if slot is during break time
-        if ($break_start && $break_end) {
-            if ($time >= $break_start && $time < $break_end) {
+        if ($schedule['break_start'] && $schedule['break_end']) {
+            $break_start = strtotime($schedule['break_start']);
+            $break_end = strtotime($schedule['break_end']);
+            $current_time = strtotime($slot);
+            
+            if ($current_time >= $break_start && $current_time < $break_end) {
                 continue;
             }
         }
-
+        
         // Skip if slot is already booked
         if (!in_array($slot, $booked_slots)) {
             $available_slots[] = $slot;
         }
     }
 
-    echo json_encode(['success' => true, 'slots' => $available_slots]);
+    echo json_encode([
+        'success' => true, 
+        'slots' => $available_slots
+    ]);
 
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Error fetching available slots: ' . $e->getMessage()
+    ]);
 }
 
 $conn->close();
