@@ -25,10 +25,15 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
             window.location.href = data.redirect;
         } else if (data.status === 'success') {
             alert(data.message);
-            if (data.role === 'admin') {
-                window.location.href = '../html/admin_panel.php';
-            } else {
-                window.location.href = '/index.php';
+            switch(data.role) {
+                case 'therapist':
+                    window.location.href = '../html/therapist_appointments.php';
+                    break;
+                case 'admin':
+                    window.location.href = '../html/admin_panel.php';
+                    break;
+                default:
+                    window.location.href = '/index.php';
             }
         } else {
             alert(data.message);

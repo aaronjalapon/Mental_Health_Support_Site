@@ -29,7 +29,7 @@ try {
         }
     }
 
-    // Rest of your existing authentication code...
+    // Check client table first
     $stmt = $conn->prepare("SELECT * FROM client WHERE email = ? OR username = ?");
     $stmt->bind_param("ss", $login_input, $login_input);
     $stmt->execute();
@@ -95,7 +95,43 @@ try {
             echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
+        // If not found in client table, check therapist table
+        $stmt = $conn->prepare("SELECT * FROM therapists WHERE email = ? OR username = ?");
+        $stmt->bind_param("ss", $login_input, $login_input);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            
+            if (password_verify($password, $row['password'])) {
+                if ($row['status'] == 'Active') { // Check status instead of verification
+                    $_SESSION['unique_id'] = $row['unique_id'];
+                    $_SESSION['email'] = $row['email'];
+                    $_SESSION['firstName'] = $row['first_name'];
+                    $_SESSION['lastName'] = $row['last_name'];
+                    $_SESSION['username'] = $row['username'];
+                    $_SESSION['role'] = 'therapist';
+                    $_SESSION['therapist_id'] = $row['therapist_id'];
+                    
+                    echo json_encode([
+                        'status' => 'success', 
+                        'role' => 'therapist', 
+                        'message' => 'Login Successful!',
+                        'redirect' => '../html/therapist_appointments.php'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => 'Your account is currently ' . strtolower($row['status']) . '. Please contact admin.'
+                    ]);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid credentials!']);
+        }
     }
 
 } catch (Exception $e) {

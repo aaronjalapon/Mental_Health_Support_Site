@@ -4,144 +4,162 @@ include_once '../db.php';
 
 header('Content-Type: application/json');
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
-    http_response_code(401);
     echo json_encode(['error' => 'Unauthorized']);
     exit();
 }
 
 try {
-    $input = file_get_contents('php://input');
-    error_log("Raw input received: " . $input);
+    // Debug logging
+    error_log("Received POST data: " . print_r($_POST, true));
     
-    $data = json_decode($input, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON: ' . json_last_error_msg());
+    // Get and validate therapist ID
+    $id = $_POST['editTherapistId'] ?? null;
+    if (!$id) {
+        error_log("Missing therapist ID in request");
+        throw new Exception("Missing therapist ID");
     }
 
-    error_log("Decoded data: " . print_r($data, true));
+    // Required fields array
+    $required_fields = ['firstName', 'lastName', 'username', 'email', 'specialization'];
+    $missing_fields = [];
 
-    if (!isset($data['id']) || empty($data['id']) || $data['id'] === 'undefined') {
-        throw new Exception('Invalid or missing therapist ID');
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $missing_fields[] = $field;
+        }
     }
 
-    // Clean and validate the ID
-    $therapist_id = filter_var($data['id'], FILTER_VALIDATE_INT);
-    if ($therapist_id === false || $therapist_id <= 0) {
-        throw new Exception("Invalid therapist ID format: " . var_export($data['id'], true));
+    if (!empty($missing_fields)) {
+        throw new Exception("Missing required fields: " . implode(', ', $missing_fields));
+    }
+
+    // Validate and sanitize inputs
+    $firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_STRING);
+    $lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_STRING);
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+    $specialization = filter_input(INPUT_POST, 'specialization', FILTER_SANITIZE_STRING);
+    $experience = filter_input(INPUT_POST, 'experience', FILTER_SANITIZE_NUMBER_INT);
+    $bio = filter_input(INPUT_POST, 'bio', FILTER_SANITIZE_STRING);
+    $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_STRING);
+
+    // Log sanitized data
+    error_log("Sanitized data: " . json_encode([
+        'id' => $id,
+        'firstName' => $firstName,
+        'lastName' => $lastName,
+        'username' => $username,
+        'email' => $email,
+        'specialization' => $specialization
+    ]));
+
+    // Validate required fields
+    if (!$firstName || !$lastName || !$username || !$email || !$specialization) {
+        throw new Exception("All required fields must be filled");
     }
 
     // Begin transaction
     $conn->begin_transaction();
 
-    // Verify therapist exists with detailed error
-    $check_stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE therapist_id = ?");
-    $check_stmt->bind_param("i", $therapist_id);
-    $check_stmt->execute();
-    $result = $check_stmt->get_result();
-    
-    if ($result->num_rows === 0) {
-        throw new Exception("Therapist not found with ID: $therapist_id");
-    }
+    try {
+        // Check if username exists for other therapists
+        $stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE username = ? AND therapist_id != ?");
+        $stmt->bind_param("si", $username, $id);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows > 0) {
+            throw new Exception("Username already exists");
+        }
 
-    // Update therapist basic info
-    $update_query = "UPDATE therapists SET 
-        first_name = ?,
-        last_name = ?,
-        specialization = ?,
-        experience_years = ?,
-        email = ?,
-        phone = ?,
-        bio = ?,
-        status = ?
-        WHERE therapist_id = ?";
+        // Check if email exists for other therapists
+        $stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE email = ? AND therapist_id != ?");
+        $stmt->bind_param("si", $email, $id);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows > 0) {
+            throw new Exception("Email already exists");
+        }
 
-    $stmt = $conn->prepare($update_query);
-    if (!$stmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
+        // Update therapist information
+        $update_query = "UPDATE therapists SET 
+            first_name = ?,
+            last_name = ?,
+            username = ?,
+            email = ?,
+            phone = ?,
+            specialization = ?,
+            experience_years = ?,
+            bio = ?,
+            status = ?
+            WHERE therapist_id = ?";
 
-    $stmt->bind_param("sssissssi",
-        $data['firstName'],
-        $data['lastName'],
-        $data['specialization'],
-        $data['experience'],
-        $data['email'],
-        $data['phone'],
-        $data['bio'],
-        $data['status'],
-        $therapist_id
-    );
+        $stmt = $conn->prepare($update_query);
+        $stmt->bind_param("sssssssssi",
+            $firstName,
+            $lastName,
+            $username,
+            $email,
+            $phone,
+            $specialization,
+            $experience,
+            $bio,
+            $status,
+            $id
+        );
 
-    if (!$stmt->execute()) {
-        throw new Exception("Failed to update therapist information");
-    }
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to update therapist");
+        }
 
-    // Handle availability update
-    $del_stmt = $conn->prepare("DELETE FROM therapist_availability WHERE therapist_id = ?");
-    $del_stmt->bind_param("i", $therapist_id);
-    $del_stmt->execute();
+        // Update availability
+        if (isset($_POST['availableDays'])) {
+            // Delete existing availability
+            $del_stmt = $conn->prepare("DELETE FROM therapist_availability WHERE therapist_id = ?");
+            $del_stmt->bind_param("i", $id);
+            $del_stmt->execute();
 
-    if (!empty($data['availability']['days'])) {
-        $avail_query = "INSERT INTO therapist_availability 
-            (therapist_id, day, start_time, end_time, break_start, break_end) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-        
-        $avail_stmt = $conn->prepare($avail_query);
-        
-        foreach ($data['availability']['days'] as $day) {
-            $break_start = !empty($data['availability']['hours']['break']['start']) 
-                ? $data['availability']['hours']['break']['start'] 
-                : null;
-            
-            $break_end = !empty($data['availability']['hours']['break']['end']) 
-                ? $data['availability']['hours']['break']['end'] 
-                : null;
+            // Insert new availability
+            $avail_stmt = $conn->prepare("
+                INSERT INTO therapist_availability 
+                (therapist_id, day, start_time, end_time, break_start, break_end)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
 
-            $avail_stmt->bind_param("isssss",
-                $therapist_id,
-                $day,
-                $data['availability']['hours']['start'],
-                $data['availability']['hours']['end'],
-                $break_start,
-                $break_end
-            );
-            
-            if (!$avail_stmt->execute()) {
-                throw new Exception("Failed to update availability for day: " . $day);
+            foreach ($_POST['availableDays'] as $day) {
+                $start_time = $_POST['startTime'] ?? null;
+                $end_time = $_POST['endTime'] ?? null;
+                $break_start = !empty($_POST['breakStart']) ? $_POST['breakStart'] : null;
+                $break_end = !empty($_POST['breakEnd']) ? $_POST['breakEnd'] : null;
+
+                $avail_stmt->bind_param("isssss",
+                    $id,
+                    $day,
+                    $start_time,
+                    $end_time,
+                    $break_start,
+                    $break_end
+                );
+                if (!$avail_stmt->execute()) {
+                    throw new Exception("Failed to update availability for day: $day");
+                }
             }
         }
-    }
 
-    $conn->commit();
-    echo json_encode([
-        'success' => true,
-        'message' => 'Therapist updated successfully',
-        'therapist_id' => $therapist_id
-    ]);
+        $conn->commit();
+        echo json_encode(['success' => true, 'message' => 'Therapist updated successfully']);
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        throw $e;
+    }
 
 } catch (Exception $e) {
-    if (isset($conn)) {
-        $conn->rollback();
-    }
-    error_log("Update error: " . $e->getMessage());
-    http_response_code(400); // Set appropriate error status
-    echo json_encode([
-        'error' => $e->getMessage(),
-        'debug_info' => [
-            'received_data' => $data ?? null,
-            'raw_input' => $input ?? null,
-            'id_value' => $data['id'] ?? 'not set',
-            'id_type' => isset($data['id']) ? gettype($data['id']) : 'undefined'
-        ]
-    ]);
+    error_log("Error in update_therapist.php: " . $e->getMessage());
+    echo json_encode(['error' => $e->getMessage()]);
 } finally {
-    if (isset($conn)) {
-        $conn->close();
-    }
+    if (isset($stmt)) $stmt->close();
+    if (isset($avail_stmt)) $avail_stmt->close();
+    if (isset($del_stmt)) $del_stmt->close();
+    $conn->close();
 }
 ?>

@@ -100,27 +100,47 @@
 }
 
 .status-upcoming {
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border: 1px solid #a5d6a7;
-    color: #1e9160;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
 }
 
 .status-completed {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    border: 1px solid #90caf9;
+    background: #e3f2fd;
     color: #1976d2;
+    border: 1px solid #64b5f6;
 }
 
-.status-cancelled {
-    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+.status-cancelled, .status-rejected {
+    background: #ffebee;
+    color: #c62828;
     border: 1px solid #ef9a9a;
-    color: #d32f2f;
 }
 
 .status-pending {
-    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-    border: 1px solid #ffb74d;
+    background: #fff3e0;
     color: #f57c00;
+    border: 1px solid #ffb74d;
+}
+
+.appointment-status i {
+    margin-right: 0.5rem;
+}
+
+.status-pending i {
+    color: #f57c00;
+}
+
+.status-upcoming i {
+    color: #2e7d32;
+}
+
+.status-completed i {
+    color: #1976d2;
+}
+
+.status-cancelled i, .status-rejected i {
+    color: #c62828;
 }
 
 .appointment-details {

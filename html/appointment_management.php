@@ -44,10 +44,11 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <div class="filter-group">
                     <select class="form-input" id="filterStatus">
-                        <option value="">All Status</option>
-                        <option value="scheduled">Scheduled</option>
+                        <option value="all">All Status</option>
+                        <option value="upcoming">Upcoming</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
+                        <option value="pending">Pending</option>
                     </select>
                 </div>
             </div>

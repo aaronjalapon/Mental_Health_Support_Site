@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add event listeners
     document.getElementById('statusFilter').addEventListener('change', filterAppointments);
+    document.getElementById('typeFilter').addEventListener('change', filterAppointments);
     document.getElementById('dateFilter').addEventListener('change', filterAppointments);
     document.getElementById('searchClient').addEventListener('input', filterAppointments);
     document.getElementById('clearFilters').addEventListener('click', clearFilters);
@@ -35,65 +36,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function filterAppointments() {
-        const statusValue = document.getElementById('statusFilter').value;
+        const statusValue = document.getElementById('statusFilter').value.toLowerCase();
+        const typeValue = document.getElementById('typeFilter').value.toLowerCase();
         const dateValue = document.getElementById('dateFilter').value;
         const searchValue = document.getElementById('searchClient').value.toLowerCase();
 
-        const list = document.getElementById('appointmentsList');
-        const cards = list.getElementsByClassName('appointment-card');
-
-        let visibleCount = 0;
-
-        Array.from(cards).forEach(card => {
-            const status = card.querySelector('.appointment-status').textContent.trim();
-            const date = card.querySelector('.detail-value').textContent;
-            const clientName = card.querySelector('h3').textContent.toLowerCase();
-
-            const statusMatch = !statusValue || status === statusValue;
-            const dateMatch = !dateValue || date.includes(dateValue);
-            const searchMatch = !searchValue || clientName.includes(searchValue);
-
-            if (statusMatch && dateMatch && searchMatch) {
-                card.style.display = 'block';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
+        loadAppointments({
+            status: statusValue,
+            type: typeValue,
+            date: dateValue,
+            search: searchValue
         });
-
-        if (visibleCount === 0) {
-            showEmptyState();
-        } else {
-            hideEmptyState();
-        }
     }
 
-    async function loadAppointments() {
+    async function loadAppointments(filters = {}) {
         try {
-            const response = await fetch('../php/appointments/fetch_therapist_appointments.php');
-            const text = await response.text();
+            const response = await fetch('../php/appointments/fetch_therapist_appointments.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filters)
+            });
 
-            let appointments;
-            try {
-                appointments = JSON.parse(text);
-            } catch (parseError) {
-                console.error('Invalid JSON response:', text);
-                throw new Error('Server returned invalid data');
-            }
+            const result = await response.json();
             
-            if (!Array.isArray(appointments)) {
-                throw new Error('Expected array of appointments');
-            }
-            
-            if (appointments.length === 0) {
-                showEmptyState();
+            if (result.success) {
+                renderAppointments(result.data);
+                updateSummaryCount(result.data);
             } else {
-                renderAppointments(appointments);
-                updateSummaryCount(appointments);
+                throw new Error(result.error || 'Failed to load appointments');
             }
         } catch (error) {
             console.error('Error loading appointments:', error);
-            showError('Failed to load appointments: ' + error.message);
+            showError('Failed to load appointments');
             showEmptyState();
         }
     }
@@ -101,15 +77,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSummaryCount(appointments) {
         const today = new Date().toISOString().split('T')[0];
         
-        const todayCount = appointments.filter(app => app.date === today).length;
+        const todayCount = appointments.filter(app => 
+            app.date === today).length;
+        
         const upcomingCount = appointments.filter(app => 
-            app.status === 'UPCOMING' && app.date >= today).length;
+            app.status.toLowerCase() === 'upcoming').length;
+        
         const completedCount = appointments.filter(app => 
-            app.status === 'COMPLETED').length;
+            app.status.toLowerCase() === 'completed').length;
+        
+        const pendingCount = appointments.filter(app => 
+            app.status.toLowerCase() === 'pending').length;
 
         document.getElementById('todayCount').textContent = todayCount;
         document.getElementById('upcomingCount').textContent = upcomingCount;
         document.getElementById('completedCount').textContent = completedCount;
+        document.getElementById('pendingCount').textContent = pendingCount;
     }
 
     function showEmptyState() {
@@ -130,88 +113,158 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderAppointments(appointments) {
         const list = document.getElementById('appointmentsList');
-        if (appointments.length === 0) {
+        
+        if (!appointments || appointments.length === 0) {
             showEmptyState();
             return;
         }
-        
-        hideEmptyState();
-        list.innerHTML = appointments.map(appointment => `
-            <div class="appointment-card" data-id="${appointment.id}">
-                <div class="appointment-header">
-                    <h3>Session with ${appointment.client_name}</h3>
-                    <span class="appointment-status status-${appointment.status.toLowerCase()}">
-                        ${appointment.status}
-                    </span>
-                </div>
-                <div class="appointment-details">
-                    <div class="detail-item">
-                        <span class="detail-label">Date</span>
-                        <span class="detail-value">${formatDate(appointment.date)}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Time</span>
-                        <span class="detail-value">${formatTime(appointment.time)}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Session Type</span>
-                        <span class="detail-value">${appointment.session_type}</span>
-                    </div>
-                </div>
-                ${renderAppointmentActions(appointment)}
-            </div>
-        `).join('');
 
+        list.innerHTML = appointments.map(appointment => {
+            const status = appointment.status.toLowerCase();
+            const statusIcon = {
+                'pending': 'fa-clock',
+                'upcoming': 'fa-calendar-check',
+                'completed': 'fa-check-circle',
+                'cancelled': 'fa-times-circle',
+                'rejected': 'fa-times-circle'
+            }[status] || 'fa-calendar-check';
+
+            const sessionIcon = {
+                'video': 'fa-video',
+                'voice': 'fa-microphone',
+                'chat': 'fa-comments'
+            }[appointment.session_type.toLowerCase()] || 'fa-video';
+
+            return `
+                <div class="appointment-card" data-id="${appointment.id}">
+                    <div class="appointment-header">
+                        <h3>Session with ${appointment.client_name}</h3>
+                        <span class="appointment-status status-${status}">
+                            <i class="fas ${statusIcon}"></i> ${formatStatus(status)}
+                        </span>
+                    </div>
+                    <div class="appointment-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span class="detail-label">Date:</span>
+                            <span class="detail-value">${formatDate(appointment.date)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="detail-label">Time:</span>
+                            <span class="detail-value">${formatTime(appointment.time)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas ${sessionIcon}"></i>
+                            <span class="detail-label">Type:</span>
+                            <span class="detail-value">${formatSessionType(appointment.session_type)}</span>
+                        </div>
+                    </div>
+                    ${renderAppointmentActions(appointment)}
+                </div>
+            `;
+        }).join('');
+
+        hideEmptyState();
         attachActionListeners();
     }
 
     function renderAppointmentActions(appointment) {
+        const status = appointment.status.toLowerCase();
         const actions = [];
-        
-        if (appointment.status === 'UPCOMING' || appointment.status === 'PENDING') {
-            actions.push(`
-                <button class="btn btn-primary accept-appointment" data-id="${appointment.id}">
-                    <i class="fas fa-check"></i> Accept
-                </button>
-                <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
-                    <i class="fas fa-calendar-alt"></i> Reschedule
-                </button>
-                <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-            `);
+
+        switch(status) {
+            case 'pending':
+                actions.push(`
+                    <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-danger reject-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                        <i class="fas fa-comment"></i> Message Client
+                    </button>
+                `);
+                break;
+            case 'upcoming':
+                actions.push(`
+                    <button class="btn btn-primary start-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
+                        <i class="fas fa-play"></i> Start Session
+                    </button>
+                    <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-calendar-alt"></i> Reschedule
+                    </button>
+                    <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                        <i class="fas fa-comment"></i> Message Client
+                    </button>
+                `);
+                break;
+            case 'completed':
+                actions.push(`
+                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                        <i class="fas fa-comment"></i> Message Client
+                    </button>
+                `);
+                break;
         }
 
-        // Add message client button last (no duplicate needed)
-        actions.push(`
-            <button class="btn btn-info message-client" data-id="${appointment.id}">
-                <i class="fas fa-comment"></i> Message Client
-            </button>
-        `);
+        return actions.length ? `<div class="appointment-actions">${actions.join('')}</div>` : '';
+    }
 
-        return `<div class="appointment-actions">${actions.join('')}</div>`;
+    function getSessionTypeIcon(type) {
+        const icons = {
+            'video': 'fa-video',
+            'voice': 'fa-phone',
+            'chat': 'fa-comments'
+        };
+        return icons[type.toLowerCase()] || 'fa-calendar-check';
+    }
+
+    function formatStatus(status) {
+        const statusMap = {
+            'pending': 'Pending',
+            'upcoming': 'Upcoming',
+            'completed': 'Completed',
+            'cancelled': 'Cancelled',
+            'rejected': 'Rejected'
+        };
+        return statusMap[status.toLowerCase()] || status;
+    }
+
+    // Add this function to fix the error
+    function formatSessionType(type) {
+        const types = {
+            'video': 'Video Call',
+            'voice': 'Voice Call',
+            'chat': 'Chat Session'
+        };
+        return types[type.toLowerCase()] || type;
     }
 
     function attachActionListeners() {
-        document.querySelectorAll('.accept-appointment').forEach(button => {
-            button.addEventListener('click', handleAcceptAppointment);
-        });
-        document.querySelectorAll('.reschedule-appointment').forEach(button => {
-            button.addEventListener('click', handleRescheduleAppointment);
-        });
-        document.querySelectorAll('.cancel-appointment').forEach(button => {
-            button.addEventListener('click', handleCancelAppointment);
-        });
-        document.querySelectorAll('.message-client').forEach(button => {
-            button.addEventListener('click', handleMessageClient);
-        });
+        document.querySelectorAll('.approve-appointment').forEach(btn => 
+            btn.addEventListener('click', handleApprove));
+        document.querySelectorAll('.reject-appointment').forEach(btn => 
+            btn.addEventListener('click', handleReject));
+        document.querySelectorAll('.start-session').forEach(btn => 
+            btn.addEventListener('click', handleStartSession));
+        document.querySelectorAll('.reschedule-appointment').forEach(btn => 
+            btn.addEventListener('click', handleReschedule));
+        document.querySelectorAll('.cancel-appointment').forEach(btn => 
+            btn.addEventListener('click', handleCancel));
+        document.querySelectorAll('.message-client').forEach(btn => 
+            btn.addEventListener('click', handleMessage));
     }
 
-    async function handleAcceptAppointment(event) {
+    async function handleApprove(event) {
         const appointmentId = event.currentTarget.dataset.id;
-        if (confirm('Are you sure you want to accept this appointment?')) {
+        if (confirm('Are you sure you want to approve this appointment?')) {
             try {
-                const response = await fetch('../php/appointments/accept_appointment.php', {
+                const response = await fetch('../php/appointments/approve_appointment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ appointmentId })
@@ -219,18 +272,71 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const data = await response.json();
                 if (data.success) {
-                    showSuccess('Appointment accepted successfully');
+                    showSuccess('Appointment approved successfully');
                     loadAppointments(); // Refresh the appointments list
                 } else {
-                    throw new Error(data.error || 'Failed to accept appointment');
+                    throw new Error(data.error || 'Failed to approve appointment');
                 }
             } catch (error) {
-                showError('Failed to accept appointment: ' + error.message);
+                showError('Failed to approve appointment: ' + error.message);
             }
         }
     }
 
-    async function handleRescheduleAppointment(event) {
+    async function handleReject(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        const reason = prompt('Please provide a reason for rejection:');
+        
+        if (reason && confirm('Are you sure you want to reject this appointment?')) {
+            try {
+                const response = await fetch('../php/appointments/reject_appointment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appointmentId,
+                        reason
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Appointment rejected successfully');
+                    loadAppointments();
+                } else {
+                    throw new Error(data.error || 'Failed to reject appointment');
+                }
+            } catch (error) {
+                showError('Failed to reject appointment: ' + error.message);
+            }
+        }
+    }
+
+    async function handleStartSession(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        const sessionType = event.currentTarget.dataset.type;
+        
+        if (confirm('Are you sure you want to start this session?')) {
+            try {
+                const response = await fetch('../php/appointments/start_session.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ appointmentId, sessionType })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Session started successfully');
+                    loadAppointments(); // Refresh the appointments list
+                } else {
+                    throw new Error(data.error || 'Failed to start session');
+                }
+            } catch (error) {
+                showError('Failed to start session: ' + error.message);
+            }
+        }
+    }
+
+    async function handleReschedule(event) {
         const appointmentId = event.currentTarget.dataset.id;
         // Show reschedule modal or date picker
         const newDate = prompt('Enter new date (YYYY-MM-DD):');
@@ -261,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function handleCancelAppointment(event) {
+    async function handleCancel(event) {
         const appointmentId = event.currentTarget.dataset.id;
         const reason = prompt('Please provide a reason for cancellation:');
         
@@ -439,129 +545,78 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('noAppointments').style.display = 'block';
     }
 
-    // Close modal when clicking outside or on close button
+    function handleMessage(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        const clientName = event.currentTarget.dataset.client;
+        
+        // Show modal and populate client info
+        document.getElementById('messageClientInfo').innerHTML = `
+            <h4>To: ${clientName}</h4>
+            <p>Appointment ID: ${appointmentId}</p>
+        `;
+        
+        const messageModal = document.getElementById('messageModal');
+        messageModal.style.display = 'block';
+        
+        // Clear previous message
+        document.getElementById('messageText').value = '';
+
+        // Add form submit handler
+        document.getElementById('messageForm').onsubmit = async function(e) {
+            e.preventDefault();
+            
+            const message = document.getElementById('messageText').value.trim();
+            if (!message) return;
+
+            try {
+                const response = await fetch('../php/appointments/send_message_to_client.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        appointmentId: appointmentId,
+                        message: message
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Message sent successfully');
+                    messageModal.style.display = 'none';
+                } else {
+                    throw new Error(result.error || 'Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showError(error.message);
+            }
+        };
+    }
+
+    // Add message modal close handlers
     document.querySelectorAll('.close-modal').forEach(button => {
         button.addEventListener('click', function() {
             const modal = this.closest('.modal');
-            if (modal.id === 'availabilityModal') {
-                toggleAvailabilityModal(false);
-            }
+            modal.style.display = 'none';
         });
     });
 
+    // Close modal when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target.classList.contains('modal')) {
-            const modal = e.target;
-            if (modal.id === 'availabilityModal') {
-                toggleAvailabilityModal(false);
-            }
+            e.target.style.display = 'none';
         }
     });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Mock data - replace with actual API calls
-    const appointments = [
-        {
-            id: 1,
-            clientName: "John Doe",
-            date: "2024-01-20",
-            time: "10:00",
-            status: "upcoming",
-            type: "Initial Consultation"
-        },
-        // Add more mock appointments as needed
-    ];
-
-    const appointmentsList = document.getElementById('appointmentsList');
-    const noAppointments = document.getElementById('noAppointments');
-    
-    function displayAppointments(appointments) {
-        appointmentsList.innerHTML = '';
-        
-        if (appointments.length === 0) {
-            appointmentsList.style.display = 'none';
-            noAppointments.style.display = 'flex';
-            return;
-        }
-
-        noAppointments.style.display = 'none';
-        appointmentsList.style.display = 'block';
-
-        appointments.forEach(appointment => {
-            const appointmentCard = document.createElement('div');
-            appointmentCard.className = 'appointment-card';
-            appointmentCard.innerHTML = `
-                <div class="appointment-info">
-                    <h3>${appointment.clientName}</h3>
-                    <p><i class="far fa-calendar"></i> ${appointment.date}</p>
-                    <p><i class="far fa-clock"></i> ${appointment.time}</p>
-                    <p><i class="far fa-file-alt"></i> ${appointment.type}</p>
-                    <span class="status-badge ${appointment.status}">${appointment.status}</span>
-                </div>
-                <div class="appointment-actions">
-                    <button class="btn btn-primary">Start Session</button>
-                    <button class="btn btn-secondary">Reschedule</button>
-                    <button class="btn btn-danger">Cancel</button>
-                </div>
-            `;
-            appointmentsList.appendChild(appointmentCard);
-        });
-
-        updateCounters(appointments);
+    function clearFilters() {
+        document.getElementById('searchClient').value = '';
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('typeFilter').value = 'all';
+        document.getElementById('dateFilter').value = '';
+        loadAppointments();
     }
-
-    function updateCounters(appointments) {
-        const today = new Date().toISOString().split('T')[0];
-        
-        document.getElementById('todayCount').textContent = 
-            appointments.filter(app => app.date === today).length;
-        
-        document.getElementById('upcomingCount').textContent = 
-            appointments.filter(app => app.status === 'upcoming').length;
-        
-        document.getElementById('completedCount').textContent = 
-            appointments.filter(app => app.status === 'completed').length;
-    }
-
-    // Filter functionality
-    const searchClient = document.getElementById('searchClient');
-    const statusFilter = document.getElementById('statusFilter');
-    const dateFilter = document.getElementById('dateFilter');
-    const clearFilters = document.getElementById('clearFilters');
-
-    function applyFilters() {
-        let filtered = [...appointments];
-
-        if (searchClient.value) {
-            filtered = filtered.filter(app => 
-                app.clientName.toLowerCase().includes(searchClient.value.toLowerCase())
-            );
-        }
-
-        if (statusFilter.value) {
-            filtered = filtered.filter(app => app.status === statusFilter.value);
-        }
-
-        if (dateFilter.value) {
-            filtered = filtered.filter(app => app.date === dateFilter.value);
-        }
-
-        displayAppointments(filtered);
-    }
-
-    searchClient.addEventListener('input', applyFilters);
-    statusFilter.addEventListener('change', applyFilters);
-    dateFilter.addEventListener('change', applyFilters);
-    clearFilters.addEventListener('click', () => {
-        searchClient.value = '';
-        statusFilter.value = '';
-        dateFilter.value = '';
-        displayAppointments(appointments);
-    });
-
-    // Initial display
-    displayAppointments(appointments);
 });
 
 function handleMessageClient(event) {
@@ -614,3 +669,11 @@ window.addEventListener('click', (e) => {
         e.target.style.display = 'none';
     }
 });
+
+function clearFilters() {
+    document.getElementById('searchClient').value = '';
+    document.getElementById('statusFilter').value = 'all';
+    document.getElementById('typeFilter').value = 'all';
+    document.getElementById('dateFilter').value = '';
+    loadAppointments();
+}

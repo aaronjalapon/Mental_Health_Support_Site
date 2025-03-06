@@ -4,14 +4,14 @@ include_once '../db.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['unique_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'client') {
-    echo json_encode(['success' => false, 'error' => 'User not authenticated or not authorized']);
+if (!isset($_SESSION['unique_id'])) {
+    echo json_encode(['success' => false, 'error' => 'User not authenticated']);
     exit();
 }
 
 try {
-    // First get the client_id
-    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ? AND Role = 'client'");
+    // Get client_id from session
+    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
     $stmt->bind_param("i", $_SESSION['unique_id']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -23,12 +23,10 @@ try {
     $client = $result->fetch_assoc();
     $client_id = $client['client_id'];
 
-    // Base query
+    // Base query matching the database structure
     $sql = "SELECT 
-                a.*, 
-                CONCAT(t.first_name, ' ', t.last_name) as therapist_name,
-                t.email as therapist_email,
-                t.phone as therapist_phone
+                a.*,
+                CONCAT(t.first_name, ' ', t.last_name) as therapist_name
             FROM appointments a
             JOIN therapists t ON a.therapist_id = t.therapist_id
             WHERE a.client_id = ?";
@@ -36,37 +34,29 @@ try {
     $params = [$client_id];
     $types = "i";
 
-    // Add status filter if provided
+    // Add filters if provided
     if (isset($_GET['status']) && $_GET['status'] !== 'all') {
-        $sql .= " AND LOWER(a.status) = LOWER(?)";
+        $sql .= " AND a.status = ?";
         $params[] = $_GET['status'];
         $types .= "s";
     }
 
-    // Add type filter if provided
     if (isset($_GET['type']) && $_GET['type'] !== 'all') {
-        $sql .= " AND LOWER(a.session_type) = LOWER(?)";
+        $sql .= " AND a.session_type = ?";
         $params[] = $_GET['type'];
-        $types .= "s";
-    }
-
-    // Add date filter if provided
-    if (isset($_GET['date']) && $_GET['date']) {
-        $sql .= " AND DATE(a.appointment_date) = ?";
-        $params[] = $_GET['date'];
         $types .= "s";
     }
 
     // Add sorting
     $sql .= " ORDER BY 
               CASE 
-                WHEN a.status = 'upcoming' THEN 1
-                WHEN a.status = 'pending' THEN 2
+                WHEN a.status = 'pending' THEN 1
+                WHEN a.status = 'upcoming' THEN 2
                 WHEN a.status = 'completed' THEN 3
                 WHEN a.status = 'cancelled' THEN 4
               END,
-              a.appointment_date, 
-              a.appointment_time";
+              a.appointment_date ASC, 
+              a.appointment_time ASC";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$params);
@@ -77,15 +67,12 @@ try {
     while ($row = $result->fetch_assoc()) {
         $appointments[] = [
             'id' => $row['appointment_id'],
-            'therapist_name' => $row['therapist_name'],
-            'therapist_email' => $row['therapist_email'],
-            'therapist_phone' => $row['therapist_phone'],
-            'date' => $row['appointment_date'],
-            'time' => $row['appointment_time'],
+            'therapist' => $row['therapist_name'],
+            'appointment_date' => $row['appointment_date'],
+            'appointment_time' => $row['appointment_time'],
             'session_type' => $row['session_type'],
             'status' => $row['status'],
-            'notes' => $row['notes'],
-            'cancellation_reason' => $row['cancellation_reason'] // Add this line
+            'notes' => $row['notes']
         ];
     }
 

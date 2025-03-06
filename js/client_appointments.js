@@ -42,32 +42,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderAppointments(appointments) {
         const list = document.getElementById('appointmentsList');
-        list.style.display = 'block'; // Make sure list is visible
-        document.getElementById('noAppointments').style.display = 'none';
         
+        if (!appointments || appointments.length === 0) {
+            showEmptyState();
+            return;
+        }
+    
         list.innerHTML = appointments.map(appointment => {
-            const statusClass = appointment.status.toLowerCase();
-            const sessionType = appointment.session_type.toLowerCase();
-            
+            const status = appointment.status.toLowerCase();
             const statusIcon = {
-                pending: 'fa-clock',
-                upcoming: 'fa-calendar-check',
-                completed: 'fa-check-circle',
-                cancelled: 'fa-times-circle'
-            }[statusClass];
-
+                'pending': 'fa-clock',
+                'upcoming': 'fa-calendar-check',
+                'completed': 'fa-check-circle',
+                'cancelled': 'fa-times-circle',
+                'rejected': 'fa-times-circle'
+            }[status] || 'fa-calendar';
+    
             const sessionIcon = {
-                video: 'fa-video',
-                voice: 'fa-microphone',
-                chat: 'fa-comments'
-            }[sessionType] || 'fa-video';
-
+                'video': 'fa-video',
+                'voice': 'fa-microphone',
+                'chat': 'fa-comments'
+            }[appointment.session_type.toLowerCase()] || 'fa-video';
+    
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
                         <h3>Session with ${appointment.therapist_name}</h3>
-                        <span class="appointment-status status-${statusClass}">
-                            <i class="fas ${statusIcon}"></i> ${appointment.status}
+                        <span class="appointment-status status-${status}">
+                            <i class="fas ${statusIcon}"></i> ${status}
                         </span>
                     </div>
                     <div class="appointment-details">
@@ -91,9 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }).join('');
-
-        // Add event listeners for appointment actions
-        attachActionListeners();
+    
+        hideEmptyState();
     }
 
     function renderAppointmentActions(appointment) {
@@ -247,6 +248,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function showEmptyState() {
         document.getElementById('appointmentsList').style.display = 'none';
         document.getElementById('noAppointments').style.display = 'block';
+    }
+
+    function hideEmptyState() {
+        document.getElementById('appointmentsList').style.display = 'block';
+        document.getElementById('noAppointments').style.display = 'none';
     }
 
     // Helper functions
