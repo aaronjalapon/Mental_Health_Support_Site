@@ -48,7 +48,7 @@ label {
     display: block;
     margin-bottom: 5px;
     color: #1e9160;
-    font-size: 25px;
+    font-size: 15px;
 }
 
 input[type="email"],
@@ -138,10 +138,10 @@ select {
 
 .modal-content {
     background-color: white;
-    padding: 20px 30px;
+    padding: 30px;
     border-radius: 20px;
-    width: 100%;
-    max-width: 350px;
+    width: 90%;
+    max-width: 500px;
     text-align: center;
     position: relative;
 }
@@ -538,7 +538,7 @@ input[type="file"] {
     padding: 10px;
     margin: 20px 0;
     position: absolute;
-    top: 430px;
+    top: 450px;
     left: 135px;
     width: 202px;
     height: 41px;
@@ -690,7 +690,7 @@ input[type="file"] {
     }
 
     .form-content {
-        padding: 0 15px;
+        padding: 0 6px;
     }
 
     .full-width {
@@ -715,6 +715,20 @@ input[type="file"] {
 
     .file-name {
         width: 80%;
+    }
+
+    .terms-checkbox {
+        position: relative;
+        width: 90%;
+        margin: 20px auto;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        justify-content: center;
+        text-align: center;
+    }
+
+    .terms-checkbox label {
+        font-size: 13px;
+        line-height: 1.4;
     }
 }
 
@@ -741,6 +755,16 @@ input[type="file"] {
     .login-btn, .register-btn {
         font-size: 20px;
         height: 45px;
+    }
+
+    .terms-checkbox {
+        width: 95%;
+        font-size: 12px;
+        padding: 0 5px;
+    }
+
+    .terms-checkbox label {
+        font-size: 12px;
     }
 }
 
@@ -785,4 +809,80 @@ input[type="file"] {
 /* Adjust input padding to prevent text overlap with icon */
 .signup-form .password-field input {
     padding-right: 40px;
+}
+
+/* Terms and Conditions Styles */
+.terms-checkbox {
+    position: relative; /* Change from absolute to relative */
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin: 70px 15px 20px auto;
+    width: 100%;
+    max-width: 300px;
+    text-align: left;
+    padding: 0 10px;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+    width: auto;
+    height: auto;
+}
+
+.terms-checkbox label {
+    display: flex;
+    align-items: center;
+    color: #000;
+    font-size: 14px;
+}
+
+.terms-link {
+    color: #1e9160;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.terms-link:hover {
+    color: #157a4e;
+}
+
+.terms-modal-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.terms-content {
+    text-align: left;
+    padding: 20px;
+    font-size: 14px;
+}
+
+.terms-content h3 {
+    color: #1e9160;
+    margin: 15px 0 10px;
+    font-size: 16px;
+}
+
+.terms-content p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.accept-terms-btn {
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    margin-top: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.accept-terms-btn:hover {
+    background: linear-gradient(90deg, hsl(162, 69%, 74%), hsl(154, 66%, 42%));
 }

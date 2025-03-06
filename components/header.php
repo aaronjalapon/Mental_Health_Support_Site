@@ -17,7 +17,7 @@ if (session_status() === PHP_SESSION_NONE) {
     </button>
     <nav class="nav-links" id="navLinks">
         <a id="home" href="/index.php">Home</a>
-        <a id="about_us" href="/index.php#self-help">About us</a>
+        <a id="about_us" href="/html/about.php">About us</a>
         <div class="dropdown">
             <button class="dropbtn">
                 Self-Help
@@ -26,7 +26,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 </svg>
             </button>
             <div class="dropdown-content">
-                <a href="#">Guided Meditation</a>
+                <a href="#" onclick="redirectToGuidedMeditations()">Guided Meditation</a>
                 <a href="#" onclick="redirectToAppointment()" >Professional Support</a>
                 <a href="#" onclick="redirectToCommunity()">Community</a>
             </div>

@@ -31,7 +31,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
         <div class="appointments-container">
             <div class="appointments-header">
                 <h1>My Appointments</h1>
-                <a href="book_appointment.html" class="btn btn-primary">
+                <a href="#" onclick="redirectToAppointment()" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Book New Session
                 </a>
             </div>
@@ -39,10 +39,17 @@ $isAdmin = $_SESSION['role'] === 'admin';
             <div class="appointments-filters">
                 <div class="filter-group">
                     <select id="statusFilter">
-                        <option value="all">All Status</option>
+                        <option value="all">All Status</option> 
                         <option value="upcoming">Upcoming</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <select id="typeFilter">
+                        <option value="all">All Types</option>
+                        <option value="video">Video Call</option>
+                        <option value="voice">Voice Call</option>
+                        <option value="chat">Chat Session</option>
                     </select>
                     <input type="date" id="dateFilter">
                 </div>
@@ -56,7 +63,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
             <div class="appointments-empty" id="noAppointments" style="display: none;">
                 <i class="fas fa-calendar-times"></i>
                 <p>No appointments found</p>
-                <a href="book_appointment.html" class="btn btn-primary">Book Your First Session</a>
+                <a href="#" onclick="redirectToAppointment()" class="btn btn-primary">Book Your First Session</a>
             </div>
         </div>
     </div>

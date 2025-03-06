@@ -1,0 +1,458 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    background-color: rgb(211, 248, 226);
+}
+
+/* Navbar Styles - Copied from landing_page.css */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 4rem;
+    background: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.logo {
+    font-family: 'Potta One', cursive;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #fff;
+    display: inline;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 999;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    transition: scale 1s;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+#home:hover, 
+#about_us:hover,
+#support:hover {
+    scale: 1.1;
+    color: #fff;
+}
+
+#btn-login {
+    display: flex;
+    background-color: #fff;
+    color: #1e9160;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+    align-self: center;
+}
+
+#btn-login:hover {
+    background-color: hsl(144, 73%, 80%);
+}
+
+#btn-login:active {
+    color: #fff;
+    background-color: hsl(144, 73%, 70%);
+}
+
+/* Dropdown styles from landing_page.css */
+.dropbtn {
+    background-color: transparent;
+    color: white;
+    padding: 5px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 300ms;
+}
+
+/* Dropdown styles - synced with landing_page.css */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    cursor: pointer;
+    transition: 300ms;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #1e9160;
+    min-width: 160px;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    opacity: 0;
+    top: -100px;
+    transition: opacity 300ms, top 300ms;
+}
+
+.dropdown-content a {
+    padding: 5px;
+    text-decoration: none;
+    display: block;
+    border-radius: 5px;
+    transition: 300ms;
+}
+
+.dropdown-content a:hover {
+    background-color: #188162;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    opacity: 1;
+    top: 100%;
+}
+
+.dropdown-arrow {
+    height: 10px;
+    width: 10px;
+    fill: white;
+    transition: transform 300ms;
+}
+
+.dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Burger menu styles */
+.burger-menu {
+
+}
+
+/* User dropdown styles - Copied from landing_page.css */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 15px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+}
+
+.dropdown-logout {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+}
+
+.dropdown-logout a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-logout a:hover {
+    background-color: #f1f1f1;
+}
+
+.show {
+    display: block;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/about.webp');
+    background-size: cover;
+    background-position: center bottom;
+    padding: 8rem 2rem 4rem;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Mission Section */
+.mission {
+    padding: 4rem 0;
+    background-color: #fff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.mission h2 {
+    color: #1e9160;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.mission p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Values Section */
+.values {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.values h2 {
+    color: #1e9160;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.value-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+}
+
+.value-card i {
+    font-size: 2.5rem;
+    color: #1e9160;
+    margin-bottom: 1rem;
+}
+
+.value-card h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* Team Section */
+.team {
+    padding: 4rem 0;
+    background-color: #fff;
+}
+
+.team h2 {
+    color: #1e9160;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-member img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.team-member p {
+    color: #666;
+}
+
+/* Footer Styles - Copied from landing_page.css */
+.footer {
+    background-image: linear-gradient(90deg, #6ee4c1, #1e9160);
+    color: #fff;
+    padding: 3rem 2rem;
+    height: auto;
+    position: relative;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 0rem 2rem;
+    justify-items: center;
+    text-align: center;
+}
+
+.footer-section {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.footer-section a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.social-links a {
+    font-size: 1.5rem;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .mission h2,
+    .values h2,
+    .team h2 {
+        font-size: 2rem;
+    }
+
+    .values-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .mission p {
+        font-size: 1rem;
+    }
+
+    .value-card {
+        padding: 1.5rem;
+    }
+
+    .team-member img {
+        width: 150px;
+        height: 150px;
+    }
+}

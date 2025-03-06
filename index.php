@@ -51,7 +51,7 @@ function redirectToLogin() {
         <img id="guided-meditation" src="/images/guided-meditation.png" alt="Guided Meditation">
         <h2>Guided Meditations</h2>
         <p>Relax and recharge with our curated meditations.</p>
-        <a href="#" class="feature-link">Explore</a>
+        <a href="#" onclick="redirectToGuidedMeditations()" class="feature-link">Explore</a>
       </div>
       <div class="feature">
         <img id="professional-support" src="/images/professional-support.png" alt="Professional Support">
@@ -114,9 +114,37 @@ function redirectToLogin() {
     </section>
   </main>
   <footer class="footer">
-    <p>© 2025 MindCare. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About MindSpace</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="#">Guided Meditation</a></li>
+          <li><a href="#">Professional Support</a></li>
+          <li><a href="#">Community Forum</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Connect With Us</h3>
+        <p>Follow us on social media</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 MindSpace. All rights reserved.</p>
+    </div>
   </footer>
-  <script src="js/landing_page.js"></script>
+  <script src="../js/landing_page.js"></script>
  
 </body>
 </html>
