@@ -1,0 +1,254 @@
+/* Import base styles from client appointments */
+@import 'client_appointments.css';
+
+/* Additional styles specific to therapist panel */
+.session-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card i {
+    font-size: 2rem;
+    color: #1e9160;
+    margin-bottom: 1rem;
+}
+
+.summary-card h3 {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card .count {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1e9160;
+}
+
+/* Header actions */
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Modal specific styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #666;
+}
+
+/* Availability form specific styles */
+.availability-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Appointments list and empty state */
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+    min-height: 200px; /* Add minimum height */
+}
+
+.appointments-empty {
+    display: none; /* Hidden by default */
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.appointments-empty.show {
+    display: flex;
+}
+
+.appointment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.appointment-actions .btn {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.appointment-actions .btn i {
+    font-size: 1rem;
+}
+
+.btn.btn-primary {
+    background-color: #1e9160;
+    color: white;
+    border: none;
+}
+
+.btn.btn-secondary {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.btn.btn-primary:hover {
+    background-color: #167d50;
+}
+
+.btn.btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+.btn.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn.btn-info {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+}
+
+.btn.btn-info:hover {
+    background-color: #138496;
+}
+
+.message-client {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.message-client i {
+    font-size: 1rem;
+}
+
+/* Message Modal Specific Styles */
+.message-section {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.client-info {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.message-input textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.message-input textarea:focus {
+    outline: none;
+    border-color: #1e9160;
+    box-shadow: 0 0 0 2px rgba(30, 145, 96, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .session-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .header-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .appointment-actions .btn {
+        flex: 1 1 100%;
+    }
+}

@@ -296,4 +296,141 @@ document.addEventListener('DOMContentLoaded', function() {
             updateWordsTable();
         }
     };
+
+    // Video Management
+    const videoForm = document.getElementById('videoForm');
+    const addVideoBtn = document.getElementById('addVideoBtn');
+    const closeVideoBtn = document.getElementById('closeVideoBtn');
+    const cancelVideoBtn = document.getElementById('cancelVideoBtn');
+    const addVideoForm = document.getElementById('addVideoForm');
+    const videoFormTitle = document.getElementById('videoFormTitle');
+    let editingVideoId = null;
+
+    // Sample videos data (replace with actual database data)
+    let videos = [
+        {
+            id: 1,
+            title: "Beginner's Meditation",
+            videoId: "inpok4MKVLM",
+            category: "beginner",
+            description: "Perfect for those new to meditation"
+        }
+    ];
+
+    // Show video form
+    addVideoBtn.addEventListener('click', () => {
+        videoFormTitle.textContent = 'Add New Video';
+        editingVideoId = null;
+        addVideoForm.reset();
+        videoForm.style.display = 'flex';
+    });
+
+    // Close video form
+    [closeVideoBtn, cancelVideoBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+            videoForm.style.display = 'none';
+            addVideoForm.reset();
+        });
+    });
+
+    // Function to extract video ID from YouTube URL
+    function getYouTubeVideoId(url) {
+        try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname === 'youtu.be') {
+                return urlObj.pathname.substring(1);
+            }
+            return urlObj.searchParams.get('v');
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Handle video form submission
+    addVideoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const youtubeLink = document.getElementById('videoId').value;
+        const videoId = getYouTubeVideoId(youtubeLink);
+        
+        if (!videoId) {
+            alert('Please enter a valid YouTube URL');
+            return;
+        }
+
+        const videoData = {
+            id: editingVideoId || Date.now(),
+            title: document.getElementById('videoTitle').value,
+            videoId: youtubeLink, // Store full URL
+            youtubeId: videoId,   // Store extracted ID
+            category: document.getElementById('videoCategory').value,
+            description: document.getElementById('videoDescription').value
+        };
+
+        if (editingVideoId) {
+            videos = videos.map(v => v.id === editingVideoId ? videoData : v);
+        } else {
+            videos.push(videoData);
+        }
+
+        updateVideosTable();
+        videoForm.style.display = 'none';
+        addVideoForm.reset();
+        editingVideoId = null;
+    });
+
+    // Update videos table with new URL handling
+    function updateVideosTable() {
+        const tbody = document.getElementById('videoTableBody');
+        tbody.innerHTML = '';
+
+        videos.forEach(video => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${video.title}</td>
+                <td>${video.category}</td>
+                <td class="description-cell">${video.description}</td>
+                <td>
+                    <div class="video-preview">
+                        <iframe src="https://www.youtube.com/embed/${video.youtubeId}" 
+                                allowfullscreen></iframe>
+                    </div>
+                </td>
+                <td>
+                    <button onclick="editVideo(${video.id})" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="deleteVideo(${video.id})" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Edit video function
+    window.editVideo = (id) => {
+        const video = videos.find(v => v.id === id);
+        if (video) {
+            videoFormTitle.textContent = 'Edit Video';
+            document.getElementById('videoTitle').value = video.title;
+            document.getElementById('videoId').value = video.videoId; // Use stored URL
+            document.getElementById('videoCategory').value = video.category;
+            document.getElementById('videoDescription').value = video.description;
+            editingVideoId = id;
+            videoForm.style.display = 'flex';
+        }
+    };
+
+    // Delete video function
+    window.deleteVideo = (id) => {
+        if (confirm('Are you sure you want to delete this video?')) {
+            videos = videos.filter(v => v.id !== id);
+            updateVideosTable();
+        }
+    };
+
+    // Initialize videos table
+    updateVideosTable();
 });

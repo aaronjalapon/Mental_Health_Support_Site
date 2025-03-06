@@ -5,7 +5,6 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +29,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </button>
                 <button class="tab-btn" data-tab="wordofday">
                     <i class="fas fa-book"></i> Word of the Day
+                </button>
+                <button class="tab-btn" data-tab="videos">
+                    <i class="fas fa-video"></i> Meditation Videos
                 </button>
             </div>
 
@@ -163,6 +165,73 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         </thead>
                         <tbody id="wordTableBody">
                             <!-- Words will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="videosContent">
+                <div class="content-header">
+                    <h1>Meditation Videos Management</h1>
+                    <button class="btn btn-primary" id="addVideoBtn">
+                        <i class="fas fa-plus"></i> Add New Video
+                    </button>
+                </div>
+
+                <div class="modal-overlay" id="videoForm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 id="videoFormTitle">Add New Video</h2>
+                            <span class="close-modal" id="closeVideoBtn">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addVideoForm">
+                                <div class="form-group">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" class="form-input" id="videoTitle" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">YouTube Link</label>
+                                    <input type="text" class="form-input" id="videoId" required>
+                                    <small class="form-hint">Enter the full YouTube video URL (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select class="form-input" id="videoCategory" required>
+                                        <option value="beginner">Beginner's Guide</option>
+                                        <option value="stress">Stress Relief</option>
+                                        <option value="sleep">Sleep Meditation</option>
+                                        <option value="mindfulness">Mindfulness Practice</option>
+                                        <option value="anxiety">Anxiety Relief</option>
+                                        <option value="focus">Focus & Concentration</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-input" id="videoDescription" rows="3" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Video</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelVideoBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Video Preview</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="videoTableBody">
+                            <!-- Videos will be populated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
