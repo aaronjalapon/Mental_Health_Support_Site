@@ -44,27 +44,30 @@ $isAdmin = $_SESSION['role'] === 'admin';
                     <h2>Schedule Your Session</h2>
                     <div class="scheduler-content">
                         <div class="date-picker">
-                            <h3>Select Date</h3>
+                            <h3>Select Date & Time</h3>
                             <div class="calendar" id="appointmentCalendar">
-                                <!-- Calendar will be populated here -->
+                                <!-- Calendar will be populated by JavaScript -->
                             </div>
-                        </div>
-                        <div class="time-slots-container">
-                            <h3>Select Time</h3>
-                            <div id="timeSlots">
-                                <div class="form-group">
-                                    <input type="time" 
-                                           id="appointmentTime" 
-                                           class="form-input" 
-                                           min="09:00" 
-                                           max="17:00" 
-                                           step="1800"
-                                           required>
-                                    <small class="form-text">Available hours: 9:00 AM - 5:00 PM</small>
-                                </div>
+                            <div class="time-selection">
+                                <label for="appointmentTime">Select Time:</label>
+                                <input type="time" 
+                                       id="appointmentTime" 
+                                       class="form-input" 
+                                       min="09:00" 
+                                       max="17:00" 
+                                       step="1800"
+                                       required>
+                                <small class="form-text">Available hours: 9:00 AM - 5:00 PM (30-minute slots)</small>
+                                <button type="button" id="checkAvailability" class="btn btn-secondary">
+                                    Check Available Therapists
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="availabilityMessage" class="availability-message" style="display: none;">
+                    <p>Showing therapists available on <span id="selectedDateTime"></span></p>
                 </div>
 
                 <div class="therapist-selection">
@@ -125,7 +128,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
         </div>
     </div>
 
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/book_appointment.js"></script>
+    <!-- Update script paths to use relative paths -->
+    <script src="../js/landing_page.js"></script>
+    <script src="../js/book_appointment.js"></script>
 </body>
 </html>

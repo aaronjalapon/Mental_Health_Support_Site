@@ -33,24 +33,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderTherapistList(therapists) {
         const list = document.getElementById('therapistList');
+        if (!therapists || therapists.length === 0) {
+            list.innerHTML = `
+                <div class="no-therapists-message">
+                    <i class="fas fa-user-md"></i>
+                    <p>No therapists available for the selected time slot.</p>
+                    <p>Please try a different date or time.</p>
+                </div>`;
+            return;
+        }
+
         list.innerHTML = therapists.map(therapist => `
             <div class="therapist-card" data-id="${therapist.therapist_id}">
-                <h3>${therapist.firstName} ${therapist.lastName}</h3>
-                <p class="specialization">${therapist.specialization}</p>
-                <p class="experience">${therapist.experience} years experience</p>
+                <h3>${therapist.firstName || ''} ${therapist.lastName || ''}</h3>
+                <p class="specialization">${therapist.specialization || 'General Practice'}</p>
+                <p class="experience">${therapist.experience > 0 ? `${therapist.experience} years experience` : 'New Therapist'}</p>
                 <div class="availability">
                     <strong>Available:</strong> ${formatAvailability(therapist.availability)}
+                    ${therapist.bio ? `<p class="bio">${therapist.bio}</p>` : ''}
                 </div>
             </div>
         `).join('');
     }
 
     function formatAvailability(availability) {
-        if (!availability || !availability.days || !availability.hours) return 'Schedule not available';
+        if (!availability || !Array.isArray(availability.days) || availability.days.length === 0) {
+            return 'Schedule to be announced';
+        }
         
-        const days = availability.days.map(day => day.substr(0, 3)).join(', ');
-        const hours = `${formatTime(availability.hours.start)} - ${formatTime(availability.hours.end)}`;
-        return `${days} ${hours}`;
+        const days = availability.days.map(day => 
+            day.charAt(0).toUpperCase() + day.slice(1).toLowerCase().substr(0, 2)
+        ).join(', ');
+        
+        const startTime = availability.hours?.start ? formatTime(availability.hours.start) : '';
+        const endTime = availability.hours?.end ? formatTime(availability.hours.end) : '';
+        
+        if (!startTime || !endTime) {
+            return `Available on: ${days}`;
+        }
+        
+        return `${days} (${startTime} - ${endTime})`;
     }
 
     function formatTime(time) {
@@ -173,27 +195,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add time input handler
         document.getElementById('appointmentTime').addEventListener('change', handleTimeSelection);
+
+        // Add check availability button handler
+        document.getElementById('checkAvailability').addEventListener('click', handleCheckAvailability);
     }
 
     async function handleTherapistSelection(event) {
         const therapistCard = event.target.closest('.therapist-card');
         if (!therapistCard) return;
 
-        // Update selection
-        document.querySelectorAll('.therapist-card').forEach(card => 
-            card.classList.remove('selected'));
-        therapistCard.classList.add('selected');
+        try {
+            // Update selection
+            document.querySelectorAll('.therapist-card').forEach(card => 
+                card.classList.remove('selected'));
+            therapistCard.classList.add('selected');
 
-        const therapistId = therapistCard.dataset.id;
-        selectedTherapist = await fetchTherapistDetails(therapistId);
-        
-        updateSelectedTherapistInfo();
+            const therapistId = therapistCard.dataset.id;
+            const response = await fetchTherapistDetails(therapistId);
+            
+            if (response && response.success) {
+                selectedTherapist = response.data;
+                updateSelectedTherapistInfo();
+
+                // After selecting therapist, fetch available slots for selected date
+                if (selectedDate) {
+                    await loadAvailableSlots();
+                }
+            } else {
+                throw new Error('Failed to fetch therapist details');
+            }
+        } catch (error) {
+            console.error('Error in therapist selection:', error);
+            showError('Failed to select therapist');
+            therapistCard.classList.remove('selected');
+        }
     }
 
+   
     function handleDateSelection(event) {
         const dayElement = event.target.closest('.calendar-day');
         if (!dayElement || dayElement.classList.contains('disabled')) return;
-
+    
         // Remove selected class from all days
         document.querySelectorAll('.calendar-day').forEach(day => 
             day.classList.remove('selected'));
@@ -201,16 +243,48 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add selected class to clicked day
         dayElement.classList.add('selected');
         
-        selectedDate = dayElement.dataset.date;
+        // Get the day, month, and year from the parent calendar's context
+        const day = parseInt(dayElement.textContent);
+        const calendarNav = dayElement.closest('.date-picker').querySelector('.current-month-year');
+        const [monthName, year] = calendarNav.textContent.split(' ');
+        
+        // Create a month mapping
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                            'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = monthNames.indexOf(monthName) + 1; // Convert to 1-indexed month
+        
+        // Create the date string in YYYY-MM-DD format
+        selectedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        
         selectedTime = null; // Reset time selection when date changes
         
-        renderTimeSlots(); // This line is crucial - it renders the time slots
+        // Clear and enable time input
+        const timeInput = document.getElementById('appointmentTime');
+        timeInput.value = '';
+        timeInput.disabled = false;
+    
+        // Reset therapist selection
+        selectedTherapist = null;
+        document.querySelectorAll('.therapist-card').forEach(card => 
+            card.classList.remove('selected'));
+        
         updateBookingSummary();
     }
+    
 
     async function fetchTherapistDetails(therapistId) {
         try {
-            const response = await fetch(`../php/CRUDTherapist/fetch_therapist_details.php?id=${therapistId}`);
+            const response = await fetch(`../php/CRUDTherapist/fetch_therapist_details.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ therapist_id: therapistId })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return await response.json();
         } catch (error) {
             console.error('Error fetching therapist details:', error);
@@ -219,23 +293,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function renderTimeSlots() {
-        const timeSlotsContainer = document.getElementById('timeSlots');
-        if (!selectedTherapist || !selectedDate) {
-            timeSlotsContainer.querySelector('#appointmentTime').disabled = true;
+    async function loadAvailableSlots() {
+        if (!selectedTherapist || !selectedDate) return;
+
+        try {
+            const response = await fetch(`../php/appointments/fetch_available_slots.php?therapist_id=${selectedTherapist.therapist_id}&date=${selectedDate}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                renderTimeSlots(data.slots);
+            } else {
+                showError(data.error || 'Failed to load available time slots');
+            }
+        } catch (error) {
+            console.error('Error loading time slots:', error);
+            showError('Failed to load available time slots');
+        }
+    }
+
+    function renderTimeSlots(slots) {
+        const timeInput = document.getElementById('appointmentTime');
+        
+        if (!slots || slots.length === 0) {
+            timeInput.disabled = true;
+            timeInput.value = '';
             return;
         }
-        
-        const timeInput = timeSlotsContainer.querySelector('#appointmentTime');
+
         timeInput.disabled = false;
         
-        if (selectedTime) {
-            timeInput.value = selectedTime;
+        // Create datalist for time suggestions
+        const datalistId = 'timeSlots';
+        let datalist = document.getElementById(datalistId);
+        
+        if (!datalist) {
+            datalist = document.createElement('datalist');
+            datalist.id = datalistId;
+            timeInput.parentNode.appendChild(datalist);
         }
+
+        datalist.innerHTML = slots.map(slot => 
+            `<option value="${slot}">${formatTime(slot)}</option>`
+        ).join('');
+        
+        timeInput.setAttribute('list', datalistId);
     }
 
     function handleTimeSelection(event) {
         selectedTime = event.target.value;
+        if (selectedTime && selectedDate) {
+            filterTherapists(); // This will refresh the therapist list based on availability
+        }
         updateBookingSummary();
     }
 
@@ -252,14 +360,21 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         if (!selectedTherapist || !selectedDate) {
-            showError('Please select a therapist and date.');
+            showError('Please select a therapist and date');
+            return;
+        }
+
+        const time = document.getElementById('appointmentTime').value;
+        if (!time) {
+            showError('Please select an appointment time');
             return;
         }
 
         const formData = {
-            therapistId: selectedTherapist.therapist_id,
-            date: selectedDate,
-            sessionType: document.getElementById('sessionType').value,
+            therapist_id: selectedTherapist.therapist_id,
+            appointment_date: selectedDate,
+            appointment_time: time,
+            session_type: document.getElementById('sessionType').value,
             notes: document.getElementById('notes').value
         };
 
@@ -272,16 +387,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(formData)
             });
 
-            const result = await response.json();
+            const data = await response.json();
             
-            if (result.success) {
-                showConfirmation(formData);
+            if (data.success) {
+                showConfirmation({
+                    ...formData,
+                    therapist: selectedTherapist
+                });
             } else {
-                showError(result.error || 'Failed to book appointment');
+                showError(data.error || 'Failed to book appointment');
             }
         } catch (error) {
             console.error('Error booking appointment:', error);
-            showError('Failed to book appointment. Please try again later.');
+            showError('Failed to book appointment');
         }
     }
 
@@ -346,11 +464,142 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        // Create date object from the date string and preserve the exact date
+        const date = new Date(dateString);
+        // Add timezone offset to keep the exact date
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    function populateSpecializationFilter(specializations) {
+        const filter = document.getElementById('specializationFilter');
+        filter.innerHTML = `
+            <option value="">All Specializations</option>
+            ${specializations.map(spec => `<option value="${spec}">${spec}</option>`).join('')}
+        `;
+    }
+
+    async function filterTherapists() {
+        const searchTerm = document.getElementById('therapistSearch').value.toLowerCase();
+        const specialization = document.getElementById('specializationFilter').value.toLowerCase();
+        const selectedTime = document.getElementById('appointmentTime').value;
+        
+        if (!selectedDate || !selectedTime) {
+            renderTherapistList([]);
+            return;
+        }
+
+        try {
+            const response = await fetch('../php/appointments/fetch_available_therapists.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    date: selectedDate,
+                    time: selectedTime,
+                    specialization: specialization,
+                    searchTerm: searchTerm
+                })
+            });
+
+            const result = await response.json();
+            const therapistList = document.getElementById('therapistList');
+            
+            if (result.success && result.data.length > 0) {
+                renderTherapistList(result.data);
+            } else {
+                therapistList.innerHTML = `
+                    <div class="no-therapists-message">
+                        <i class="fas fa-user-md"></i>
+                        <p>No therapists available for the selected time slot.</p>
+                        <p>Please try a different date or time.</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error filtering therapists:', error);
+            showError('Failed to load available therapists');
+        }
+    }
+
+    async function handleCheckAvailability() {
+        const date = selectedDate;
+        const time = document.getElementById('appointmentTime').value;
+        const searchTerm = document.getElementById('therapistSearch').value.trim();
+        const specialization = document.getElementById('specializationFilter').value;
+
+        if (!date || !time) {
+            showError('Please select both date and time');
+            return;
+        }
+
+        // Format the exact selected date correctly
+        const selectedDateTime = document.getElementById('selectedDateTime');
+        const formattedTime = formatTimeSlot(time);
+        selectedDateTime.textContent = `${formatDate(selectedDate)} at ${formattedTime}`;
+        document.getElementById('availabilityMessage').style.display = 'block';
+
+        // Reset therapist selection
+        selectedTherapist = null;
+        document.querySelectorAll('.therapist-card').forEach(card => 
+            card.classList.remove('selected'));
+
+        // Fetch and display available therapists with filters
+        try {
+            const response = await fetch('../php/appointments/fetch_available_therapists.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    date: date,
+                    time: time,
+                    searchTerm: searchTerm,
+                    specialization: specialization
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                renderTherapistList(result.data);
+            } else {
+                throw new Error(result.error || 'Failed to fetch available therapists');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showError('Failed to load available therapists');
+        }
+    }
+
+    // Add the missing updateSelectedTherapistInfo function
+    function updateSelectedTherapistInfo() {
+        if (!selectedTherapist || !selectedTherapist.therapist_id) {
+            console.warn('No therapist selected or invalid therapist data');
+            return;
+        }
+
+        try {
+            // Update booking summary
+            updateBookingSummary();
+
+            // Highlight selected therapist card
+            const therapistId = selectedTherapist.therapist_id.toString();
+            document.querySelectorAll('.therapist-card').forEach(card => {
+                if (card.dataset.id === therapistId) {
+                    card.classList.add('selected');
+                }
+            });
+        } catch (error) {
+            console.error('Error updating therapist info:', error);
+            showError('Failed to update therapist information');
+        }
     }
 });
