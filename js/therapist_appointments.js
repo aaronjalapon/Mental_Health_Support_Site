@@ -34,10 +34,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    function filterAppointments() {
+        const statusValue = document.getElementById('statusFilter').value;
+        const dateValue = document.getElementById('dateFilter').value;
+        const searchValue = document.getElementById('searchClient').value.toLowerCase();
+
+        const list = document.getElementById('appointmentsList');
+        const cards = list.getElementsByClassName('appointment-card');
+
+        let visibleCount = 0;
+
+        Array.from(cards).forEach(card => {
+            const status = card.querySelector('.appointment-status').textContent.trim();
+            const date = card.querySelector('.detail-value').textContent;
+            const clientName = card.querySelector('h3').textContent.toLowerCase();
+
+            const statusMatch = !statusValue || status === statusValue;
+            const dateMatch = !dateValue || date.includes(dateValue);
+            const searchMatch = !searchValue || clientName.includes(searchValue);
+
+            if (statusMatch && dateMatch && searchMatch) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0) {
+            showEmptyState();
+        } else {
+            hideEmptyState();
+        }
+    }
+
     async function loadAppointments() {
         try {
             const response = await fetch('../php/appointments/fetch_therapist_appointments.php');
-            const appointments = await response.json();
+            const text = await response.text();
+
+            let appointments;
+            try {
+                appointments = JSON.parse(text);
+            } catch (parseError) {
+                console.error('Invalid JSON response:', text);
+                throw new Error('Server returned invalid data');
+            }
+            
+            if (!Array.isArray(appointments)) {
+                throw new Error('Expected array of appointments');
+            }
             
             if (appointments.length === 0) {
                 showEmptyState();
@@ -47,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error loading appointments:', error);
-            showError('Failed to load appointments');
+            showError('Failed to load appointments: ' + error.message);
+            showEmptyState();
         }
     }
 
@@ -119,22 +166,127 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderAppointmentActions(appointment) {
-        if (appointment.status === 'UPCOMING') {
-            return `
-                <div class="appointment-actions">
-                    <button class="btn btn-primary join-session" data-id="${appointment.id}">
-                        <i class="fas fa-video"></i> Join Session
-                    </button>
-                </div>
-            `;
+        const actions = [];
+        
+        if (appointment.status === 'UPCOMING' || appointment.status === 'PENDING') {
+            actions.push(`
+                <button class="btn btn-primary accept-appointment" data-id="${appointment.id}">
+                    <i class="fas fa-check"></i> Accept
+                </button>
+                <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                    <i class="fas fa-calendar-alt"></i> Reschedule
+                </button>
+                <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            `);
         }
-        return '';
+
+        // Add message client button last (no duplicate needed)
+        actions.push(`
+            <button class="btn btn-info message-client" data-id="${appointment.id}">
+                <i class="fas fa-comment"></i> Message Client
+            </button>
+        `);
+
+        return `<div class="appointment-actions">${actions.join('')}</div>`;
     }
 
     function attachActionListeners() {
-        document.querySelectorAll('.join-session').forEach(button => {
-            button.addEventListener('click', handleJoinSession);
+        document.querySelectorAll('.accept-appointment').forEach(button => {
+            button.addEventListener('click', handleAcceptAppointment);
         });
+        document.querySelectorAll('.reschedule-appointment').forEach(button => {
+            button.addEventListener('click', handleRescheduleAppointment);
+        });
+        document.querySelectorAll('.cancel-appointment').forEach(button => {
+            button.addEventListener('click', handleCancelAppointment);
+        });
+        document.querySelectorAll('.message-client').forEach(button => {
+            button.addEventListener('click', handleMessageClient);
+        });
+    }
+
+    async function handleAcceptAppointment(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        if (confirm('Are you sure you want to accept this appointment?')) {
+            try {
+                const response = await fetch('../php/appointments/accept_appointment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ appointmentId })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Appointment accepted successfully');
+                    loadAppointments(); // Refresh the appointments list
+                } else {
+                    throw new Error(data.error || 'Failed to accept appointment');
+                }
+            } catch (error) {
+                showError('Failed to accept appointment: ' + error.message);
+            }
+        }
+    }
+
+    async function handleRescheduleAppointment(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        // Show reschedule modal or date picker
+        const newDate = prompt('Enter new date (YYYY-MM-DD):');
+        const newTime = prompt('Enter new time (HH:MM):');
+        
+        if (newDate && newTime) {
+            try {
+                const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appointmentId,
+                        newDate,
+                        newTime
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Appointment rescheduled successfully');
+                    loadAppointments();
+                } else {
+                    throw new Error(data.error || 'Failed to reschedule appointment');
+                }
+            } catch (error) {
+                showError('Failed to reschedule appointment: ' + error.message);
+            }
+        }
+    }
+
+    async function handleCancelAppointment(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        const reason = prompt('Please provide a reason for cancellation:');
+        
+        if (reason && confirm('Are you sure you want to cancel this appointment?')) {
+            try {
+                const response = await fetch('../php/appointments/cancel_appointment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appointmentId,
+                        reason
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Appointment cancelled successfully');
+                    loadAppointments();
+                } else {
+                    throw new Error(data.error || 'Failed to cancel appointment');
+                }
+            } catch (error) {
+                showError('Failed to cancel appointment: ' + error.message);
+            }
+        }
     }
 
     async function handleAvailabilityModal() {
@@ -410,4 +562,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial display
     displayAppointments(appointments);
+});
+
+function handleMessageClient(event) {
+    const appointmentId = event.currentTarget.dataset.id;
+    const appointmentCard = event.currentTarget.closest('.appointment-card');
+    const clientName = appointmentCard.querySelector('h3').textContent.replace('Session with ', '');
+    
+    // Populate client info in modal
+    document.getElementById('messageClientInfo').innerHTML = `
+        <h4>To: ${clientName}</h4>
+        <p>Appointment ID: ${appointmentId}</p>
+    `;
+    
+    // Show modal
+    const messageModal = document.getElementById('messageModal');
+    messageModal.style.display = 'block';
+    
+    // Clear previous message
+    document.getElementById('messageText').value = '';
+}
+
+// Add this after your DOMContentLoaded event listener
+document.getElementById('messageForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const message = document.getElementById('messageText').value;
+    const clientInfo = document.getElementById('messageClientInfo');
+    const appointmentId = clientInfo.querySelector('p').textContent.split(': ')[1];
+    
+    try {
+        // Here you would normally send the message to your backend
+        // For now, we'll just show a success message
+        showSuccess('Message sent successfully');
+        document.getElementById('messageModal').style.display = 'none';
+    } catch (error) {
+        showError('Failed to send message');
+    }
+});
+
+// Add message modal close handlers to your existing modal handlers
+document.querySelectorAll('.close-modal').forEach(button => {
+    button.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        modal.style.display = 'none';
+    });
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
 });

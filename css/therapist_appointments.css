@@ -127,6 +127,111 @@
     display: flex;
 }
 
+.appointment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.appointment-actions .btn {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.appointment-actions .btn i {
+    font-size: 1rem;
+}
+
+.btn.btn-primary {
+    background-color: #1e9160;
+    color: white;
+    border: none;
+}
+
+.btn.btn-secondary {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.btn.btn-primary:hover {
+    background-color: #167d50;
+}
+
+.btn.btn-secondary:hover {
+    background-color: #e9ecef;
+}
+
+.btn.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn.btn-info {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+}
+
+.btn.btn-info:hover {
+    background-color: #138496;
+}
+
+.message-client {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.message-client i {
+    font-size: 1rem;
+}
+
+/* Message Modal Specific Styles */
+.message-section {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.client-info {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.message-input textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.message-input textarea:focus {
+    outline: none;
+    border-color: #1e9160;
+    box-shadow: 0 0 0 2px rgba(30, 145, 96, 0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .session-summary {
@@ -141,5 +246,9 @@
     .header-actions .btn {
         width: 100%;
         text-align: center;
+    }
+
+    .appointment-actions .btn {
+        flex: 1 1 100%;
     }
 }

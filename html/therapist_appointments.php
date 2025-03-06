@@ -81,7 +81,21 @@
                             </div>
                         </div>
                         <div class="appointment-actions">
-                            <!-- Action buttons will be dynamically inserted here -->
+                            <button class="btn btn-primary join-session">
+                                <i class="fas fa-video"></i> Join Session
+                            </button>
+                            <button class="btn btn-secondary message-client">
+                                <i class="fas fa-comment"></i> Message Client
+                            </button>
+                            <button class="btn btn-primary accept-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-check"></i> Accept
+                            </button>
+                            <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-calendar-alt"></i> Reschedule
+                            </button>
+                            <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
                         </div>
                     </div>
                 </template>
@@ -155,6 +169,34 @@
                 </div>
                 <div class="modal-actions">
                     <button type="submit" class="btn btn-primary">Save Availability</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Message Client</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="messageForm">
+                <div class="message-section">
+                    <div class="client-info" id="messageClientInfo">
+                        <!-- Client info will be populated dynamically -->
+                    </div>
+                    <div class="message-input">
+                        <textarea 
+                            id="messageText" 
+                            placeholder="Type your message here..." 
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
                     <button type="button" class="btn btn-secondary close-modal">Cancel</button>
                 </div>
             </form>
