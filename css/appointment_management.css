@@ -87,6 +87,7 @@
     border: 1px solid #e9ecef;
     border-radius: 8px;
     overflow: hidden;
+    margin-top: 1rem;
 }
 
 .calendar-weekdays {
@@ -114,6 +115,9 @@
     margin-top: 1rem;
     min-height: clamp(250px, 45vh, 400px);
     padding: clamp(1px, 0.5vw, 4px);
+    gap: 1px;
+    background: #e9ecef;
+    padding: 1px;
 }
 
 .calendar-day {
@@ -126,6 +130,9 @@
     border-radius: 4px;
     display: flex;
     flex-direction: column;
+    aspect-ratio: 1;
+    cursor: pointer;
+    min-height: 100px;
 }
 
 .calendar-day .date {
@@ -161,6 +168,11 @@
 
 .calendar-day:hover:not(.empty) {
     background: #f8f9fa;
+    box-shadow: inset 0 0 0 2px #1e9160;
+}
+
+.calendar-day.selected {
+    background: #e8f5e9;
     box-shadow: inset 0 0 0 2px #1e9160;
 }
 
@@ -1027,4 +1039,304 @@ tr:last-child td {
         padding: 0.5rem;
         font-size: 0.8rem;
     }
+}
+
+/* Admin-specific styles */
+.appointment-preview.admin-view {
+    padding: 8px;
+    max-height: calc(100% - 40px);
+}
+
+.appointment-preview-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 6px;
+    background: white;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+}
+
+.appointment-preview-item.pending {
+    border-left: 3px solid var(--warning-color);
+    background: var(--warning-bg);
+}
+
+.appointment-preview-item.upcoming {
+    border-left: 3px solid var(--success-color);
+    background: var(--success-bg);
+}
+
+.preview-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.preview-client {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+}
+
+.client-name {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.therapist-name {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.preview-info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.preview-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.action-btn {
+    padding: 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: var(--bg-hover);
+    color: var(--primary-color);
+}
+
+.count-breakdown {
+    display: flex;
+    gap: 4px;
+    font-size: 0.7rem;
+}
+
+.count-breakdown span {
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.count-breakdown .pending {
+    background: var(--warning-bg);
+    color: var(--warning-color);
+}
+
+.count-breakdown .upcoming {
+    background: var(--success-bg);
+    color: var (--success-color);
+}
+
+.count-breakdown .completed {
+    background: var(--info-bg);
+    color: var(--info-color);
+}
+
+/* Admin filters */
+.admin-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.preview-status {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+}
+
+.preview-status.pending {
+    background: var(--warning-bg, #fff3e0);
+    color: var(--warning-color, #f57c00);
+}
+
+.preview-status.upcoming {
+    background: var(--success-bg, #e8f5e9);
+    color: var(--success-color, #2e7d32);
+}
+
+.preview-status.completed {
+    background: var(--info-bg, #e3f2fd);
+    color: var(--info-color, #1976d2);
+}
+
+.preview-status.cancelled {
+    background: var(--danger-bg, #ffebee);
+    color: var(--danger-color, #c62828);
+}
+
+/* Appointment Card */
+.appointment-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.appointment-header h3 {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.appointment-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-upcoming {
+    background: var(--success-bg, #e8f5e9);
+    color: var(--success-color, #2e7d32);
+}
+
+.status-pending {
+    background: var(--warning-bg, #fff3e0);
+    color: var(--warning-color, #f57c00);
+}
+
+.appointment-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-item i {
+    width: 20px;
+    color: #1e9160;
+}
+
+.detail-label {
+    font-weight: 500;
+    margin-right: 0.5rem;
+    color: #495057;
+}
+
+.appointment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.appointment-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.appointment-btn i {
+    font-size: 1rem;
+}
+
+.appointment-btn-primary {
+    background: #1e9160;
+    color: white;
+}
+
+.appointment-btn-secondary {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.appointment-btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* Add these styles for the table */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.session-type {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: rgba(30, 145, 96, 0.1);
+    border-radius: 4px;
+    color: #1e9160;
+    font-size: 0.875rem;
+}
+
+.session-type i {
+    font-size: 1rem;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Status colors */
+.status-pending {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-upcoming {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-completed {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-cancelled {
+    background: #ffebee;
+    color: #c62828;
 }

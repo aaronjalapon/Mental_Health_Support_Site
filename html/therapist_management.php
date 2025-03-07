@@ -21,6 +21,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 <body>
     <div class="admin-container">
         <?php include dirname(__DIR__) . '/components/admin_sidebar.php'; ?>
+        
         <main class="main-content">
             <div class="content-header">
                 <h1>Therapist Management</h1>
@@ -66,6 +67,16 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                 <div class="form-group">
                                     <label class="form-label">Phone</label>
                                     <input type="tel" class="form-input" id="therapistPhone">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-input" id="therapistUsername" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-input" id="therapistPassword" required>
                                 </div>
                             </div>
                             <div class="form-grid">
@@ -173,6 +184,12 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                             </div>
                             <div class="form-grid">
                                 <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-input" id="editTherapistUsername" required>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
                                     <label class="form-label">Specialization</label>
                                     <input type="text" class="form-input" id="editTherapistSpecialization" required>
                                 </div>
@@ -227,10 +244,10 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                                         <div class="hours-grid">
                                             <div class="time-range">
                                                 <label>Start Time
-                                                    <input type="time" name="startTime" class="form-input" required>
+                                                    <input type="time" name="startTime" id="editStartTime" class="form-input" required>
                                                 </label>
                                                 <label>End Time
-                                                    <input type="time" name="endTime" class="form-input" required>
+                                                    <input type="time" name="endTime" id="editEndTime" class="form-input" required>
                                                 </label>
                                             </div>
                                             <div class="break-time">
@@ -284,9 +301,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             return false;
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/landing_page.js"></script>
     <script src="../js/admin_panel.js"></script>
     <script src="../js/therapist_management.js"></script>
-    
 </body>
 </html>

@@ -15,12 +15,12 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Appointment - MindSpace</title>
-
-    <link rel="stylesheet" href="/css/book_appointment.css">
-    <link rel="stylesheet" href="/css/community.css">
+    <!-- Move Poppins font import before other CSS files -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/book_appointment.css">
 </head>
 <body>
     
@@ -107,8 +107,8 @@ $isAdmin = $_SESSION['role'] === 'admin';
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Confirm Booking</button>
-                            <button type="button" class="btn btn-secondary" id="cancelBooking">Cancel</button>
+                            <button type="submit" class="booking-btn booking-btn-primary">Confirm Booking</button>
+                            <button type="button" class="booking-btn booking-btn-secondary" id="cancelBooking">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -116,20 +116,30 @@ $isAdmin = $_SESSION['role'] === 'admin';
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-            <h2>Booking Confirmed!</h2>
-            <p>Your appointment is waiting for the therapist's approval.<br></p>
-            <div id="appointmentDetails">
-                <!-- Appointment details will be shown here -->
+    
+    <!-- Update modal structure with consistent function name -->
+    <div id="confirmationModal" class="booking-modal-overlay">
+        <div class="booking-modal-wrapper">
+            <div class="booking-modal-container">
+                <div class="booking-modal-header">
+                    <h2>Booking Confirmed!</h2>
+                </div>
+                <div class="booking-modal-body">
+                    <p>Your appointment is waiting for the therapist's approval.<br></p>
+                    <div id="appointmentDetails" class="booking-details">
+                        <!-- Appointment details will be shown here -->
+                    </div>
+                    <div class="booking-modal-actions">
+                        <button class="booking-btn booking-btn-primary" onclick="window.closeModal()">Done</button>
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-primary" onclick="closeModal()">Done</button>
         </div>
     </div>
 
+
     <!-- Update script paths to use relative paths -->
-    <script src="../js/landing_page.js"></script>
+   
     <script src="../js/book_appointment.js"></script>
 </body>
 </html>

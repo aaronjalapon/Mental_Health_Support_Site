@@ -9,80 +9,112 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
-
-// Validate required fields
-if (!isset($data['firstName']) || !isset($data['lastName']) || !isset($data['email'])) {
-    echo json_encode(['error' => 'Missing required fields']);
-    exit();
-}
-
 try {
-    // Check if email already exists
-    $stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE email = ?");
-    $stmt->bind_param("s", $data['email']);
+    // Get form data
+    $firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_STRING);
+    $lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_STRING);
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'];
+    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+    $specialization = filter_input(INPUT_POST, 'specialization', FILTER_SANITIZE_STRING);
+    $experience = filter_input(INPUT_POST, 'experience', FILTER_SANITIZE_NUMBER_INT);
+    $bio = filter_input(INPUT_POST, 'bio', FILTER_SANITIZE_STRING) ?? '';
+
+    // Validate required fields
+    if (!$firstName || !$lastName || !$username || !$email || !$password) {
+        throw new Exception('All required fields must be filled');
+    }
+
+    // Check if username exists
+    $stmt = $conn->prepare("SELECT username FROM therapists WHERE username = ?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
+    if ($stmt->get_result()->num_rows > 0) {
+        echo json_encode(['error' => 'Username already exists']);
+        exit();
+    }
+
+    // Check if email exists
+    $stmt = $conn->prepare("SELECT email FROM therapists WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
         echo json_encode(['error' => 'Email already exists']);
         exit();
     }
 
+    // Generate unique_id and hash password
+    $unique_id = uniqid();
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
     $conn->begin_transaction();
 
-    // Insert therapist basic info
-    $stmt = $conn->prepare("INSERT INTO therapists (
-        first_name, last_name, specialization, experience_years,
-        email, phone, bio, status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    try {
+        // Insert therapist data
+        $stmt = $conn->prepare("
+            INSERT INTO therapists (
+                unique_id, first_name, last_name, username, password,
+                email, phone, specialization, experience_years, bio
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
 
-    $status = $data['status'] ?? 'Active';
+        $stmt->bind_param("ssssssssss",
+            $unique_id,
+            $firstName,
+            $lastName,
+            $username,
+            $hashed_password,
+            $email,
+            $phone,
+            $specialization,
+            $experience,
+            $bio
+        );
 
-    $stmt->bind_param("sssissss",
-        $data['firstName'],
-        $data['lastName'],
-        $data['specialization'],
-        $data['experience'],
-        $data['email'],
-        $data['phone'],
-        $data['bio'],
-        $status
-    );
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to add therapist");
+        }
 
-    if(!$stmt->execute()) {
-        throw new Exception("Failed to add therapist");
-    }
-
-    $therapist_id = $conn->insert_id;
-
-    // Insert availability
-    if(isset($data['availability']) && isset($data['availability']['days'])) {
-        $stmt = $conn->prepare("INSERT INTO therapist_availability (
-            therapist_id, day, start_time, end_time, break_start, break_end
-        ) VALUES (?, ?, ?, ?, ?, ?)");
-
-        foreach($data['availability']['days'] as $day) {
-            $stmt->bind_param("isssss",
-                $therapist_id,
-                $day,
-                $data['availability']['hours']['start'],
-                $data['availability']['hours']['end'],
-                $data['availability']['hours']['break']['start'],
-                $data['availability']['hours']['break']['end']
-            );
+        // Handle availability if provided
+        if (!empty($_POST['availableDays'])) {
+            $therapist_id = $stmt->insert_id;
             
-            if(!$stmt->execute()) {
-                throw new Exception("Failed to add availability for $day");
+            // First delete existing availability for this therapist
+            $delete_stmt = $conn->prepare("DELETE FROM therapist_availability WHERE therapist_id = ?");
+            $delete_stmt->bind_param("i", $therapist_id);
+            $delete_stmt->execute();
+
+            // Then insert new availability
+            $avail_stmt = $conn->prepare("
+                INSERT INTO therapist_availability 
+                (therapist_id, day, start_time, end_time, break_start, break_end)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+
+            foreach ($_POST['availableDays'] as $day) {
+                $avail_stmt->bind_param("isssss",
+                    $therapist_id,
+                    $day,
+                    $_POST['startTime'],
+                    $_POST['endTime'],
+                    $_POST['breakStart'] ?: null,
+                    $_POST['breakEnd'] ?: null
+                );
+                $avail_stmt->execute();
             }
         }
+
+        $conn->commit();
+        echo json_encode(['success' => true, 'message' => 'Therapist added successfully']);
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        throw $e;
     }
 
-    $conn->commit();
-    echo json_encode(['success' => true, 'id' => $therapist_id]);
-
 } catch (Exception $e) {
-    $conn->rollback();
+    error_log("Error in add_therapist.php: " . $e->getMessage());
     echo json_encode(['error' => $e->getMessage()]);
 }
 

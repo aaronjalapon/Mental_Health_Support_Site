@@ -31,14 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update fetchTherapists to use retry logic
+    // Update fetchTherapists to use proper headers
     async function fetchTherapists() {
         try {
             const data = await fetchWithRetry('../php/CRUDTherapist/fetch_therapist.php', {
                 method: 'POST',
                 headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             });
             
@@ -203,39 +203,43 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Add new therapist
+    // Remove duplicate addTherapistForm event listener and merge functionality
     addTherapistForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = {
-            firstName: document.getElementById('therapistFirstName').value.trim(),
-            lastName: document.getElementById('therapistLastName').value.trim(),
-            specialization: document.getElementById('therapistSpecialization').value.trim(),
-            experience: parseInt(document.getElementById('therapistExperience').value),
-            email: document.getElementById('therapistEmail').value.trim(),
-            phone: document.getElementById('therapistPhone').value.trim(),
-            bio: document.getElementById('therapistBio').value.trim(),
-            status: 'Active',
-            availability: getAvailabilityFromForm(this)
-        };
+        // Validate password match if needed
+        const password = document.getElementById('therapistPassword').value;
+        
+        // Create FormData object like in client management
+        const formData = new FormData();
+        formData.append('firstName', document.getElementById('therapistFirstName').value.trim());
+        formData.append('lastName', document.getElementById('therapistLastName').value.trim());
+        formData.append('username', document.getElementById('therapistUsername').value.trim());
+        formData.append('password', password);
+        formData.append('email', document.getElementById('therapistEmail').value.trim());
+        formData.append('phone', document.getElementById('therapistPhone').value.trim());
+        formData.append('specialization', document.getElementById('therapistSpecialization').value.trim());
+        formData.append('experience', document.getElementById('therapistExperience').value);
+        formData.append('bio', document.getElementById('therapistBio').value.trim());
 
-        // Validate availability
-        if (formData.availability.days.length === 0) {
-            alert('Please select at least one working day');
-            return;
-        }
+        // Add availability data
+        const availableDays = Array.from(document.querySelectorAll('input[name="availableDays"]:checked'))
+            .map(checkbox => checkbox.value);
+        availableDays.forEach(day => formData.append('availableDays[]', day));
+        
+        formData.append('startTime', document.querySelector('input[name="startTime"]').value);
+        formData.append('endTime', document.querySelector('input[name="endTime"]').value);
+        formData.append('breakStart', document.querySelector('input[name="breakStart"]').value);
+        formData.append('breakEnd', document.querySelector('input[name="breakEnd"]').value);
 
         try {
             const response = await fetch('../php/CRUDTherapist/add_therapist.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                body: formData
             });
-
+            
             const data = await response.json();
-
+            
             if (data.success) {
                 await fetchTherapists();
                 toggleAddModal();
@@ -250,30 +254,72 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Add edit form submission handler
+    // Update edit form submission handler
     editTherapistForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = {
-            id: document.getElementById('editTherapistId').value,
-            firstName: document.getElementById('editTherapistFirstName').value,
-            lastName: document.getElementById('editTherapistLastName').value,
-            specialization: document.getElementById('editTherapistSpecialization').value,
-            experience: parseInt(document.getElementById('editTherapistExperience').value),
-            email: document.getElementById('editTherapistEmail').value,
-            phone: document.getElementById('editTherapistPhone').value,
-            bio: document.getElementById('editTherapistBio').value,
-            status: document.getElementById('editTherapistStatus').value,
-            availability: getAvailabilityFromForm(this)
-        };
+        // Validate required fields
+        const requiredFields = [
+            'editTherapistFirstName',
+            'editTherapistLastName',
+            'editTherapistUsername',
+            'editTherapistEmail',
+            'editTherapistSpecialization'
+        ];
+
+        const invalidFields = requiredFields.filter(fieldId => {
+            const value = document.getElementById(fieldId).value.trim();
+            return !value;
+        });
+
+        if (invalidFields.length > 0) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        const formData = new FormData();
+        
+        // Add all fields to formData
+        formData.append('editTherapistId', document.getElementById('editTherapistId').value);
+        formData.append('firstName', document.getElementById('editTherapistFirstName').value.trim());
+        formData.append('lastName', document.getElementById('editTherapistLastName').value.trim());
+        formData.append('username', document.getElementById('editTherapistUsername').value.trim());
+        formData.append('email', document.getElementById('editTherapistEmail').value.trim());
+        formData.append('phone', document.getElementById('editTherapistPhone').value.trim());
+        formData.append('specialization', document.getElementById('editTherapistSpecialization').value.trim());
+        formData.append('experience', document.getElementById('editTherapistExperience').value);
+        formData.append('bio', document.getElementById('editTherapistBio').value.trim());
+        formData.append('status', document.getElementById('editTherapistStatus').value);
+
+        // Add availability data
+        const availableDays = Array.from(this.querySelectorAll('input[name="availableDays"]:checked'))
+            .map(checkbox => checkbox.value);
+            
+        if (availableDays.length === 0) {
+            alert('Please select at least one working day');
+            return;
+        }
+
+        availableDays.forEach(day => formData.append('availableDays[]', day));
+        
+        // Validate time inputs
+        const startTime = this.querySelector('input[name="startTime"]').value;
+        const endTime = this.querySelector('input[name="endTime"]').value;
+        
+        if (!startTime || !endTime) {
+            alert('Please set working hours');
+            return;
+        }
+
+        formData.append('startTime', startTime);
+        formData.append('endTime', endTime);
+        formData.append('breakStart', this.querySelector('input[name="breakStart"]').value);
+        formData.append('breakEnd', this.querySelector('input[name="breakEnd"]').value);
 
         try {
             const response = await fetch('../php/CRUDTherapist/update_therapist.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                body: formData
             });
 
             const data = await response.json();
@@ -283,31 +329,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 toggleEditModal();
                 alert('Therapist updated successfully');
             } else {
-                alert(data.error || 'Failed to update therapist');
+                throw new Error(data.error || 'Failed to update therapist');
             }
         } catch (error) {
             console.error('Error updating therapist:', error);
-            alert('Failed to update therapist');
+            alert('Failed to update therapist: ' + error.message);
         }
     });
 
     // Fix the editTherapist function
     window.editTherapist = async function(id) {
         try {
+            // First log the therapists array and the ID we're looking for
+            console.log('Looking for therapist ID:', id);
+            console.log('Available therapists:', therapists);
+            
+            // Convert both IDs to strings for comparison
             const therapist = therapists.find(t => String(t.therapist_id) === String(id));
             
             if (!therapist) {
-                console.error('No therapist found with ID:', id);
-                console.error('Available therapist IDs:', therapists.map(t => t.therapist_id));
-                throw new Error('Therapist not found');
+                console.error('Available IDs:', therapists.map(t => t.therapist_id));
+                throw new Error(`Therapist not found with ID: ${id}`);
             }
 
-            console.log('Found therapist:', therapist);
+            console.log('Found therapist:', therapist); // Debug log
 
-            // Populate form fields
+            // Populate edit form fields
             document.getElementById('editTherapistId').value = therapist.therapist_id;
             document.getElementById('editTherapistFirstName').value = therapist.firstName;
             document.getElementById('editTherapistLastName').value = therapist.lastName;
+            document.getElementById('editTherapistUsername').value = therapist.username;
             document.getElementById('editTherapistEmail').value = therapist.email;
             document.getElementById('editTherapistPhone').value = therapist.phone;
             document.getElementById('editTherapistSpecialization').value = therapist.specialization;
@@ -316,24 +367,23 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('editTherapistStatus').value = therapist.status;
 
             // Update availability checkboxes
-            if (Array.isArray(therapist.availability.days)) {
-                document.querySelectorAll('#editTherapistForm input[name="availableDays"]').forEach(checkbox => {
-                    checkbox.checked = therapist.availability.days.includes(checkbox.value);
-                });
-            }
+            const dayCheckboxes = document.querySelectorAll('#editTherapistForm input[name="availableDays"]');
+            dayCheckboxes.forEach(checkbox => {
+                checkbox.checked = therapist.availability.days.includes(checkbox.value);
+            });
 
             // Update time inputs
-            const form = document.getElementById('editTherapistForm');
             if (therapist.availability.hours) {
+                const form = document.getElementById('editTherapistForm');
                 form.querySelector('input[name="startTime"]').value = therapist.availability.hours.start || '';
                 form.querySelector('input[name="endTime"]').value = therapist.availability.hours.end || '';
-                form.querySelector('input[name="breakStart"]').value = therapist.availability.hours.break?.start || '';
-                form.querySelector('input[name="breakEnd"]').value = therapist.availability.hours.break?.end || '';
+                form.querySelector('input[name="breakStart"]').value = therapist.availability.hours.break.start || '';
+                form.querySelector('input[name="breakEnd"]').value = therapist.availability.hours.break.end || '';
             }
 
             toggleEditModal();
         } catch (error) {
-            console.error('Error in editTherapist:', error);
+            console.error('Error loading therapist:', error);
             alert('Failed to load therapist data: ' + error.message);
         }
     };
@@ -384,4 +434,38 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Refresh therapist list periodically (every 30 seconds)
     setInterval(fetchTherapists, 30000);
+    
+    // Function to populate edit form
+    function populateEditForm(therapist) {
+        document.getElementById('editTherapistId').value = therapist.therapist_id;
+        document.getElementById('editTherapistFirstName').value = therapist.firstName;
+        document.getElementById('editTherapistLastName').value = therapist.lastName;
+        // ... populate other fields ...
+
+        // Clear previous availability selections
+        document.querySelectorAll('#editTherapistForm input[name="availableDays"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Set availability
+        if (therapist.availability && therapist.availability.days) {
+            therapist.availability.days.forEach(day => {
+                const checkbox = document.getElementById('edit' + day.charAt(0).toUpperCase() + day.slice(1));
+                if (checkbox) checkbox.checked = true;
+            });
+
+            // Set working hours
+            if (therapist.availability.hours) {
+                document.getElementById('editStartTime').value = therapist.availability.hours.start;
+                document.getElementById('editEndTime').value = therapist.availability.hours.end;
+                // Set break times if they exist
+                if (therapist.availability.hours.break) {
+                    document.querySelector('#editTherapistForm input[name="breakStart"]').value = 
+                        therapist.availability.hours.break.start;
+                    document.querySelector('#editTherapistForm input[name="breakEnd"]').value = 
+                        therapist.availability.hours.break.end;
+                }
+            }
+        }
+    }
 });

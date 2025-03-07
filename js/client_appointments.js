@@ -42,58 +42,65 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderAppointments(appointments) {
         const list = document.getElementById('appointmentsList');
-        list.style.display = 'block'; // Make sure list is visible
-        document.getElementById('noAppointments').style.display = 'none';
         
+        if (!appointments || appointments.length === 0) {
+            showEmptyState();
+            return;
+        }
+    
         list.innerHTML = appointments.map(appointment => {
-            const statusClass = appointment.status.toLowerCase();
-            const sessionType = appointment.session_type.toLowerCase();
+            // Add null checks and default values
+            const therapistName = appointment.therapist_name || 'Not Assigned';
+            const status = (appointment.status || 'pending').toLowerCase();
+            const sessionType = appointment.session_type || 'video';
+            const appointmentDate = appointment.date ? formatDate(appointment.date) : 'Date not set';
+            const appointmentTime = appointment.time ? formatTime(appointment.time) : 'Time not set';
             
             const statusIcon = {
-                pending: 'fa-clock',
-                upcoming: 'fa-calendar-check',
-                completed: 'fa-check-circle',
-                cancelled: 'fa-times-circle'
-            }[statusClass];
-
+                'pending': 'fa-clock',
+                'upcoming': 'fa-calendar-check',
+                'completed': 'fa-check-circle',
+                'cancelled': 'fa-times-circle',
+                'rejected': 'fa-times-circle'
+            }[status] || 'fa-calendar';
+    
             const sessionIcon = {
-                video: 'fa-video',
-                voice: 'fa-microphone',
-                chat: 'fa-comments'
-            }[sessionType] || 'fa-video';
-
+                'video': 'fa-video',
+                'voice': 'fa-microphone',
+                'chat': 'fa-comments'
+            }[sessionType.toLowerCase()] || 'fa-video';
+    
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
-                        <h3>Session with ${appointment.therapist_name}</h3>
-                        <span class="appointment-status status-${statusClass}">
-                            <i class="fas ${statusIcon}"></i> ${appointment.status}
+                        <h3>Session with ${therapistName}</h3>
+                        <span class="appointment-status status-${status}">
+                            <i class="fas ${statusIcon}"></i> ${status}
                         </span>
                     </div>
                     <div class="appointment-details">
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
                             <span class="detail-label">Date:</span>
-                            <span class="detail-value">${formatDate(appointment.date)}</span>
+                            <span class="detail-value">${appointmentDate}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas fa-clock"></i>
                             <span class="detail-label">Time:</span>
-                            <span class="detail-value">${formatTime(appointment.time)}</span>
+                            <span class="detail-value">${appointmentTime}</span>
                         </div>
                         <div class="detail-item">
                             <i class="fas ${sessionIcon}"></i>
                             <span class="detail-label">Type:</span>
-                            <span class="detail-value">${formatSessionType(appointment.session_type)}</span>
+                            <span class="detail-value">${formatSessionType(sessionType)}</span>
                         </div>
                     </div>
                     ${renderAppointmentActions(appointment)}
                 </div>
             `;
         }).join('');
-
-        // Add event listeners for appointment actions
-        attachActionListeners();
+    
+        hideEmptyState();
     }
 
     function renderAppointmentActions(appointment) {
@@ -114,10 +121,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }[appointment.session_type.toLowerCase()] || 'fa-video';
 
             actions = `
-                <button class="btn btn-primary join-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
+                <button class="appointment-btn appointment-btn-primary join-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
                     <i class="fas ${sessionIcon}"></i> Join Session
                 </button>
-                <button class="btn btn-secondary reschedule" data-id="${appointment.id}">
+                <button class="appointment-btn appointment-btn-secondary reschedule" data-id="${appointment.id}">
                     <i class="fas fa-calendar-alt"></i> Reschedule
                 </button>
             `;
@@ -125,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add cancel button for pending and upcoming appointments
         actions += `
-            <button class="btn btn-danger cancel" data-id="${appointment.id}">
+            <button class="appointment-btn appointment-btn-danger cancel" data-id="${appointment.id}">
                 <i class="fas fa-times"></i> Cancel
             </button>
         `;
@@ -180,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleCancel(event) {
-        const appointmentId = event.target.dataset.id;
+        const appointmentId = event.target.closest('.cancel').dataset.id;
         showCancellationModal(appointmentId);
     }
 
@@ -249,9 +256,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('noAppointments').style.display = 'block';
     }
 
+    function hideEmptyState() {
+        document.getElementById('appointmentsList').style.display = 'block';
+        document.getElementById('noAppointments').style.display = 'none';
+    }
+
     // Helper functions
     function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        if (!dateString) return 'Date not set';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Invalid Date';
+        
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -260,11 +276,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatTime(timeString) {
-        return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
+        if (!timeString) return 'Time not set';
+        try {
+            return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Invalid Time';
+        }
     }
 
     function showError(message) {
@@ -291,51 +313,54 @@ document.addEventListener('DOMContentLoaded', function() {
     function showCancellationModal(appointmentId) {
         const modal = document.getElementById('cancellationModal');
         const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
-        const appointmentInfo = modal.querySelector('.appointment-info');
         
-        // Get appointment details from the card
+        if (!modal || !appointmentCard) return;
+        
+        // Get appointment details
         const therapistName = appointmentCard.querySelector('h3').textContent;
         const date = appointmentCard.querySelector('.detail-value').textContent;
         const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
         
-        // Update modal with appointment details
+        // Update appointment info
+        const appointmentInfo = modal.querySelector('.cancel-appointment-info');
         appointmentInfo.innerHTML = `
             <p><strong>${therapistName}</strong></p>
             <p><i class="fas fa-calendar"></i> ${date}</p>
             <p><i class="fas fa-clock"></i> ${time}</p>
         `;
         
-        modal.classList.add('active');
+        // Show modal
+        modal.classList.add('show');
         
-        // Focus on the reason textarea
-        setTimeout(() => {
-            document.getElementById('cancellationReason').focus();
-        }, 300);
-        
-        // Add event listeners for both buttons
+        // Setup event listeners
         document.getElementById('confirmCancel').onclick = () => {
-            const reason = document.getElementById('cancellationReason').value.trim();
-            cancelAppointment(appointmentId, reason); // Remove validation check
+            // Add confirmation alert
+            if (confirm("Are you absolutely sure you want to cancel this appointment? This action cannot be undone.")) {
+                const reason = document.getElementById('cancelReason').value.trim();
+                cancelAppointment(appointmentId, reason);
+            }
         };
-
-        // Add event listener for the "No, Keep" button
-        document.querySelector('button[onclick="closeModal()"]').onclick = (e) => {
-            e.preventDefault();
-            closeModalWithAnimation();
-        };
-    }
-
-    function closeModalWithAnimation() {
-        const modal = document.getElementById('cancellationModal');
-        modal.classList.add('fade-out');
         
-        setTimeout(() => {
-            modal.classList.remove('active', 'fade-out');
-            document.getElementById('cancellationReason').value = '';
-        }, 300); // Match this with your CSS transition duration
+        document.getElementById('keepAppointment').onclick = closeModal;
+        
+        // Focus on textarea
+        document.getElementById('cancelReason').focus();
     }
 
     function closeModal() {
-        closeModalWithAnimation();
+        const modal = document.getElementById('cancellationModal');
+        if (!modal) return;
+        
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.querySelector('#cancelReason').value = '';
+        }, 300);
     }
+
+    // Add event listener for clicking outside modal to close
+    document.getElementById('cancellationModal').addEventListener('click', (event) => {
+        if (event.target.id === 'cancellationModal') {
+            closeModal();
+        }
+    });
 });

@@ -31,7 +31,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
         <div class="appointments-container">
             <div class="appointments-header">
                 <h1>My Appointments</h1>
-                <a href="#" onclick="redirectToAppointment()" class="btn btn-primary">
+                <a href="#" onclick="redirectToAppointment()" class="appointment-btn appointment-btn-primary">
                     <i class="fas fa-plus"></i> Book New Session
                 </a>
             </div>
@@ -69,18 +69,26 @@ $isAdmin = $_SESSION['role'] === 'admin';
     </div>
 
     <!-- Cancellation Modal -->
-    <div id="cancellationModal" class="modal">
-        <div class="modal-content">
-            <h2>Cancel Appointment</h2>
-            <p>Are you sure you want to cancel this appointment?</p>
-            <p class="appointment-info"></p>
-            <div class="form-group">
-                <label for="cancellationReason">Reason for cancellation (optional):</label>
-                <textarea id="cancellationReason"></textarea>
+    <div id="cancellationModal" class="cancel-appointment-modal">
+        <div class="cancel-modal-content">
+            <div class="cancel-modal-header">
+                <h2>Cancel Appointment</h2>
+                <p>Are you sure you want to cancel this appointment?</p>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn-danger" id="confirmCancel">Yes, Cancel</button>
-                <button class="btn btn-secondary" onclick="closeModal()">No, Keep</button>
+            <div class="cancel-appointment-info">
+                <!-- This will be populated dynamically -->
+            </div>
+            <div class="cancel-reason-group">
+                <label for="cancelReason">Reason for cancellation (optional):</label>
+                <textarea id="cancelReason"></textarea>
+            </div>
+            <div class="cancel-modal-actions">
+                <button class="appointment-btn appointment-btn-danger" id="confirmCancel">
+                    Yes, Cancel
+                </button>
+                <button class="appointment-btn appointment-btn-secondary" id="keepAppointment">
+                    No, Keep
+                </button>
             </div>
         </div>
     </div>

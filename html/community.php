@@ -27,15 +27,14 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MindSpace Community - A space for mental health discussion and support">
     <title>MindSpace Community</title>
-    
-    <link rel="stylesheet" href="/css/community.css">
-    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="../css/community.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include '/components/header.php'; ?>
+    <?php include '../components/header.php'; ?>
 
     <div class="sidebar-overlay"></div>
     
@@ -174,6 +173,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
     <button class="sidebar-toggle">
         <i class="fas fa-bars"></i>
     </button>
+    
     <script src="/js/community.js"></script>
     <script src="/js/landing_page.js"></script>
     

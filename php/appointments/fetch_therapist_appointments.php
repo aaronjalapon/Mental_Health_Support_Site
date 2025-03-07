@@ -4,56 +4,68 @@ include_once '../db.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['unique_id'])) {
+if (!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
     echo json_encode(['success' => false, 'error' => 'Unauthorized access']);
     exit();
 }
 
 try {
-    // Get client/user ID from the session
-    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
+    // Get therapist ID from unique_id
+    $stmt = $conn->prepare("SELECT therapist_id FROM therapists WHERE unique_id = ?");
     $stmt->bind_param("s", $_SESSION['unique_id']);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
-        throw new Exception('Client not found');
+        throw new Exception('Therapist not found');
     }
     
-    $client = $result->fetch_assoc();
-    $client_id = $client['client_id'];
+    $therapist = $result->fetch_assoc();
+    $therapist_id = $therapist['therapist_id'];
 
-    // Base query with proper JOIN to get therapist name
+    // Base query
     $sql = "SELECT 
                 a.*,
-                CONCAT(t.first_name, ' ', t.last_name) as therapist_name
+                CONCAT(c.firstName, ' ', c.lastName) as client_name,
+                c.email as client_email,
+                c.contactNumber as client_phone
             FROM appointments a
-            LEFT JOIN therapists t ON a.therapist_id = t.therapist_id
-            WHERE a.client_id = ?";
+            JOIN client c ON a.client_id = c.client_id
+            WHERE a.therapist_id = ?";
 
-    $params = [$client_id];
+    $params = [$therapist_id];
     $types = "i";
 
     // Add filters if provided
-    if (isset($_GET['status']) && $_GET['status'] !== 'all') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (isset($data['status']) && $data['status'] !== 'all') {
         $sql .= " AND LOWER(a.status) = LOWER(?)";
-        $params[] = $_GET['status'];
+        $params[] = $data['status'];
         $types .= "s";
     }
 
-    if (isset($_GET['type']) && $_GET['type'] !== 'all') {
+    if (isset($data['type']) && $data['type'] !== 'all') {
         $sql .= " AND LOWER(a.session_type) = LOWER(?)";
-        $params[] = $_GET['type'];
+        $params[] = $data['type'];
         $types .= "s";
     }
 
-    if (isset($_GET['date']) && $_GET['date']) {
+    if (isset($data['date']) && $data['date']) {
         $sql .= " AND DATE(a.appointment_date) = ?";
-        $params[] = $_GET['date'];
+        $params[] = $data['date'];
         $types .= "s";
     }
 
-    // Add order by clause
+    if (isset($data['search']) && $data['search']) {
+        $searchTerm = "%" . $data['search'] . "%";
+        $sql .= " AND (LOWER(c.firstName) LIKE LOWER(?) OR LOWER(c.lastName) LIKE LOWER(?))";
+        $params[] = $searchTerm;
+        $params[] = $searchTerm;
+        $types .= "ss";
+    }
+
+    // Sort by status priority and date
     $sql .= " ORDER BY 
               CASE 
                 WHEN a.status = 'pending' THEN 1
@@ -61,7 +73,7 @@ try {
                 WHEN a.status = 'completed' THEN 3
                 WHEN a.status = 'cancelled' THEN 4
               END,
-              a.appointment_date ASC,
+              a.appointment_date ASC, 
               a.appointment_time ASC";
 
     $stmt = $conn->prepare($sql);
@@ -73,7 +85,9 @@ try {
     while ($row = $result->fetch_assoc()) {
         $appointments[] = [
             'id' => $row['appointment_id'],
-            'therapist_name' => $row['therapist_name'] ?? 'Not Assigned',
+            'client_name' => $row['client_name'],
+            'client_email' => $row['client_email'],
+            'client_phone' => $row['client_phone'],
             'date' => date('Y-m-d', strtotime($row['appointment_date'])),
             'time' => date('H:i:s', strtotime($row['appointment_time'])),
             'session_type' => $row['session_type'],

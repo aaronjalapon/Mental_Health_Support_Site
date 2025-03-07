@@ -1,3 +1,17 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
+}
+
+body {
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
+    background-color: #f8f9fa;
+    line-height: 1.6;
+}
+
 /* Add these new styles at the top */
 .page-container {
     padding-top: 80px; /* Space for fixed header */
@@ -21,11 +35,13 @@
     font-size: 2.5rem;
     color: #2c3e50;
     margin-bottom: 0.5rem;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .booking-header p {
     color: #6c757d;
     font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .booking-content {
@@ -73,6 +89,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 1rem;
     backdrop-filter: blur(10px);
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .therapist-card:hover {
@@ -150,6 +167,7 @@
 
 .booking-form {
     max-width: 600px;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .booking-summary {
@@ -167,6 +185,70 @@
     font-size: 1.2rem;
     margin-bottom: 1rem;
 }
+
+/* Rename booking confirmation modal styles to be specific */
+.booking-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Update Booking Modal Styles */
+.booking-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-modal.active {
+    display: flex;
+}
+
+.booking-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.booking-modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+/* Remove the generic modal styles that conflict with header.css */
+/* Remove these:
+.modal-overlay {
+    display: none;
+    position: fixed;
+    ...
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    ...
+}
+*/
 
 .modal {
     display: none;
@@ -204,6 +286,7 @@
     position: relative;
     transform: scale(0.7);
     transition: transform 0.3s ease;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .modal.active .modal-content {
@@ -279,7 +362,9 @@
 /* Form Elements Styling */
 input[type="text"],
 select,
-textarea {
+textarea,
+button {
+    font-family: 'Poppins', sans-serif; /* Add this to form elements */
     width: 100%;
     padding: 12px 16px;
     border: 1px solid #e0e0e0;
@@ -316,6 +401,7 @@ textarea:focus {
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #2c3e50;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 #therapistSearch {
@@ -346,6 +432,7 @@ textarea {
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
+    font-family: 'Poppins', sans-serif; /* Add this to ensure consistent font */
 }
 
 .btn-primary {
@@ -390,13 +477,6 @@ textarea {
     }
 
     .therapist-selection {
-        border-top: 1px solid #e9ecef;
-    }
-}
-
-@media (max-width: 576px) {
-    .calendar {
-        font-size: 0.875rem;
     }
 
     .booking-container {
@@ -532,4 +612,261 @@ textarea {
 .no-therapists-message p {
     color: #6c757d;
     margin: 0.5rem 0;
+}
+
+/* Rename modal classes to be more specific */
+.booking-confirmation-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-confirmation-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    animation: modalSlideIn 0.3s ease;
+}
+
+.booking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.booking-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.booking-form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.booking-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.booking-btn-primary {
+    background-color: #1e9160;
+    color: white;
+}
+
+.booking-btn-secondary {
+    background-color: #e9ecef;
+    color: #2c3e50;
+}
+
+/* Remove old conflicting classes */
+.modal,
+.modal-overlay,
+.modal-content,
+.modal-header,
+.modal-body,
+.form-group,
+.form-input,
+.form-grid,
+.form-actions,
+.btn,
+.btn-primary,
+.btn-secondary {
+    /* Remove these classes as they conflict with header.css */
+}
+
+/* Add these new specific booking modal classes */
+.booking-modal-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.booking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.booking-modal-body {
+    margin-bottom: 1.5rem;
+}
+
+.booking-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.booking-form-group {
+    margin-bottom: 1rem;
+}
+
+.booking-form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.booking-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Remove all conflicting modal classes and add new booking-specific ones */
+.booking-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-modal-wrapper {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: bookingModalSlideIn 0.3s ease;
+}
+
+.booking-modal-container {
+    width: 100%;
+    text-align: left;
+}
+
+.booking-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.booking-modal-body {
+    margin-bottom: 1.5rem;
+}
+
+.booking-details {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.booking-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+@keyframes bookingModalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Remove old conflicting classes */
+.modal,
+.modal-overlay,
+.modal-content,
+.modal-header,
+.modal-body {
+    /* Remove these styles as they conflict with header.css */
+}
+
+/* Update modal styles with unique class names */
+.booking-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.booking-modal-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.booking-modal-wrapper {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: bookingModalSlideIn 0.3s ease;
+}
+
+@keyframes bookingModalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Remove old conflicting modal classes */
+.modal,
+.modal-overlay,
+.modal-content,
+.modal-header,
+.modal-body {
+    /* Remove these styles */
+}
+
+.break-time {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
 }

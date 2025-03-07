@@ -1,3 +1,10 @@
+<?php
+session_start();
+if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +14,7 @@
     <link rel="stylesheet" href="/css/therapist_appointments.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
     <?php include '../components/header.php'; ?>
@@ -25,16 +33,19 @@
             <div class="appointments-filters">
                 <div class="filter-group">
                     <input type="text" id="searchClient" placeholder="Search client name...">
-                </div>
-                <div class="filter-group">
                     <select id="statusFilter">
-                        <option value="">All Status</option>
+                        <option value="all">All Status</option> 
                         <option value="upcoming">Upcoming</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
+                        <option value="pending">Pending</option>
                     </select>
-                </div>
-                <div class="filter-group">
+                    <select id="typeFilter">
+                        <option value="all">All Types</option>
+                        <option value="video">Video Call</option>
+                        <option value="voice">Voice Call</option>
+                        <option value="chat">Chat Session</option>
+                    </select>
                     <input type="date" id="dateFilter">
                 </div>
                 <button id="clearFilters" class="btn btn-secondary">Clear Filters</button>
@@ -55,6 +66,11 @@
                     <i class="fas fa-check-circle"></i>
                     <h3>Completed</h3>
                     <span class="count" id="completedCount">0</span>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-hourglass-half"></i>
+                    <h3>Pending</h3>
+                    <span class="count" id="pendingCount">0</span>
                 </div>
             </div>
 
