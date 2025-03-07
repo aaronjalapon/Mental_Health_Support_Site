@@ -10,7 +10,7 @@ body {
     font-size: 16px;
     line-height: 1.6;
     color: #333;
-    background-color: rgb(211, 248, 226);
+    background: linear-gradient(135deg, rgb(211, 248, 226) 0%, rgb(180, 240, 205) 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;

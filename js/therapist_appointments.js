@@ -317,34 +317,76 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function handleReschedule(event) {
         const appointmentId = event.currentTarget.dataset.id;
-        // Show reschedule modal or date picker
-        const newDate = prompt('Enter new date (YYYY-MM-DD):');
-        const newTime = prompt('Enter new time (HH:MM):');
-        const notes = prompt('Add a note for rescheduling (optional):');
+        const appointmentCard = event.currentTarget.closest('.appointment-card');
         
-        if (newDate && newTime) {
-            try {
-                const response = await fetch('../php/appointments/reschedule_appointment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        appointmentId,
-                        newDate,
-                        newTime,
-                        notes
-                    })
-                });
+        try {
+            // Fetch appointment details from server
+            const response = await fetch('../php/appointments/fetch_appointment_details.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ appointmentId })
+            });
+            
+            const data = await response.json();
+            if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
+            
+            const appointment = data.appointment;
+
+            // Populate reschedule modal with fetched data
+            document.getElementById('rescheduleInfo').innerHTML = `
+                <h4>Current Schedule</h4>
+                <p><strong>Client:</strong> ${appointment.client_name}</p>
+                <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
+                <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+            `;
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('newDate').min = today;
+            
+            // Pre-fill the form with current values
+            document.getElementById('newDate').value = appointment.date;
+            document.getElementById('newTime').value = appointment.time;
+
+            // Show modal
+            const modal = document.getElementById('rescheduleModal');
+            modal.style.display = 'block';
+
+            // Handle form submission
+            const form = document.getElementById('rescheduleForm');
+            form.onsubmit = async function(e) {
+                e.preventDefault();
                 
-                const data = await response.json();
-                if (data.success) {
-                    showSuccess('Appointment rescheduled successfully');
-                    loadAppointments();
-                } else {
-                    throw new Error(data.error || 'Failed to reschedule appointment');
+                const newDate = document.getElementById('newDate').value;
+                const newTime = document.getElementById('newTime').value;
+                const notes = document.getElementById('rescheduleNotes').value;
+
+                try {
+                    const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            appointmentId,
+                            newDate,
+                            newTime,
+                            notes
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        showSuccess('Appointment rescheduled successfully');
+                        modal.style.display = 'none';
+                        loadAppointments(); // Refresh the appointments list
+                    } else {
+                        throw new Error(data.error || 'Failed to reschedule appointment');
+                    }
+                } catch (error) {
+                    showError('Failed to reschedule appointment: ' + error.message);
                 }
-            } catch (error) {
-                showError('Failed to reschedule appointment: ' + error.message);
-            }
+            };
+        } catch (error) {
+            showError('Failed to load appointment details: ' + error.message);
         }
     }
 
@@ -600,6 +642,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('dateFilter').value = '';
         loadAppointments();
     }
+
+    // Add logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+        if (confirm('Are you sure you want to logout?')) {
+            try {
+                const response = await fetch('../php/logout.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = 'login.php';
+                } else {
+                    throw new Error(data.message || 'Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showError('Failed to logout. Please try again.');
+            }
+        }
+    });
 });
 
 function handleMessageClient(event) {

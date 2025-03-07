@@ -17,8 +17,6 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
     <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
-    <?php include '../components/header.php'; ?>
-
     <div class="page-container">
         <div class="appointments-container">
             <div class="appointments-header">
@@ -26,6 +24,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                 <div class="header-actions">
                     <button class="btn btn-secondary" id="manageAvailabilityBtn">
                         <i class="fas fa-clock"></i> Manage Availability
+                    </button>
+                    <button class="btn btn-danger" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
             </div>
@@ -207,6 +208,39 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                 </div>
                 <div class="modal-actions">
                     <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reschedule Appointment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="rescheduleForm">
+                <div class="reschedule-section">
+                    <div class="appointment-info" id="rescheduleInfo">
+                        <!-- Appointment info will be populated dynamically -->
+                    </div>
+                    <div class="form-group">
+                        <label for="newDate">New Date</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newTime">New Time</label>
+                        <input type="time" id="newTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rescheduleNotes">Notes (Optional)</label>
+                        <textarea id="rescheduleNotes" placeholder="Add a note about rescheduling..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Confirm Reschedule</button>
                     <button type="button" class="btn btn-secondary close-modal">Cancel</button>
                 </div>
             </form>
