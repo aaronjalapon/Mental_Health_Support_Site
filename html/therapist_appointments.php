@@ -97,20 +97,14 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                             </div>
                         </div>
                         <div class="appointment-actions">
-                            <button class="btn btn-primary join-session">
-                                <i class="fas fa-video"></i> Join Session
-                            </button>
-                            <button class="btn btn-secondary message-client">
-                                <i class="fas fa-comment"></i> Message Client
-                            </button>
-                            <button class="btn btn-primary accept-appointment" data-id="${appointment.id}">
-                                <i class="fas fa-check"></i> Accept
+                            <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-check"></i> Approve
                             </button>
                             <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
                                 <i class="fas fa-calendar-alt"></i> Reschedule
                             </button>
-                            <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
-                                <i class="fas fa-times"></i> Cancel
+                            <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${clientName}">
+                                <i class="fas fa-comment"></i> Message Client
                             </button>
                         </div>
                     </div>

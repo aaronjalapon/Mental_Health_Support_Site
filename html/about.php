@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'components/header.php'; ?>
-
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/header.php'; ?>
+   
     <main>
         <section class="hero">
             <div class="hero-content">
@@ -61,17 +60,17 @@
                 <h2>Our Team</h2>
                 <div class="team-grid">
                     <div class="team-member">
-                        <img src="/images/team-1.jpg" alt="Team Member">
+                        <img src="/images/team/team-1.jpg" alt="Dr. Sarah Johnson">lt="Dr. Sarah Johnson">
                         <h3>Dr. Sarah Johnson</h3>
                         <p>Clinical Director</p>
                     </div>
                     <div class="team-member">
-                        <img src="/images/team-2.jpg" alt="Team Member">
+                        <img src="/images/team/team-2.jpg" alt="Michael Chen">hael Chen">
                         <h3>Michael Chen</h3>
                         <p>Community Manager</p>
                     </div>
                     <div class="team-member">
-                        <img src="/images/team-3.jpg" alt="Team Member">
+                        <img src="/images/team/team-3.jpg" alt="Dr. Emily Parker"> Emily Parker">
                         <h3>Dr. Emily Parker</h3>
                         <p>Lead Therapist</p>
                     </div>

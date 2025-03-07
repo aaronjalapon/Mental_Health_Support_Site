@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once "db.php"; // Change from config.php to db.php
+include_once "db.php"; 
 
 if (!isset($_SESSION['unique_id'])) {
     echo json_encode(['success' => false, 'message' => 'Not logged in']);

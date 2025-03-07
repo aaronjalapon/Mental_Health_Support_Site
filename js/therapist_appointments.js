@@ -179,10 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
                         <i class="fas fa-check"></i> Approve
                     </button>
-                    <button class="btn btn-danger reject-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-times"></i> Reject
+                    <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-calendar-alt"></i> Reschedule
                     </button>
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
@@ -198,20 +201,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
                 break;
             case 'completed':
                 actions.push(`
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
                 break;
         }
-
+        
         return actions.length ? `<div class="appointment-actions">${actions.join('')}</div>` : '';
     }
 
@@ -248,8 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function attachActionListeners() {
         document.querySelectorAll('.approve-appointment').forEach(btn => 
             btn.addEventListener('click', handleApprove));
-        document.querySelectorAll('.reject-appointment').forEach(btn => 
-            btn.addEventListener('click', handleReject));
         document.querySelectorAll('.start-session').forEach(btn => 
             btn.addEventListener('click', handleStartSession));
         document.querySelectorAll('.reschedule-appointment').forEach(btn => 
@@ -279,34 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (error) {
                 showError('Failed to approve appointment: ' + error.message);
-            }
-        }
-    }
-
-    async function handleReject(event) {
-        const appointmentId = event.currentTarget.dataset.id;
-        const reason = prompt('Please provide a reason for rejection:');
-        
-        if (reason && confirm('Are you sure you want to reject this appointment?')) {
-            try {
-                const response = await fetch('../php/appointments/reject_appointment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        appointmentId,
-                        reason
-                    })
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    showSuccess('Appointment rejected successfully');
-                    loadAppointments();
-                } else {
-                    throw new Error(data.error || 'Failed to reject appointment');
-                }
-            } catch (error) {
-                showError('Failed to reject appointment: ' + error.message);
             }
         }
     }
@@ -341,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show reschedule modal or date picker
         const newDate = prompt('Enter new date (YYYY-MM-DD):');
         const newTime = prompt('Enter new time (HH:MM):');
+        const notes = prompt('Add a note for rescheduling (optional):');
         
         if (newDate && newTime) {
             try {
@@ -350,7 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ 
                         appointmentId,
                         newDate,
-                        newTime
+                        newTime,
+                        notes
                     })
                 });
                 
@@ -548,11 +529,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleMessage(event) {
         const appointmentId = event.currentTarget.dataset.id;
         const clientName = event.currentTarget.dataset.client;
+        const clientId = event.currentTarget.dataset.clientId; // Get clientId from dataset
         
         // Show modal and populate client info
         document.getElementById('messageClientInfo').innerHTML = `
-            <h4>To: ${clientName}</h4>
             <p>Appointment ID: ${appointmentId}</p>
+            <p>Client ID: ${clientId}</p>
+            <h4>To: ${clientName}</h4>
         `;
         
         const messageModal = document.getElementById('messageModal');

@@ -3,36 +3,6 @@ window.scrollTo(0, 0);
 document.addEventListener('DOMContentLoaded', function() {
     window.scrollTo(0, 0);  
 
-    // Burger menu functionality
-    const burgerMenu = document.getElementById("burgerMenu");
-    const navLinks = document.getElementById("navLinks");
-    const selfHelpBtn = document.querySelector('.dropbtn');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    if (burgerMenu && navLinks) {
-        burgerMenu.addEventListener("click", () => {
-            burgerMenu.classList.toggle("active");
-            navLinks.classList.toggle("show");
-        });
-    }
-
-    // Self-help dropdown toggle
-    if (selfHelpBtn) {
-        selfHelpBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownContent.classList.toggle('show');
-        });
-    }
-
-    // Close self-help dropdown when clicking outside
-    window.addEventListener('click', (event) => {
-        if (!event.target.matches('.dropbtn')) {
-            if (dropdownContent?.classList.contains('show')) {
-                dropdownContent.classList.remove('show');
-            }
-        }
-    });
-
     // Setup intersection observer for animations
     const observerOptions = {
         threshold: 0.2,
@@ -62,50 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const hiddenElements = document.querySelectorAll('.hidden');
     hiddenElements.forEach((element) =>
         oberserver.observe(element));
-
-    // Setup authentication elements
-    const authButton = document.getElementById('btn-login');
-    const userDropdown = document.querySelector('.user-dropdown');
-    const dropdownBtn = document.querySelector('.dropdown-btn');
-    const dropdownLogout = document.querySelector('.dropdown-logout');
-
-    // Check session status when page loads
-    checkSession();
-
-    // Handle auth button click
-    if (authButton) {
-        authButton.addEventListener('click', function() {
-            if (authButton.textContent === 'Log In') {
-                window.location.href = '/html/login.php';
-            }
-        });
-    }
-
-    // Handle dropdown click
-    if (dropdownBtn) {
-        dropdownBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownLogout.classList.toggle('show');
-        });
-    }
-
-    // Close dropdown when clicking outside
-    window.addEventListener('click', (e) => {
-        if (!userDropdown?.contains(e.target)) {
-            if (dropdownLogout?.classList.contains('show')) {
-                dropdownLogout.classList.remove('show');
-            }
-        }
-    });
-
-    // Add event listeners for logout
-    const logoutLinks = document.querySelectorAll('.logout-link');
-    logoutLinks.forEach(link => {
-        link.addEventListener('click', handleLogout);
-    });
-
-    // Initialize profile modal
-    setupProfileModal();
 });
 
 // Session checking function

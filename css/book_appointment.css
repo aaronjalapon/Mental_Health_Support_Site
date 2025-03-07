@@ -903,6 +903,12 @@ textarea {
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: #6c757d;
+}
+
+.time-slot.available label {
+    color: #2c3e50;
+    cursor: pointer;
 }
 
 .time-slot input[type="radio"]:checked + label {
@@ -911,14 +917,13 @@ textarea {
     border-color: #1e9160;
 }
 
-.time-slot label:hover {
-    background-color: #e8f5e9;
-    border-color: #1e9160;
-}
-
 .time-slot input[type="radio"]:disabled + label {
     opacity: 0.5;
     cursor: not-allowed;
     background-color: #e9ecef;
-    border-color: #dee2e6;
+}
+
+.time-slot.available:hover label {
+    background-color: #e8f5e9;
+    border-color: #1e9160;
 }

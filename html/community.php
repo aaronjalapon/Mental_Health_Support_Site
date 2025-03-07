@@ -16,8 +16,8 @@ if(!isset($_SESSION['client_id'])) {
     $_SESSION['client_id'] = $_SESSION['unique_id']; // or however you get the client_id
 }
 
-// Optional: You can add role-specific features
-$isAdmin = $_SESSION['role'] === 'admin';
+// Set role variable safely
+$isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
 
 <!DOCTYPE html>

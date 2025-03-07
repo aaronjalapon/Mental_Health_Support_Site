@@ -97,7 +97,7 @@ if(isset($_SESSION['unique_id'])) {
 
                 <div class="terms-checkbox">
                     <input type="checkbox" id="termsCheckbox" required>
-                    <label for="termsCheckbox">I agree to the <span class="terms-link">Terms and Conditions</span></label>
+                    <label for="termsCheckbox">I agree to the &nbsp; <span class="terms-link">Terms and Conditions</span></label>
                 </div>
         
                 <input type="submit" value="Register" class="register-btn"></button>

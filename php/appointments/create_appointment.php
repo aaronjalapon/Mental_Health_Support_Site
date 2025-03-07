@@ -9,16 +9,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-// Check if user is logged in and is a client
-if(!isset($_SESSION['unique_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'client') {
-    echo json_encode(['success' => false, 'error' => 'User not authenticated or not authorized']);
+// Fixed authentication check - remove Role condition from the query
+if(!isset($_SESSION['unique_id'])) {
+    echo json_encode(['success' => false, 'error' => 'User not authenticated']);
     exit();
 }
 
-// Get client_id from client table (not users)
 try {
-    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ? AND Role = 'client'");
-    $stmt->bind_param("i", $_SESSION['unique_id']);
+    // Modify the query to correctly check for client
+    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
+    $stmt->bind_param("s", $_SESSION['unique_id']);
     $stmt->execute();
     $result = $stmt->get_result();
     
