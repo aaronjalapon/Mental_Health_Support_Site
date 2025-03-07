@@ -210,11 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Cancel booking
         document.getElementById('cancelBooking').addEventListener('click', resetBooking);
 
-        // Add time input handler
-        document.getElementById('appointmentTime').addEventListener('change', handleTimeSelection);
-
-        // Remove this since the button might not exist
-        // document.getElementById('checkAvailability').addEventListener('click', handleCheckAvailability);
+        // Update time input handler to work with radio buttons
+        document.querySelectorAll('input[name="appointmentTime"]').forEach(radio => {
+            radio.addEventListener('change', handleTimeSelection);
+        });
     }
 
     async function handleTherapistSelection(event) {
@@ -275,11 +274,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         selectedTime = null; // Reset time selection when date changes
         
-        // Clear and enable time input
-        const timeInput = document.getElementById('appointmentTime');
-        timeInput.value = '';
-        timeInput.disabled = false;
-    
+        // Reset time selection
+        document.querySelectorAll('input[name="appointmentTime"]').forEach(radio => {
+            radio.checked = false;
+        });
+
         // Reset therapist selection
         selectedTherapist = null;
         document.querySelectorAll('.therapist-card').forEach(card => 
@@ -329,34 +328,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderTimeSlots(slots) {
-        const timeInput = document.getElementById('appointmentTime');
+        const timeSlots = document.querySelectorAll('input[name="appointmentTime"]');
+        
+        // Disable all slots first
+        timeSlots.forEach(slot => {
+            slot.disabled = true;
+            slot.checked = false;
+        });
         
         if (!slots || slots.length === 0) {
-            timeInput.disabled = true;
-            timeInput.value = '';
             showError('No available time slots for this date');
             return;
         }
-
-        timeInput.disabled = false;
         
-        // Create datalist for time suggestions
-        const datalistId = 'timeSlots';
-        let datalist = document.getElementById(datalistId);
-        
-        if (!datalist) {
-            datalist = document.createElement('datalist');
-            datalist.id = datalistId;
-            timeInput.parentNode.appendChild(datalist);
-        }
-
-        datalist.innerHTML = slots.map(slot => {
-            // Convert the time to HH:mm format for the input
-            const timeForInput = slot.substring(0, 5);
-            return `<option value="${timeForInput}">${formatTime(slot)}</option>`;
-        }).join('');
-        
-        timeInput.setAttribute('list', datalistId);
+        // Enable available slots
+        slots.forEach(availableTime => {
+            const timeSlot = document.querySelector(`input[value="${availableTime}"]`);
+            if (timeSlot) {
+                timeSlot.disabled = false;
+            }
+        });
     }
 
     function handleTimeSelection(event) {
@@ -384,8 +375,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const time = document.getElementById('appointmentTime').value;
-        if (!time) {
+        const selectedTimeRadio = document.querySelector('input[name="appointmentTime"]:checked');
+        if (!selectedTimeRadio) {
             showError('Please select an appointment time');
             return;
         }
@@ -393,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = {
             therapist_id: selectedTherapist.therapist_id,
             appointment_date: selectedDate,
-            appointment_time: time,
+            appointment_time: selectedTimeRadio.value,
             session_type: document.getElementById('sessionType').value,
             notes: document.getElementById('notes').value
         };
@@ -535,15 +526,13 @@ document.addEventListener('DOMContentLoaded', function() {
     async function filterTherapists() {
         const searchTerm = document.getElementById('therapistSearch').value.toLowerCase();
         const specialization = document.getElementById('specializationFilter').value.toLowerCase();
-        const selectedTime = document.getElementById('appointmentTime').value;
+        const selectedTimeRadio = document.querySelector('input[name="appointmentTime"]:checked');
+        const selectedTime = selectedTimeRadio ? selectedTimeRadio.value : null;
         
         if (!selectedDate || !selectedTime) {
             renderTherapistList([]);
             return;
         }
-
-        // Format time to ensure it includes seconds
-        const formattedTime = selectedTime.length === 5 ? `${selectedTime}:00` : selectedTime;
 
         try {
             const response = await fetch('../php/appointments/fetch_available_therapists.php', {
@@ -553,14 +542,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({
                     date: selectedDate,
-                    time: formattedTime,
+                    time: selectedTime,
                     specialization: specialization || '',
                     searchTerm: searchTerm || ''
                 })
             });
 
             const result = await response.json();
-            console.log('API Response:', result); // Add this for debugging
             
             if (result.success) {
                 renderTherapistList(result.data);

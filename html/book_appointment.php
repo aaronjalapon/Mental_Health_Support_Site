@@ -49,18 +49,42 @@ $isAdmin = $_SESSION['role'] === 'admin';
                                 <!-- Calendar will be populated by JavaScript -->
                             </div>
                             <div class="time-selection">
-                                <label for="appointmentTime">Select Time:</label>
-                                <input type="time" 
-                                       id="appointmentTime" 
-                                       class="form-input" 
-                                       min="09:00" 
-                                       max="17:00" 
-                                       step="1800"
-                                       required>
-                                <small class="form-text">Available hours: 9:00 AM - 5:00 PM (maximum of 1-hour per session)</small>
-                                <!-- <button type="button" id="checkAvailability" class="btn btn-secondary">
-                                    Check Available Therapists
-                                </button> -->
+                                <h3>Select Time:</h3>
+                                <div class="time-slots">
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-9" name="appointmentTime" value="09:00:00">
+                                        <label for="time-9">9:00 AM to 10:00 AM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-10" name="appointmentTime" value="10:00:00">
+                                        <label for="time-10">10:00 AM to 11:00 AM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-11" name="appointmentTime" value="11:00:00">
+                                        <label for="time-11">11:00 AM to 12:00 PM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-12" name="appointmentTime" value="12:00:00">
+                                        <label for="time-12">12:00 PM to 1:00 PM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-13" name="appointmentTime" value="13:00:00">
+                                        <label for="time-13">1:00 PM to 2:00 PM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-14" name="appointmentTime" value="14:00:00">
+                                        <label for="time-14">2:00 PM to 3:00 PM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-15" name="appointmentTime" value="15:00:00">
+                                        <label for="time-15">3:00 PM to 4:00 PM</label>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="radio" id="time-16" name="appointmentTime" value="16:00:00">
+                                        <label for="time-16">4:00 PM to 5:00 PM</label>
+                                    </div>
+                                </div>
+                                <small class="form-text">Each session is 1-hour long</small>
                             </div>
                         </div>
                     </div>

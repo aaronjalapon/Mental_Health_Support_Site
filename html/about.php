@@ -1,26 +1,17 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-// Function to check if user is logged in
-$isLoggedIn = isset($_SESSION['unique_id']);
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - MindSpace</title>
-    <link rel="stylesheet" href="../css/about.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/about.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
-    
-    <?php include '../components/header.php'; ?>
-
+    <?php include 'components/header.php'; ?>
 
     <main>
         <section class="hero">
@@ -121,6 +112,6 @@ $isLoggedIn = isset($_SESSION['unique_id']);
             <p>&copy; 2025 MindSpace. All rights reserved.</p>
         </div>
     </footer>
-    
+    <script src="../js/about.js"></script>
 </body>
 </html>

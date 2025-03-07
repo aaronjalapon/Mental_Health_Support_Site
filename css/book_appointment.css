@@ -870,3 +870,55 @@ textarea {
     margin-top: 4px;
     font-style: italic;
 }
+
+.time-selection {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.time-slot {
+    position: relative;
+}
+
+.time-slot input[type="radio"] {
+    display: none;
+}
+
+.time-slot label {
+    display: block;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-slot input[type="radio"]:checked + label {
+    background-color: #1e9160;
+    color: white;
+    border-color: #1e9160;
+}
+
+.time-slot label:hover {
+    background-color: #e8f5e9;
+    border-color: #1e9160;
+}
+
+.time-slot input[type="radio"]:disabled + label {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
