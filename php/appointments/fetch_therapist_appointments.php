@@ -94,7 +94,11 @@ try {
             'session_type' => $row['session_type'],
             'status' => $row['status'],
             'notes' => $row['notes'],
-            'cancellation_reason' => $row['cancellation_reason']
+            'cancellation_reason' => $row['cancellation_reason'],
+            'proposed_date' => $row['proposed_date'],
+            'proposed_time' => $row['proposed_time'],
+            'reschedule_notes' => $row['reschedule_notes'],
+            'reschedule_by' => $row['reschedule_by']
         ];
     }
 

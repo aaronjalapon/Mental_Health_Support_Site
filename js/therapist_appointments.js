@@ -121,26 +121,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
         list.innerHTML = appointments.map(appointment => {
             const status = appointment.status.toLowerCase();
+            const statusText = (status === 'reschedule_pending' && appointment.reschedule_by === 'therapist') 
+                ? 'Waiting Client Response' 
+                : formatStatus(status);
+                
             const statusIcon = {
                 'pending': 'fa-clock',
                 'upcoming': 'fa-calendar-check',
                 'completed': 'fa-check-circle',
                 'cancelled': 'fa-times-circle',
-                'rejected': 'fa-times-circle'
+                'rejected': 'fa-times-circle',
+                'reschedule_pending': 'fa-calendar-alt',    // Updated icon
+                'reschedule_requested': 'fa-calendar-alt'   // Updated icon
             }[status] || 'fa-calendar-check';
 
-            const sessionIcon = {
+            const sessionTypeIcon = {
                 'video': 'fa-video',
                 'voice': 'fa-microphone',
                 'chat': 'fa-comments'
             }[appointment.session_type.toLowerCase()] || 'fa-video';
+
+            // Add proposed schedule info if available
+            let proposedScheduleInfo = '';
+            if (appointment.proposed_date && appointment.proposed_time) {
+                proposedScheduleInfo = `
+                    <div class="reschedule-info">
+                        <p><strong>Proposed Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                        <p><strong>Proposed Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                        ${appointment.reschedule_notes ? 
+                            `<p><strong>${appointment.reschedule_by === 'client' ? "Client's" : 'Your'} Note:</strong> ${appointment.reschedule_notes}</p>` 
+                            : ''
+                        }
+                    </div>
+                `;
+            }
 
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
                         <h3>Session with ${appointment.client_name}</h3>
                         <span class="appointment-status status-${status}">
-                            <i class="fas ${statusIcon}"></i> ${formatStatus(status)}
+                            <i class="fas ${statusIcon}"></i> ${statusText}
                         </span>
                     </div>
                     <div class="appointment-details">
@@ -155,12 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="detail-value">${formatTime(appointment.time)}</span>
                         </div>
                         <div class="detail-item">
-                            <i class="fas ${sessionIcon}"></i>
+                            <i class="fas ${sessionTypeIcon}"></i>
                             <span class="detail-label">Type:</span>
                             <span class="detail-value">${formatSessionType(appointment.session_type)}</span>
                         </div>
                     </div>
-                    ${renderAppointmentActions(appointment)}
+                    ${proposedScheduleInfo}
+                    <div class="btn-container">
+                        ${renderAppointmentActions(appointment)}
+                    </div>
                 </div>
             `;
         }).join('');
@@ -174,6 +198,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const actions = [];
 
         switch(status) {
+            case 'upcoming':
+                return `
+                    <div class="btn-container">
+                        <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-calendar-alt"></i> Reschedule
+                        </button>
+                        <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button class="btn btn-info message-client" 
+                            data-id="${appointment.id}" 
+                            data-client="${appointment.client_name}"
+                            data-client-id="${appointment.client_id}">
+                            <i class="fas fa-comment"></i> Message Client
+                        </button>
+                    </div>`;
             case 'pending':
                 actions.push(`
                     <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
@@ -181,25 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </button>
                     <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
                         <i class="fas fa-calendar-alt"></i> Reschedule
-                    </button>
-                    <button class="btn btn-info message-client" 
-                        data-id="${appointment.id}" 
-                        data-client="${appointment.client_name}"
-                        data-client-id="${appointment.client_id}">
-                        <i class="fas fa-comment"></i> Message Client
-                    </button>
-                `);
-                break;
-            case 'upcoming':
-                actions.push(`
-                    <button class="btn btn-primary start-session" data-id="${appointment.id}" data-type="${appointment.session_type}">
-                        <i class="fas fa-play"></i> Start Session
-                    </button>
-                    <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-calendar-alt"></i> Reschedule
-                    </button>
-                    <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-times"></i> Cancel
                     </button>
                     <button class="btn btn-info message-client" 
                         data-id="${appointment.id}" 
@@ -219,9 +240,64 @@ document.addEventListener('DOMContentLoaded', function() {
                     </button>
                 `);
                 break;
+            case 'reschedule_requested':
+                actions.push(`
+                    <div class="reschedule-notice">
+                        <p>Client has requested to reschedule to:</p>
+                        <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date) || 'Not specified'}</p>
+                        <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time) || 'Not specified'}</p>
+                        <p><strong>Client's Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-primary accept-reschedule" data-id="${appointment.id}">
+                            <i class="fas fa-check"></i> Accept New Schedule
+                        </button>
+                        <button class="btn btn-secondary suggest-time" data-id="${appointment.id}">
+                            <i class="fas fa-clock"></i> Suggest Different Time
+                        </button>
+                        <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-times"></i> Cancel Appointment
+                        </button>
+                    </div>
+                `);
+                break;
+            case 'reschedule_pending':
+                return `
+                    <div class="btn-container">
+                        <button class="btn btn-info message-client" 
+                            data-id="${appointment.id}" 
+                            data-client="${appointment.client_name}"
+                            data-client-id="${appointment.client_id}">
+                            <i class="fas fa-comment"></i> Message Client
+                        </button>
+                    </div>`;
+        }
+
+        if (appointment.reschedule_by === 'client' && appointment.status === 'reschedule_requested') {
+            actions.push(`
+                <div class="reschedule-notice">
+                    <p>Client has requested to reschedule to:</p>
+                    <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                    <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                    <p><strong>Client's Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
+                </div>
+                // ...rest of actions...
+            `);
+        } else if (appointment.reschedule_by === 'therapist' && appointment.status === 'reschedule_requested') {
+            // Show as reschedule_pending in therapist view when therapist requests
+            status = 'reschedule_pending';
+            actions.push(`
+                <div class="reschedule-notice">
+                    <p>Waiting for client's response on your reschedule request:</p>
+                    <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                    <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                    <p><strong>Your Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
+                </div>
+                // ...rest of actions...
+            `);
         }
         
-        return actions.length ? `<div class="appointment-actions">${actions.join('')}</div>` : '';
+        return actions.length ? `<div class="btn-container">${actions.join('')}</div>` : '';
     }
 
     function getSessionTypeIcon(type) {
@@ -239,7 +315,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'upcoming': 'Upcoming',
             'completed': 'Completed',
             'cancelled': 'Cancelled',
-            'rejected': 'Rejected'
+            'rejected': 'Rejected',
+            'reschedule_pending': 'Waiting Client Response', // Updated text
+            'reschedule_requested': 'Client Requested Reschedule' // Added for clarity
         };
         return statusMap[status.toLowerCase()] || status;
     }
@@ -257,14 +335,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function attachActionListeners() {
         document.querySelectorAll('.approve-appointment').forEach(btn => 
             btn.addEventListener('click', handleApprove));
-        document.querySelectorAll('.start-session').forEach(btn => 
-            btn.addEventListener('click', handleStartSession));
         document.querySelectorAll('.reschedule-appointment').forEach(btn => 
             btn.addEventListener('click', handleReschedule));
         document.querySelectorAll('.cancel-appointment').forEach(btn => 
             btn.addEventListener('click', handleCancel));
         document.querySelectorAll('.message-client').forEach(btn => 
             btn.addEventListener('click', handleMessage));
+        document.querySelectorAll('.accept-reschedule').forEach(btn => 
+            btn.addEventListener('click', handleAcceptReschedule));
+        document.querySelectorAll('.suggest-time').forEach(btn => 
+            btn.addEventListener('click', handleReschedule));
     }
 
     async function handleApprove(event) {
@@ -286,31 +366,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (error) {
                 showError('Failed to approve appointment: ' + error.message);
-            }
-        }
-    }
-
-    async function handleStartSession(event) {
-        const appointmentId = event.currentTarget.dataset.id;
-        const sessionType = event.currentTarget.dataset.type;
-        
-        if (confirm('Are you sure you want to start this session?')) {
-            try {
-                const response = await fetch('../php/appointments/start_session.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ appointmentId, sessionType })
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    showSuccess('Session started successfully');
-                    loadAppointments(); // Refresh the appointments list
-                } else {
-                    throw new Error(data.error || 'Failed to start session');
-                }
-            } catch (error) {
-                showError('Failed to start session: ' + error.message);
             }
         }
     }
@@ -537,7 +592,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper functions for date/time formatting and error handling
     function formatDate(dateString) {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        if (!dateString) return 'Not specified';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Invalid Date';
+        
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -546,11 +605,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function formatTime(timeString) {
-        return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
+        if (!timeString) return 'Not specified';
+        try {
+            return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        } catch (error) {
+            console.error('Error formatting time:', error);
+            return 'Not specified';
+        }
     }
 
     function showError(message) {
@@ -720,4 +785,28 @@ function clearFilters() {
     document.getElementById('typeFilter').value = 'all';
     document.getElementById('dateFilter').value = '';
     loadAppointments();
+}
+
+async function handleAcceptReschedule(event) {
+    const appointmentId = event.currentTarget.dataset.id;
+    
+    if (confirm('Are you sure you want to accept this reschedule request?')) {
+        try {
+            const response = await fetch('../php/appointments/accept_reschedule.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ appointmentId })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showSuccess('Reschedule request accepted successfully');
+                loadAppointments(); // Refresh the appointments list
+            } else {
+                throw new Error(data.error || 'Failed to accept reschedule request');
+            }
+        } catch (error) {
+            showError('Failed to accept reschedule request: ' + error.message);
+        }
+    }
 }

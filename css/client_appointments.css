@@ -23,36 +23,75 @@
     margin-bottom: 0.5rem;
 }
 
+/* Updated Filter Styles */
 .appointments-filters {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: white;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    background: #f8f9fa;
+    padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .filter-group {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+    width: 100%;
 }
 
 .filter-group select,
 .filter-group input {
+    width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    background: white;
+    height: 42px;
 }
 
-.filter-group select:hover,
-.filter-group input:hover {
-    border-color: #1e9160;
+#clearFilters {
+    align-self: flex-end;
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .appointments-filters {
+        padding: 1rem;
+    }
+
+    .filter-group {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.9rem;
+        padding: 0.625rem 0.875rem;
+    }
+
+    #clearFilters {
+        align-self: stretch;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointments-filters {
+        padding: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.875rem;
+    }
 }
 
 .appointments-list {
@@ -70,11 +109,14 @@
     border: 1px solid rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(10px);
     animation: slideIn 0.3s ease-out forwards;
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
 }
 
 .appointment-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .appointment-header {
@@ -124,9 +166,18 @@
 }
 
 .status-reschedule_pending {
-    background: #e8f5fe;
-    color: #0288d1;
-    border: 1px solid #29b6f6;
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.status-reschedule_requested {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .appointment-status i {
@@ -150,7 +201,11 @@
 }
 
 .status-reschedule_pending i {
-    color: #0288d1;
+    color: #1565c0;
+}
+
+.status-reschedule_requested i {
+    color: #1565c0;
 }
 
 .appointment-details {
@@ -175,24 +230,32 @@
     font-weight: 500;
 }
 
+/* Update appointment actions container */
 .appointment-actions {
     display: flex;
-    gap: 1rem;
+    flex-direction: row !important; /* Force row direction */
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 1rem;
-    padding-top: 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid #e9ecef;
+    justify-content: flex-start;
 }
 
+/* Fix button sizing and layout */
 .appointment-btn {
-    padding: 0.75rem 1.5rem;
+    flex: 1 1 auto;
+    min-width: 150px;
+    max-width: calc(33.333% - 0.5rem); /* Ensure 3 buttons fit in a row with gap */
+    padding: 0.75rem 1rem;
     border-radius: 8px;
     font-weight: 500;
-    letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .appointment-btn i {
@@ -378,13 +441,46 @@
 }
 
 .reschedule-notice {
-    background: #e3f2fd;
-    padding: 1rem;
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
     border-radius: 8px;
-    margin-bottom: 1rem;
-    border: 1px solid #90caf9;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    display: block;
+    width: 100%;
+}
+
+.reschedule-notice p {
+    margin: 0.75rem 0;
     color: #1565c0;
     font-size: 0.95rem;
+    line-height: 1.5;
+    display: block;
+}
+
+.reschedule-notice strong {
+    color: #0d47a1;
+    display: inline-block;
+    min-width: 120px;
+    margin-right: 0.5rem;
+}
+
+/* Add specific styling for therapist note */
+.reschedule-notice p:last-child {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    border-left: 4px solid #1565c0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.reschedule-notice p:last-child strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(21, 101, 192, 0.1);
+    padding-bottom: 0.5rem;
 }
 
 @keyframes slideIn {
@@ -393,6 +489,14 @@
         opacity: 0;
     }
     to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
         transform: translateY(0);
         opacity: 1;
     }
@@ -410,12 +514,24 @@
     }
 
     .appointments-filters {
-        flex-direction: column;
-        gap: 1rem;
+        padding: 1rem;
     }
 
     .filter-group {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.9rem;
+        padding: 0.625rem 0.875rem;
+    }
+
+    #clearFilters {
+        align-self: stretch;
         width: 100%;
+        margin-top: 0.5rem;
     }
 
     .appointment-details {
@@ -424,6 +540,21 @@
 
     .appointment-actions {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointments-filters {
+        padding: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.875rem;
+    }
+
+    .appointment-btn {
+        max-width: 100%; /* Full width on very small screens */
     }
 }
 
@@ -510,4 +641,204 @@
 .btn-secondary,
 .btn-danger {
     /* Remove these classes as they conflict with header.css */
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    margin: 2rem auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.close-modal {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.reschedule-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Fix for nested appointment-actions and reschedule notice */
+.appointment-card .appointment-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.appointment-card .reschedule-notice {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.appointment-card .reschedule-notice p {
+    margin: 0.75rem 0;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.appointment-card .reschedule-notice p:first-child {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.appointment-card .reschedule-notice strong {
+    display: inline-block;
+    min-width: 100px;
+    color: #2c3e50;
+}
+
+/* Fix for nested buttons container */
+.appointment-card .appointment-actions .appointment-actions {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 1rem;
+}
+
+.appointment-card .appointment-actions button {
+    flex: 1;
+    min-width: 200px;
+    max-width: calc(50% - 0.5rem);
+}
+
+/* Remove nested appointment actions overrides */
+.appointment-card .appointment-actions {
+    flex-direction: row !important;
+    margin-top: 1rem;
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+    .appointment-card .appointment-actions button {
+        max-width: 100%;
+        margin: 0.25rem 0;
+    }
+    
+    .appointment-card .reschedule-notice {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointment-btn {
+        max-width: 100%; /* Full width on very small screens */
+    }
+}
+
+.appointment-card .appointment-actions button {
+    flex: 1 1 auto;
+    min-width: 140px;
+    margin: 0.25rem;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification i {
+    font-size: 1.25rem;
+}
+
+.notification-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.notification-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Add responsive styles for notifications */
+@media (max-width: 768px) {
+    .notification {
+        left: 20px;
+        right: 20px;
+        text-align: center;
+        justify-content: center;
+    }
 }

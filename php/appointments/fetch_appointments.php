@@ -12,8 +12,14 @@ if (!isset($_SESSION['unique_id'])) {
 try {
     // Get client/user ID from the session
     $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
-    $stmt->bind_param("s", $_SESSION['unique_id']);
-    $stmt->execute();
+    $stmt->bind_param("i", $_SESSION['unique_id']); // Changed from "s" to "i" since unique_id is integer
+
+    // Add error logging
+    if (!$stmt->execute()) {
+        error_log("Execute failed: " . $stmt->error);
+        throw new Exception('Database query failed');
+    }
+
     $result = $stmt->get_result();
     
     if ($result->num_rows === 0) {
@@ -22,6 +28,9 @@ try {
     
     $client = $result->fetch_assoc();
     $client_id = $client['client_id'];
+
+    // Log the SQL query for debugging
+    error_log("Client ID found: " . $client_id);
 
     // Base query with proper JOIN to get therapist name
     $sql = "SELECT 
@@ -79,7 +88,11 @@ try {
             'session_type' => $row['session_type'],
             'status' => $row['status'],
             'notes' => $row['notes'],
-            'cancellation_reason' => $row['cancellation_reason']
+            'cancellation_reason' => $row['cancellation_reason'],
+            'proposed_date' => $row['proposed_date'],
+            'proposed_time' => $row['proposed_time'],
+            'reschedule_notes' => $row['reschedule_notes'],
+            'reschedule_by' => $row['reschedule_by']
         ];
     }
 
@@ -89,9 +102,11 @@ try {
     ]);
 
 } catch (Exception $e) {
+    error_log("Error in fetch_appointments.php: " . $e->getMessage());
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage()
+        'error' => $e->getMessage(),
+        'debug' => 'Check server logs for details'
     ]);
 }
 

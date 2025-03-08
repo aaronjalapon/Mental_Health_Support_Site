@@ -44,6 +44,8 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending</option>
+                        <option value="reschedule_pending">Therapist Requested Reschedule</option>
+                        <option value="reschedule_requested">Your Reschedule Request</option>
                     </select>
                     <select id="typeFilter">
                         <option value="all">All Types</option>
@@ -90,6 +92,39 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                     No, Keep
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Suggest New Time</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="rescheduleForm">
+                <div class="reschedule-section">
+                    <div class="appointment-info" id="rescheduleInfo">
+                        <!-- Appointment info will be populated dynamically -->
+                    </div>
+                    <div class="form-group">
+                        <label for="newDate">New Date</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newTime">New Time</label>
+                        <input type="time" id="newTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rescheduleNotes">Notes</label>
+                        <textarea id="rescheduleNotes" placeholder="Add a note about why you need to reschedule..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="appointment-btn appointment-btn-primary">Send Request</button>
+                    <button type="button" class="appointment-btn appointment-btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
