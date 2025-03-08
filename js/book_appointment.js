@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         await fetchTherapists();
         initializeCalendar();
         attachEventListeners();
+        restoreTimeSelection(); // Add this line
     }
 
     async function fetchTherapists() {
@@ -352,39 +353,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleTimeSelection(event) {
         selectedTime = event.target.value;
+        // Store selected time in sessionStorage
+        sessionStorage.setItem('selectedAppointmentTime', selectedTime);
+        
         if (selectedTime && selectedDate) {
             filterTherapists();
         }
         updateBookingSummary();
     }
 
-    function formatTimeSlot(time) {
-        if (!time) return '';
-        const [hours, minutes] = time.split(':');
-        const hour = parseInt(hours);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const formattedHour = hour % 12 || 12;
-        return `${formattedHour}:${minutes} ${ampm}`;
-    }
-
     async function handleBookingSubmission(event) {
         event.preventDefault();
 
-        if (!selectedTherapist || !selectedDate) {
-            showError('Please select a therapist and date');
+        if (!selectedTherapist) {
+            showError('Please select a therapist');
             return;
         }
 
-        const selectedTimeRadio = document.querySelector('input[name="appointmentTime"]:checked');
+        if (!selectedDate) {
+            showError('Please select a date');
+            return;
+        }
+
+        // Get time from sessionStorage if current selection is empty
+        const storedTime = sessionStorage.getItem('selectedAppointmentTime');
+        const selectedTimeRadio = document.querySelector('input[name="appointmentTime"]:checked') || 
+                                 document.querySelector(`input[value="${storedTime}"]`);
+
         if (!selectedTimeRadio) {
             showError('Please select an appointment time');
             return;
         }
 
+        // Ensure the radio button is checked
+        selectedTimeRadio.checked = true;
+        selectedTime = selectedTimeRadio.value;
+
         const formData = {
             therapist_id: selectedTherapist.therapist_id,
             appointment_date: selectedDate,
-            appointment_time: selectedTimeRadio.value,
+            appointment_time: selectedTime,
             session_type: document.getElementById('sessionType').value,
             notes: document.getElementById('notes').value
         };
@@ -401,6 +409,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
+                // Clear stored time after successful booking
+                sessionStorage.removeItem('selectedAppointmentTime');
                 showConfirmation({
                     ...formData,
                     therapist: selectedTherapist
@@ -412,6 +422,28 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error booking appointment:', error);
             showError('Failed to book appointment');
         }
+    }
+
+    // Add this new function to restore selected time on page load
+    function restoreTimeSelection() {
+        const storedTime = sessionStorage.getItem('selectedAppointmentTime');
+        if (storedTime) {
+            const timeRadio = document.querySelector(`input[value="${storedTime}"]`);
+            if (timeRadio) {
+                timeRadio.checked = true;
+                selectedTime = storedTime;
+                updateBookingSummary();
+            }
+        }
+    }
+
+    function formatTimeSlot(time) {
+        if (!time) return '';
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minutes} ${ampm}`;
     }
 
     // Update modal related functions to use new class names

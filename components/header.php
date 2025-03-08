@@ -38,12 +38,12 @@ if (session_status() === PHP_SESSION_NONE) {
         <!-- Unified Authentication Section -->
         <button id="btn-login" class="auth-button" style="display: none;">Log In</button>
         <div class="user-dropdown" style="display: none;">
-            <button class="dropdown-btn">
+            <button type="button" class="dropdown-btn">
                 <i class="fas fa-user"></i> Welcome
             </button>
-            <div class="dropdown-logout">
-                <a href="#" class="dropdown-item">Profile</a>
-                <a href="#" class="dropdown-item logout-link">Logout</a>
+            <div class="dropdown-logout" id="userDropdownMenu">
+                <a href="#" class="dropdown-item" id="profileLink">Profile</a>
+                <a href="#" class="dropdown-item logout-link" onclick="handleLogout()">Logout</a>
             </div>
         </div>
     </nav>

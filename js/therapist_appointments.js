@@ -179,10 +179,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
                         <i class="fas fa-check"></i> Approve
                     </button>
-                    <button class="btn btn-danger reject-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-times"></i> Reject
+                    <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                        <i class="fas fa-calendar-alt"></i> Reschedule
                     </button>
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
@@ -198,20 +201,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
                 break;
             case 'completed':
                 actions.push(`
-                    <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${appointment.client_name}">
+                    <button class="btn btn-info message-client" 
+                        data-id="${appointment.id}" 
+                        data-client="${appointment.client_name}"
+                        data-client-id="${appointment.client_id}">
                         <i class="fas fa-comment"></i> Message Client
                     </button>
                 `);
                 break;
         }
-
+        
         return actions.length ? `<div class="appointment-actions">${actions.join('')}</div>` : '';
     }
 
@@ -248,8 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function attachActionListeners() {
         document.querySelectorAll('.approve-appointment').forEach(btn => 
             btn.addEventListener('click', handleApprove));
-        document.querySelectorAll('.reject-appointment').forEach(btn => 
-            btn.addEventListener('click', handleReject));
         document.querySelectorAll('.start-session').forEach(btn => 
             btn.addEventListener('click', handleStartSession));
         document.querySelectorAll('.reschedule-appointment').forEach(btn => 
@@ -283,34 +290,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function handleReject(event) {
-        const appointmentId = event.currentTarget.dataset.id;
-        const reason = prompt('Please provide a reason for rejection:');
-        
-        if (reason && confirm('Are you sure you want to reject this appointment?')) {
-            try {
-                const response = await fetch('../php/appointments/reject_appointment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        appointmentId,
-                        reason
-                    })
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    showSuccess('Appointment rejected successfully');
-                    loadAppointments();
-                } else {
-                    throw new Error(data.error || 'Failed to reject appointment');
-                }
-            } catch (error) {
-                showError('Failed to reject appointment: ' + error.message);
-            }
-        }
-    }
-
     async function handleStartSession(event) {
         const appointmentId = event.currentTarget.dataset.id;
         const sessionType = event.currentTarget.dataset.type;
@@ -338,32 +317,76 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function handleReschedule(event) {
         const appointmentId = event.currentTarget.dataset.id;
-        // Show reschedule modal or date picker
-        const newDate = prompt('Enter new date (YYYY-MM-DD):');
-        const newTime = prompt('Enter new time (HH:MM):');
+        const appointmentCard = event.currentTarget.closest('.appointment-card');
         
-        if (newDate && newTime) {
-            try {
-                const response = await fetch('../php/appointments/reschedule_appointment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        appointmentId,
-                        newDate,
-                        newTime
-                    })
-                });
+        try {
+            // Fetch appointment details from server
+            const response = await fetch('../php/appointments/fetch_appointment_details.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ appointmentId })
+            });
+            
+            const data = await response.json();
+            if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
+            
+            const appointment = data.appointment;
+
+            // Populate reschedule modal with fetched data
+            document.getElementById('rescheduleInfo').innerHTML = `
+                <h4>Current Schedule</h4>
+                <p><strong>Client:</strong> ${appointment.client_name}</p>
+                <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
+                <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+            `;
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('newDate').min = today;
+            
+            // Pre-fill the form with current values
+            document.getElementById('newDate').value = appointment.date;
+            document.getElementById('newTime').value = appointment.time;
+
+            // Show modal
+            const modal = document.getElementById('rescheduleModal');
+            modal.style.display = 'block';
+
+            // Handle form submission
+            const form = document.getElementById('rescheduleForm');
+            form.onsubmit = async function(e) {
+                e.preventDefault();
                 
-                const data = await response.json();
-                if (data.success) {
-                    showSuccess('Appointment rescheduled successfully');
-                    loadAppointments();
-                } else {
-                    throw new Error(data.error || 'Failed to reschedule appointment');
+                const newDate = document.getElementById('newDate').value;
+                const newTime = document.getElementById('newTime').value;
+                const notes = document.getElementById('rescheduleNotes').value;
+
+                try {
+                    const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            appointmentId,
+                            newDate,
+                            newTime,
+                            notes
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.success) {
+                        showSuccess('Appointment rescheduled successfully');
+                        modal.style.display = 'none';
+                        loadAppointments(); // Refresh the appointments list
+                    } else {
+                        throw new Error(data.error || 'Failed to reschedule appointment');
+                    }
+                } catch (error) {
+                    showError('Failed to reschedule appointment: ' + error.message);
                 }
-            } catch (error) {
-                showError('Failed to reschedule appointment: ' + error.message);
-            }
+            };
+        } catch (error) {
+            showError('Failed to load appointment details: ' + error.message);
         }
     }
 
@@ -548,11 +571,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleMessage(event) {
         const appointmentId = event.currentTarget.dataset.id;
         const clientName = event.currentTarget.dataset.client;
+        const clientId = event.currentTarget.dataset.clientId; // Get clientId from dataset
         
         // Show modal and populate client info
         document.getElementById('messageClientInfo').innerHTML = `
-            <h4>To: ${clientName}</h4>
             <p>Appointment ID: ${appointmentId}</p>
+            <p>Client ID: ${clientId}</p>
+            <h4>To: ${clientName}</h4>
         `;
         
         const messageModal = document.getElementById('messageModal');
@@ -617,6 +642,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('dateFilter').value = '';
         loadAppointments();
     }
+
+    // Add logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+        if (confirm('Are you sure you want to logout?')) {
+            try {
+                const response = await fetch('../php/logout.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = 'login.php';
+                } else {
+                    throw new Error(data.message || 'Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showError('Failed to logout. Please try again.');
+            }
+        }
+    });
 });
 
 function handleMessageClient(event) {

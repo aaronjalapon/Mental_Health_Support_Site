@@ -123,6 +123,12 @@
     border: 1px solid #ffb74d;
 }
 
+.status-reschedule_pending {
+    background: #e8f5fe;
+    color: #0288d1;
+    border: 1px solid #29b6f6;
+}
+
 .appointment-status i {
     margin-right: 0.5rem;
 }
@@ -141,6 +147,10 @@
 
 .status-cancelled i, .status-rejected i {
     color: #c62828;
+}
+
+.status-reschedule_pending i {
+    color: #0288d1;
 }
 
 .appointment-details {
@@ -228,16 +238,36 @@
 
 .appointments-empty {
     text-align: center;
-    padding: 3rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 3rem 1rem;
 }
 
 .appointments-empty i {
-    font-size: 3rem;
+    font-size: 4rem;
     color: #ccc;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.appointments-empty p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.appointments-empty .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.appointments-empty .btn-primary {
+    background-color: #1e9160;
+    color: white;
+}
+
+.appointments-empty .btn-primary:hover {
+    background-color: #187a4d;
 }
 
 .cancellation-modal {
@@ -345,6 +375,16 @@
     background: linear-gradient(135deg, #c62828, #b71c1c);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+}
+
+.reschedule-notice {
+    background: #e3f2fd;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #90caf9;
+    color: #1565c0;
+    font-size: 0.95rem;
 }
 
 @keyframes slideIn {

@@ -1,13 +1,13 @@
 <?php
 session_start();
-// Check if user is logged in (but allow both admin and client)
+// Check if user is logged in
 if(!isset($_SESSION['unique_id'])) {
     header("Location: ../html/login.php");
     exit();
 }
 
-// Optional: You can add role-specific features
-$isAdmin = $_SESSION['role'] === 'admin';
+// Set role variable safely
+$isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +109,7 @@ $isAdmin = $_SESSION['role'] === 'admin';
                 <p>Follow us on social media</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class "fab fa-twitter"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
                     <a href="#"><i class="fab fa-linkedin"></i></a>
                 </div>

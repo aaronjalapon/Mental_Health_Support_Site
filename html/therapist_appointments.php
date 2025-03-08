@@ -17,8 +17,6 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
     <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
-    <?php include '../components/header.php'; ?>
-
     <div class="page-container">
         <div class="appointments-container">
             <div class="appointments-header">
@@ -26,6 +24,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                 <div class="header-actions">
                     <button class="btn btn-secondary" id="manageAvailabilityBtn">
                         <i class="fas fa-clock"></i> Manage Availability
+                    </button>
+                    <button class="btn btn-danger" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
             </div>
@@ -97,20 +98,14 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                             </div>
                         </div>
                         <div class="appointment-actions">
-                            <button class="btn btn-primary join-session">
-                                <i class="fas fa-video"></i> Join Session
-                            </button>
-                            <button class="btn btn-secondary message-client">
-                                <i class="fas fa-comment"></i> Message Client
-                            </button>
-                            <button class="btn btn-primary accept-appointment" data-id="${appointment.id}">
-                                <i class="fas fa-check"></i> Accept
+                            <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-check"></i> Approve
                             </button>
                             <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
                                 <i class="fas fa-calendar-alt"></i> Reschedule
                             </button>
-                            <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
-                                <i class="fas fa-times"></i> Cancel
+                            <button class="btn btn-info message-client" data-id="${appointment.id}" data-client="${clientName}">
+                                <i class="fas fa-comment"></i> Message Client
                             </button>
                         </div>
                     </div>
@@ -213,6 +208,39 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                 </div>
                 <div class="modal-actions">
                     <button type="submit" class="btn btn-primary">Send Message</button>
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reschedule Appointment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="rescheduleForm">
+                <div class="reschedule-section">
+                    <div class="appointment-info" id="rescheduleInfo">
+                        <!-- Appointment info will be populated dynamically -->
+                    </div>
+                    <div class="form-group">
+                        <label for="newDate">New Date</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newTime">New Time</label>
+                        <input type="time" id="newTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rescheduleNotes">Notes (Optional)</label>
+                        <textarea id="rescheduleNotes" placeholder="Add a note about rescheduling..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Confirm Reschedule</button>
                     <button type="button" class="btn btn-secondary close-modal">Cancel</button>
                 </div>
             </form>

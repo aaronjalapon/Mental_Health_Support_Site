@@ -25,9 +25,8 @@ function setupBurgerMenu() {
 function setupDropdowns() {
     const selfHelpBtn = document.querySelector('.dropbtn');
     const dropdownContent = document.querySelector('.dropdown-content');
-    const userDropdown = document.querySelector('.user-dropdown');
-    const dropdownBtn = document.querySelector('.dropdown-btn');
-    const dropdownLogout = document.querySelector('.dropdown-logout');
+    const userDropdownBtn = document.querySelector('.user-dropdown .dropdown-btn');
+    const userDropdownMenu = document.querySelector('.user-dropdown .dropdown-logout');
 
     if (selfHelpBtn && dropdownContent) {
         selfHelpBtn.addEventListener('click', (e) => {
@@ -36,19 +35,20 @@ function setupDropdowns() {
         });
     }
 
-    if (dropdownBtn && dropdownLogout) {
-        dropdownBtn.addEventListener('click', (e) => {
+    if (userDropdownBtn && userDropdownMenu) {
+        userDropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdownLogout.classList.toggle('show');
+            userDropdownMenu.classList.toggle('show');
         });
     }
 
+    // Close dropdowns when clicking outside
     window.addEventListener('click', (e) => {
-        if (!e.target.matches('.dropbtn') && dropdownContent) {
-            dropdownContent.classList.remove('show');
+        if (!selfHelpBtn?.contains(e.target)) {
+            dropdownContent?.classList.remove('show');
         }
-        if (!userDropdown?.contains(e.target) && dropdownLogout) {
-            dropdownLogout.classList.remove('show');
+        if (!userDropdownBtn?.contains(e.target) && !userDropdownMenu?.contains(e.target)) {
+            userDropdownMenu?.classList.remove('show');
         }
     });
 }
@@ -71,44 +71,45 @@ function setupAuthButton() {
 
 function checkSession() {
     fetch('/php/check_session.php')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Parse error:', text);
+                    // If parsing fails, assume not logged in
+                    return { loggedIn: false };
+                }
+            });
+        })
         .then(data => {
             const authButton = document.getElementById('btn-login');
             const userDropdown = document.querySelector('.user-dropdown');
-            const dropdownLogout = document.querySelector('.dropdown-logout');
             
-            if (data.loggedIn) {
-                // Hide login button and show user dropdown
+            if (data.loggedIn && data.user && data.user.username) {
+                // User is logged in and has username
                 authButton.style.display = 'none';
                 userDropdown.style.display = 'block';
                 
-                // Update welcome message
-                const username = data.user.username;
                 const dropdownBtn = document.querySelector('.dropdown-btn');
-                dropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${username}`;
-
-                // Remove existing event listeners
-                dropdownBtn.replaceWith(dropdownBtn.cloneNode(true));
-                
-                // Re-add event listener to the new button
-                const newDropdownBtn = document.querySelector('.dropdown-btn');
-                newDropdownBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdownLogout.classList.toggle('show');
-                });
-
-                // Ensure document click listener is set
-                document.addEventListener('click', (e) => {
-                    if (!userDropdown.contains(e.target)) {
-                        dropdownLogout.classList.remove('show');
-                    }
-                });
+                dropdownBtn.innerHTML = `<i class="fas fa-user"></i> Welcome, ${data.user.username}`;
             } else {
+                // User is not logged in or no username
                 authButton.style.display = 'block';
                 userDropdown.style.display = 'none';
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error checking session:', error);
+            // Show login button on error
+            const authButton = document.getElementById('btn-login');
+            if (authButton) {
+                authButton.style.display = 'block';
+            }
+        });
 }
 
 function handleLogout(event) {

@@ -85,6 +85,7 @@ try {
     while ($row = $result->fetch_assoc()) {
         $appointments[] = [
             'id' => $row['appointment_id'],
+            'client_id' => $row['client_id'], // Add this line
             'client_name' => $row['client_name'],
             'client_email' => $row['client_email'],
             'client_phone' => $row['client_phone'],
