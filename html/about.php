@@ -60,17 +60,17 @@
                 <h2>Our Team</h2>
                 <div class="team-grid">
                     <div class="team-member">
-                        <img src="/images/team/team-1.jpg" alt="Dr. Sarah Johnson">lt="Dr. Sarah Johnson">
+                        <img src="/images/team/Dr._Sarah_Johnson.webp" alt="Dr. Sarah Johnson">
                         <h3>Dr. Sarah Johnson</h3>
                         <p>Clinical Director</p>
                     </div>
                     <div class="team-member">
-                        <img src="/images/team/team-2.jpg" alt="Michael Chen">hael Chen">
+                        <img src="/images/team/Michael_Chen.webp" alt="Michael Chen">
                         <h3>Michael Chen</h3>
                         <p>Community Manager</p>
                     </div>
                     <div class="team-member">
-                        <img src="/images/team/team-3.jpg" alt="Dr. Emily Parker"> Emily Parker">
+                        <img src="/images/team/Dr._Emily_Parker.webp" alt="Dr. Emily Parker">
                         <h3>Dr. Emily Parker</h3>
                         <p>Lead Therapist</p>
                     </div>
