@@ -85,6 +85,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 'voice': 'fa-microphone',
                 'chat': 'fa-comments'
             }[sessionType.toLowerCase()] || 'fa-video';
+
+            let proposedScheduleInfo = '';
+            if (appointment.proposed_date && appointment.proposed_time) {
+                proposedScheduleInfo = `
+                    <div class="reschedule-info">
+                        <p><strong>Proposed Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                        <p><strong>Proposed Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                        ${appointment.reschedule_notes ? 
+                            `<p><strong>${appointment.reschedule_by === 'therapist' ? "Therapist's" : 'Your'} Note:</strong> ${appointment.reschedule_notes}</p>` 
+                            : ''
+                        }
+                    </div>
+                `;
+            }
     
             let actions = '';
             if (status === 'reschedule_pending') {
@@ -141,11 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
         hideEmptyState();
 
-        // Add event listeners
-        document.querySelectorAll('.agree-reschedule').forEach(btn =>
-            btn.addEventListener('click', handleAgreeReschedule));
-        document.querySelectorAll('.suggest-time').forEach(btn =>
-            btn.addEventListener('click', handleSuggestTime));
+        // Initialize buttons after rendering - ONLY USE THIS ONE
+        initializeAppointmentButtons();
     }
 
     function renderAppointmentActions(appointment) {
@@ -310,27 +321,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function renderRescheduleInfo(appointment) {
+        // Determine header text based on who initiated the reschedule
+        const headerText = appointment.reschedule_by === 'therapist' ? 
+            "Therapist's Requested Schedule" : 
+            "Current Schedule";
+
+        return `
+            <h4>${headerText}</h4>
+            <p><strong>Therapist:</strong> ${appointment.therapist_name}</p>
+            <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
+            <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+        `;
+    }
+
     async function handleSuggestTime(event) {
         const appointmentId = event.currentTarget.dataset.id;
         try {
-            const response = await fetch('../php/appointments/fetch_appointment_details.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ appointmentId })
-            });
+            // Get the appointment card and reschedule notice directly
+            const appointmentCard = event.currentTarget.closest('.appointment-card');
+            const rescheduleNotice = appointmentCard.querySelector('.reschedule-notice');
+            const therapistName = appointmentCard.querySelector('h3').textContent.replace('Session with ', '');
             
-            const data = await response.json();
-            if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
-            
-            const appointment = data.appointment;
+            // Get the requested date and time from the reschedule notice
+            const requestedDate = rescheduleNotice.querySelector('p:nth-child(2)').textContent.replace('New Date:', '').trim();
+            const requestedTime = rescheduleNotice.querySelector('p:nth-child(3)').textContent.replace('New Time:', '').trim();
+            const therapistNote = rescheduleNotice.querySelector('p:nth-child(4)').textContent.replace("Therapist's Note:", '').trim();
+
+            // Show the modal with the therapist's requested schedule
             const modal = document.getElementById('rescheduleModal');
-            
-            // Update modal content
             document.getElementById('rescheduleInfo').innerHTML = `
-                <h4>Current Schedule</h4>
-                <p><strong>Therapist:</strong> ${appointment.therapist_name}</p>
-                <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
-                <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+                <h4>Therapist's Requested Schedule</h4>
+                <p><strong>Therapist:</strong> ${therapistName}</p>
+                <p><strong>Proposed Date:</strong> ${requestedDate}</p>
+                <p><strong>Proposed Time:</strong> ${requestedTime}</p>
+                <p><strong>Therapist's Note:</strong> ${therapistNote}</p>
             `;
 
             // Set minimum date to today
@@ -339,41 +364,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show modal
             modal.style.display = 'block';
-
-            // Add form submit handler
-            document.getElementById('rescheduleForm').onsubmit = async (e) => {
-                e.preventDefault();
-                const newDate = document.getElementById('newDate').value;
-                const newTime = document.getElementById('newTime').value;
-                const notes = document.getElementById('rescheduleNotes').value;
-
-                try {
-                    const response = await fetch('../php/appointments/reschedule_appointment.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            appointmentId,
-                            newDate,
-                            newTime,
-                            notes
-                        })
-                    });
-
-                    const result = await response.json();
-                    if (result.success) {
-                        showSuccess('Reschedule request sent successfully');
-                        modal.style.display = 'none';
-                        loadAppointments();
-                    } else {
-                        throw new Error(result.error || 'Failed to reschedule');
-                    }
-                } catch (error) {
-                    showError(error.message);
-                }
-            };
-
         } catch (error) {
-            showError(error.message);
+            showError('Failed to load appointment details: ' + error.message);
         }
     }
 
@@ -510,6 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'completed': 'Completed',
             'cancelled': 'Cancelled',
             'rejected': 'Rejected',
+            'cancellation_pending': 'Cancellation Pending',  // Add this line
             'reschedule_pending': 'Therapist Requested Reschedule',
             'reschedule_requested': 'Your Reschedule Request'
         };
@@ -519,55 +512,412 @@ document.addEventListener('DOMContentLoaded', function() {
     // Modal functions
     function showCancellationModal(appointmentId) {
         const modal = document.getElementById('cancellationModal');
+        if (!modal) return;
+
         const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
-        
-        if (!modal || !appointmentCard) return;
-        
+        if (!appointmentCard) return;
+
         // Get appointment details
         const therapistName = appointmentCard.querySelector('h3').textContent;
         const date = appointmentCard.querySelector('.detail-value').textContent;
         const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
         
-        // Update appointment info
+        // Update modal content
         const appointmentInfo = modal.querySelector('.cancel-appointment-info');
+        if (appointmentInfo) {
+            appointmentInfo.innerHTML = `
+                <p><strong>${therapistName}</strong></p>
+                <p><i class="fas fa-calendar"></i> ${date}</p>
+                <p><i class="fas fa-clock"></i> ${time}</p>
+            `;
+        }
+
+        // Show modal
+        modal.style.display = 'flex';
+        
+        // Remove any existing event listeners
+        const closeBtn = modal.querySelector('.modal-close');
+        const keepBtn = document.getElementById('keepAppointment');
+        const confirmBtn = document.getElementById('confirmCancel');
+        
+        // Clear old event listeners
+        closeBtn.replaceWith(closeBtn.cloneNode(true));
+        keepBtn.replaceWith(keepBtn.cloneNode(true));
+        confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+        
+        // Get fresh references
+        const newCloseBtn = modal.querySelector('.modal-close');
+        const newKeepBtn = document.getElementById('keepAppointment');
+        const newConfirmBtn = document.getElementById('confirmCancel');
+        
+        // Setup new event handlers
+        const closeModal = () => {
+            modal.style.display = 'none';
+            const reasonInput = document.getElementById('cancelReason');
+            if (reasonInput) reasonInput.value = '';
+        };
+
+        // Attach new event listeners
+        newCloseBtn.onclick = closeModal;
+        newKeepBtn.onclick = closeModal;
+        newConfirmBtn.onclick = () => {
+            const reason = document.getElementById('cancelReason')?.value?.trim() || '';
+            cancelAppointment(appointmentId, reason);
+        };
+
+        // Handle click outside modal
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModal();
+        };
+    }
+
+    // Initialize event listeners for the buttons
+    function initializeAppointmentButtons() {
+        // Cancel buttons
+        document.querySelectorAll('.cancel').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const appointmentId = this.dataset.id;
+                if (appointmentId) {
+                    showCancellationModal(appointmentId);
+                }
+            });
+        });
+
+        // Reschedule buttons
+        document.querySelectorAll('.reschedule').forEach(button => {
+            button.removeEventListener('click', handleReschedule); // Remove existing
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const appointmentId = this.dataset.id;
+                showRescheduleModal(this, appointmentId);
+            });
+        });
+
+        // Agree reschedule buttons
+        document.querySelectorAll('.agree-reschedule').forEach(btn =>
+            btn.addEventListener('click', handleAgreeReschedule));
+        
+        // Suggest time buttons
+        document.querySelectorAll('.suggest-time').forEach(btn =>
+            btn.addEventListener('click', handleSuggestTime));
+    }
+
+    // Add these modal handler functions
+    function showCancelModal(event) {
+        const appointmentId = event.currentTarget.dataset.id;
+        const appointmentCard = event.currentTarget.closest('.appointment-card');
+        const date = appointmentCard.querySelector('.detail-value').textContent;
+        const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
+        
+        const modal = document.getElementById('cancellationModal');
+        const infoDiv = modal.querySelector('.cancel-appointment-info');
+        
+        infoDiv.innerHTML = `
+            <p><strong>Date:</strong> ${date}</p>
+            <p><strong>Time:</strong> ${time}</p>
+        `;
+        
+        modal.dataset.appointmentId = appointmentId;
+        modal.style.display = 'flex';
+
+        // Add submit handler for the cancel form
+        document.getElementById('cancelForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const reason = document.getElementById('cancelReason').value;
+            await handleCancellation(appointmentId, reason);
+        };
+    }
+
+    function showRescheduleModal(button, appointmentId) {
+        const appointmentCard = button.closest('.appointment-card');
+        if (!appointmentCard) return;
+        
+        const modal = document.getElementById('rescheduleModal');
+        if (!modal) return;
+        
+        const date = appointmentCard.querySelector('.detail-value').textContent;
+        const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
+        
+        const infoDiv = modal.querySelector('#rescheduleInfo');
+        if (infoDiv) {
+            infoDiv.innerHTML = `
+                <p><strong>Current Date:</strong> ${date}</p>
+                <p><strong>Current Time:</strong> ${time}</p>
+            `;
+        }
+        
+        // Set minimum date as today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('newDate').min = today;
+        
+        modal.dataset.appointmentId = appointmentId;
+        modal.style.display = 'flex';
+
+        // Add submit handler for the reschedule form
+        document.getElementById('rescheduleForm').onsubmit = async function(e) {
+            e.preventDefault();
+            await handleReschedule(appointmentId);
+        };
+    }
+
+    async function handleCancellation(appointmentId, reason) {
+        try {
+            const response = await fetch('../php/appointments/cancel_appointment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointmentId: appointmentId,
+                    reason: reason
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('cancellationModal').style.display = 'none';
+                document.getElementById('cancelReason').value = '';
+                loadAppointments(); // Refresh the appointments list
+                showSuccess('Appointment cancelled successfully');
+            } else {
+                showError(data.error || 'Failed to cancel appointment');
+            }
+        } catch (error) {
+            showError('Error cancelling appointment');
+            console.error(error);
+        }
+    }
+
+    async function handleReschedule(appointmentId) {
+        const newDate = document.getElementById('newDate').value;
+        const newTime = document.getElementById('newTime').value;
+        const notes = document.getElementById('rescheduleNotes').value;
+
+        try {
+            const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointmentId: appointmentId,
+                    newDate: newDate,
+                    newTime: newTime,
+                    notes: notes
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('rescheduleModal').style.display = 'none';
+                document.getElementById('rescheduleForm').reset();
+                loadAppointments(); // Refresh the appointments list
+                showSuccess('Reschedule request sent successfully');
+            } else {
+                showError(data.error || 'Failed to reschedule appointment');
+            }
+        } catch (error) {
+            showError('Error rescheduling appointment');
+            console.error(error);
+        }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('cancel-appointment-modal')) {
+            closeModal();
+        }
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    };
+
+    // Close modal when clicking close button
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+            this.closest('.cancel-appointment-modal').style.display = 'none';
+        });
+    });
+
+    // Initialize the page
+    loadAppointments();
+});
+
+// Update the close button handlers to be more defensive
+function closeModal() {
+    const modal = document.getElementById('cancellationModal');
+    if (!modal) return;
+    
+    modal.style.display = 'none';
+    
+    // Clear the form inputs
+    const reasonInput = document.getElementById('cancelReason');
+    if (reasonInput) reasonInput.value = '';
+}
+
+// Remove the old close button handlers and replace with this:
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing initialization code...
+
+    // Single unified close handler
+    document.addEventListener('click', function(event) {
+        // Handle clicks on close buttons
+        if (event.target.classList.contains('close-modal')) {
+            const modal = event.target.closest('.modal, .cancel-appointment-modal');
+            if (modal) modal.style.display = 'none';
+        }
+        
+        // Handle clicks on modal background
+        if (event.target.classList.contains('cancel-appointment-modal') || 
+            event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+
+        // Handle keep appointment button
+        if (event.target.id === 'keepAppointment') {
+            closeModal();
+        }
+    });
+
+    // ...rest of existing code...
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+
+    // Single modal close handler
+    document.addEventListener('click', function(event) {
+        // Close modal when clicking outside
+        if (event.target.classList.contains('cancel-appointment-modal')) {
+            const modal = document.getElementById('cancellationModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Close modal when clicking close button
+        if (event.target.classList.contains('modal-close')) {
+            const modal = event.target.closest('.cancel-appointment-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Handle keep appointment button
+        if (event.target.id === 'keepAppointment') {
+            const modal = document.getElementById('cancellationModal');
+            if (modal) modal.style.display = 'none';
+        }
+    });
+
+    // Remove old modal close handlers
+    function closeModal() {
+        const modal = document.getElementById('cancellationModal');
+        if (modal) {
+            modal.style.display = 'none';
+            const reasonInput = document.getElementById('cancelReason');
+            if (reasonInput) reasonInput.value = '';
+        }
+    }
+
+    // ...existing code...
+});
+
+// Remove all other modal-related event listeners
+document.removeEventListener('click', window.modalClickHandler);
+window.modalClickHandler = function(event) {
+    // Single unified close handler
+    if (event.target.classList.contains('cancel-appointment-modal')) {
+        const modal = document.getElementById('cancellationModal');
+        if (modal) modal.style.display = 'none';
+    }
+};
+document.addEventListener('click', window.modalClickHandler);
+
+// Remove conflicting event listeners
+document.removeEventListener('click', window.modalClickHandler);
+
+// Single unified close handler
+window.modalClickHandler = function(event) {
+    if (event.target.classList.contains('cancel-appointment-modal')) {
+        const modal = document.getElementById('cancellationModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    if (event.target.classList.contains('modal-close')) {
+        const modal = event.target.closest('.cancel-appointment-modal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    if (event.target.id === 'keepAppointment') {
+        const modal = document.getElementById('cancellationModal');
+        if (modal) modal.style.display = 'none';
+    }
+};
+
+document.addEventListener('click', window.modalClickHandler);
+
+// Update showCancellationModal function
+function showCancellationModal(appointmentId) {
+    const modal = document.getElementById('cancellationModal');
+    if (!modal) return;
+
+    const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
+    if (!appointmentCard) return;
+
+    // Get appointment details
+    const therapistName = appointmentCard.querySelector('h3').textContent;
+    const date = appointmentCard.querySelector('.detail-value').textContent;
+    const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
+    
+    // Update modal content
+    const appointmentInfo = modal.querySelector('.cancel-appointment-info');
+    if (appointmentInfo) {
         appointmentInfo.innerHTML = `
             <p><strong>${therapistName}</strong></p>
             <p><i class="fas fa-calendar"></i> ${date}</p>
             <p><i class="fas fa-clock"></i> ${time}</p>
         `;
-        
-        // Show modal
-        modal.classList.add('show');
-        
-        // Setup event listeners
-        document.getElementById('confirmCancel').onclick = () => {
-            // Add confirmation alert
-            if (confirm("Are you absolutely sure you want to cancel this appointment? This action cannot be undone.")) {
-                const reason = document.getElementById('cancelReason').value.trim();
-                cancelAppointment(appointmentId, reason);
-            }
-        };
-        
-        document.getElementById('keepAppointment').onclick = closeModal;
-        
-        // Focus on textarea
-        document.getElementById('cancelReason').focus();
     }
 
-    function closeModal() {
-        const modal = document.getElementById('cancellationModal');
-        if (!modal) return;
-        
-        modal.classList.remove('show');
-        setTimeout(() => {
-            modal.querySelector('#cancelReason').value = '';
-        }, 300);
-    }
+    // Show modal
+    modal.style.display = 'flex';
+    
+    // Remove any existing event listeners
+    const closeBtn = modal.querySelector('.modal-close');
+    const keepBtn = document.getElementById('keepAppointment');
+    const confirmBtn = document.getElementById('confirmCancel');
+    
+    // Clear old event listeners
+    closeBtn.replaceWith(closeBtn.cloneNode(true));
+    keepBtn.replaceWith(keepBtn.cloneNode(true));
+    confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+    
+    // Get fresh references
+    const newCloseBtn = modal.querySelector('.modal-close');
+    const newKeepBtn = document.getElementById('keepAppointment');
+    const newConfirmBtn = document.getElementById('confirmCancel');
+    
+    // Setup new event handlers
+    const closeModal = () => {
+        modal.style.display = 'none';
+        const reasonInput = document.getElementById('cancelReason');
+        if (reasonInput) reasonInput.value = '';
+    };
 
-    // Add event listener for clicking outside modal to close
-    document.getElementById('cancellationModal').addEventListener('click', (event) => {
-        if (event.target.id === 'cancellationModal') {
-            closeModal();
-        }
-    });
+    // Attach new event listeners
+    newCloseBtn.onclick = closeModal;
+    newKeepBtn.onclick = closeModal;
+    newConfirmBtn.onclick = () => {
+        const reason = document.getElementById('cancelReason')?.value?.trim() || '';
+        cancelAppointment(appointmentId, reason);
+    };
+
+    // Handle click outside modal
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+}
+
+// Remove old close button handlers
+document.querySelectorAll('.close-modal').forEach(button => {
+    button.removeEventListener('click', null);
 });

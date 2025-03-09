@@ -468,4 +468,65 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+    function renderAppointments(appointments) {
+        return appointments.map(appointment => {
+            let actions = '';
+            
+            // Add cancellation request handling for pending cancellations
+            if (appointment.status === 'cancellation_pending') {
+                actions = `
+                    <div class="cancellation-notice">
+                        <p><strong>Client Requested Cancellation</strong></p>
+                        <p><strong>Reason:</strong> ${appointment.cancellation_reason || 'No reason provided'}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-danger agree-cancel" data-id="${appointment.appointment_id}">
+                            <i class="fas fa-check"></i> Approve Cancellation
+                        </button>
+                        <button class="btn btn-secondary suggest-reschedule" data-id="${appointment.appointment_id}">
+                            <i class="fas fa-calendar-alt"></i> Suggest Reschedule
+                        </button>
+                    </div>`;
+            }
+
+            return `
+                <div class="appointment-card" data-id="${appointment.appointment_id}">
+                    // ...existing card content...
+                    ${actions}
+                </div>`;
+        }).join('');
+
+        // Initialize buttons after rendering
+        document.querySelectorAll('.agree-cancel').forEach(btn => 
+            btn.addEventListener('click', handleCancellationResponse));
+        document.querySelectorAll('.suggest-reschedule').forEach(btn => 
+            btn.addEventListener('click', handleReschedule));
+    }
+
+    async function handleCancellationResponse(e) {
+        const appointmentId = e.currentTarget.dataset.id;
+        if (confirm('Are you sure you want to approve this cancellation?')) {
+            try {
+                const response = await fetch('../php/appointments/respond_to_cancellation.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appointmentId,
+                        action: 'approve'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    loadAppointments(); // Refresh the list
+                    showSuccess('Cancellation approved');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                showError('Failed to process cancellation: ' + error.message);
+            }
+        }
+    }
 });

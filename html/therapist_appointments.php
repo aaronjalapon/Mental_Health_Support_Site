@@ -40,6 +40,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending</option>
+                        <option value="cancellation_pending">Cancellation Requested</option>
                         <option value="reschedule_pending">Waiting Client Response</option>
                         <option value="reschedule_requested">Client Requested Reschedule</option>
                     </select>

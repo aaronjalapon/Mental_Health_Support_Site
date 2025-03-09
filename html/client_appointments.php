@@ -16,8 +16,8 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments - MindSpace</title>
 
-    <link rel="stylesheet" href="/css/client_appointments.css">
-    <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="../css/client_appointments.css">
+    <link rel="stylesheet" href="../css/community.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -44,6 +44,7 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending</option>
+                        <option value="cancellation_pending">Cancellation Pending</option>
                         <option value="reschedule_pending">Therapist Requested Reschedule</option>
                         <option value="reschedule_requested">Your Reschedule Request</option>
                     </select>
@@ -73,39 +74,41 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <!-- Cancellation Modal -->
     <div id="cancellationModal" class="cancel-appointment-modal">
         <div class="cancel-modal-content">
+            <button type="button" class="modal-close">&times;</button>
             <div class="cancel-modal-header">
                 <h2>Cancel Appointment</h2>
                 <p>Are you sure you want to cancel this appointment?</p>
             </div>
             <div class="cancel-appointment-info">
-                <!-- This will be populated dynamically -->
+                <!-- Appointment info will be populated dynamically -->
             </div>
             <div class="cancel-reason-group">
                 <label for="cancelReason">Reason for cancellation (optional):</label>
-                <textarea id="cancelReason"></textarea>
+                <textarea id="cancelReason" placeholder="Please provide a reason for cancellation..."></textarea>
             </div>
             <div class="cancel-modal-actions">
-                <button class="appointment-btn appointment-btn-danger" id="confirmCancel">
-                    Yes, Cancel
+                <button type="button" id="confirmCancel" class="appointment-btn appointment-btn-danger">
+                    Yes, Cancel Appointment
                 </button>
-                <button class="appointment-btn appointment-btn-secondary" id="keepAppointment">
-                    No, Keep
+                <button type="button" id="keepAppointment" class="appointment-btn appointment-btn-secondary">
+                    No, Keep Appointment
                 </button>
             </div>
         </div>
     </div>
 
     <!-- Reschedule Modal -->
-    <div id="rescheduleModal" class="modal">
+    <div class="modal" id="rescheduleModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Suggest New Time</h2>
-                <span class="close-modal">&times;</span>
+                <h2>Reschedule Appointment</h2>
+                <span class="close-modal">×</span>
             </div>
             <form id="rescheduleForm">
                 <div class="reschedule-section">
+                    <!-- This div will be populated dynamically by JavaScript -->
                     <div class="appointment-info" id="rescheduleInfo">
-                        <!-- Appointment info will be populated dynamically -->
+                        <!-- Content will be inserted here by handleSuggestTime function -->
                     </div>
                     <div class="form-group">
                         <label for="newDate">New Date</label>
@@ -116,7 +119,7 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         <input type="time" id="newTime" required>
                     </div>
                     <div class="form-group">
-                        <label for="rescheduleNotes">Notes</label>
+                        <label for="rescheduleNotes">Notes (Optional)</label>
                         <textarea id="rescheduleNotes" placeholder="Add a note about why you need to reschedule..."></textarea>
                     </div>
                 </div>
@@ -128,7 +131,7 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </div>
 
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/client_appointments.js"></script>
+    <script src="../js/landing_page.js"></script>
+    <script src="../js/client_appointments.js"></script>
 </body>
 </html>

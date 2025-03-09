@@ -23,7 +23,7 @@ try {
 
     // Get client_id from the session
     $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
-    $stmt->bind_param("i", $_SESSION['unique_id']);
+    $stmt->bind_param("s", $_SESSION['unique_id']);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -53,7 +53,7 @@ try {
     // Update appointment status and set cancellation reason
     $stmt = $conn->prepare("
         UPDATE appointments 
-        SET status = 'cancelled',
+        SET status = 'cancellation_pending',
             cancellation_reason = ?,
             updated_at = CURRENT_TIMESTAMP
         WHERE appointment_id = ? 
@@ -67,10 +67,10 @@ try {
     if ($stmt->execute()) {
         echo json_encode([
             'success' => true,
-            'message' => 'Appointment cancelled successfully'
+            'message' => 'Cancellation request sent to therapist'
         ]);
     } else {
-        throw new Exception('Failed to cancel appointment');
+        throw new Exception('Failed to submit cancellation request');
     }
 
 } catch (Exception $e) {

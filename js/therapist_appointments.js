@@ -1,3 +1,112 @@
+// Add these utility functions to global scope first
+function showError(message) {
+    alert(message); // Simple alert for now
+}
+
+function showSuccess(message) {
+    alert(message); // Simple alert for now
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'Not specified';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    
+    return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function formatTime(timeString) {
+    if (!timeString) return 'Not specified';
+    try {
+        return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    } catch (error) {
+        console.error('Error formatting time:', error);
+        return 'Not specified';
+    }
+}
+
+// Keep your handleReschedule function in global scope
+window.handleReschedule = async function(appointmentId) {
+    // Try to get ID from event target if not passed directly
+    const id = appointmentId || (event?.target?.closest('.reschedule-appointment')?.dataset?.id);
+    
+    if (!id) {
+        showError('Appointment ID is missing');
+        return;
+    }
+
+    try {
+        const response = await fetch('../php/appointments/fetch_appointment_details.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ appointmentId: id })
+        });
+        
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
+        
+        const appointment = data.appointment;
+        const modal = document.getElementById('rescheduleModal');
+        
+        // Populate modal with appointment details
+        document.getElementById('rescheduleInfo').innerHTML = `
+            <h4>Current Schedule</h4>
+            <p><strong>Client:</strong> ${appointment.client_name}</p>
+            <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
+            <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+        `;
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('newDate').min = today;
+        document.getElementById('newDate').value = appointment.date;
+        document.getElementById('newTime').value = appointment.time;
+
+        modal.style.display = 'block';
+
+        // Handle form submission
+        const form = document.getElementById('rescheduleForm');
+        form.onsubmit = async function(e) {
+            e.preventDefault();
+            
+            try {
+                const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appointmentId: id,
+                        newDate: document.getElementById('newDate').value,
+                        newTime: document.getElementById('newTime').value,
+                        notes: document.getElementById('rescheduleNotes').value
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showSuccess('Reschedule request sent successfully');
+                    modal.style.display = 'none';
+                    loadAppointments(); // Refresh appointments instead of page reload
+                } else {
+                    throw new Error(data.error || 'Failed to reschedule appointment');
+                }
+            } catch (error) {
+                showError('Failed to reschedule appointment: ' + error.message);
+            }
+        };
+    } catch (error) {
+        showError('Failed to load appointment details: ' + error.message);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the page
     loadAppointments();
@@ -156,6 +265,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
             }
 
+            let actions = '';
+        
+            // Add actions based on appointment status
+            if (appointment.status === 'cancellation_pending') {
+                actions = `
+                    <div class="cancellation-notice">
+                        <p><strong>Client Requested Cancellation</strong></p>
+                        <p><strong>Reason:</strong> ${appointment.cancellation_reason || 'No reason provided'}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-danger" onclick="handleCancellationResponse(${appointment.id}, 'approve')">
+                            <i class="fas fa-check"></i> Approve Cancellation
+                        </button>
+                        <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-calendar-alt"></i> Suggest Reschedule
+                        </button>
+                    </div>`;
+            }
+
+            // Add status class for cancellation_pending
+            const statusClasses = {
+                'cancellation_pending': 'status-warning',
+                // ...existing status classes...
+            };
+
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
@@ -185,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="btn-container">
                         ${renderAppointmentActions(appointment)}
                     </div>
+                    ${actions}
                 </div>
             `;
         }).join('');
@@ -316,6 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'completed': 'Completed',
             'cancelled': 'Cancelled',
             'rejected': 'Rejected',
+            'cancellation_pending': 'Cancellation Pending', 
             'reschedule_pending': 'Waiting Client Response', // Updated text
             'reschedule_requested': 'Client Requested Reschedule' // Added for clarity
         };
@@ -808,5 +944,34 @@ async function handleAcceptReschedule(event) {
         } catch (error) {
             showError('Failed to accept reschedule request: ' + error.message);
         }
+    }
+}
+
+async function handleCancellationResponse(appointmentId, action) {
+    if (!confirm('Are you sure you want to ' + (action === 'approve' ? 'approve this cancellation?' : 'reject this cancellation?'))) {
+        return;
+    }
+
+    try {
+        const response = await fetch('../php/appointments/respond_to_cancellation.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                appointmentId,
+                action
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            loadAppointments(); // Refresh the appointments list
+            showNotification(data.message, 'success');
+        } else {
+            throw new Error(data.error || 'Failed to process cancellation');
+        }
+    } catch (error) {
+        showNotification(error.message, 'error');
     }
 }

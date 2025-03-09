@@ -34,7 +34,7 @@ CREATE TABLE `appointments` (
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `session_type` enum('video','voice','chat') NOT NULL,
-  `status` enum('pending','upcoming','completed','cancelled','rejected','reschedule_pending','reschedule_requested') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','upcoming','completed','cancelled','rejected','reschedule_pending','reschedule_requested','cancellation_pending') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
   `cancellation_reason` text DEFAULT NULL,
   `reschedule_notes` text DEFAULT NULL,

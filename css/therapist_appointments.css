@@ -321,6 +321,13 @@ body {
     border: 1px solid #ef9a9a;
 }
 
+/* Add status style for cancellation pending */
+.status-cancellation_pending {
+    background: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffb74d;
+}
+
 /* Action buttons */
 .btn {
     padding: 0.5rem 1rem;
@@ -1046,4 +1053,24 @@ body {
     gap: 0.5rem;
     white-space: nowrap;
     font-size: 0.95rem;
+}
+
+/* Add styles for the cancellation notice */
+.cancellation-notice {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.cancellation-notice p {
+    margin: 0.5rem 0;
+    color: #e65100;
+}
+
+.cancellation-notice p:first-child {
+    color: #f57c00;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
 }
