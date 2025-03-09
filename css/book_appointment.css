@@ -927,3 +927,42 @@ textarea {
     background-color: #e8f5e9;
     border-color: #1e9160;
 }
+
+/* Add styles for no therapists message */
+.no-therapists-message {
+    text-align: center;
+    padding: 2rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin: 1rem 0;
+    color: #6c757d;
+}
+
+.no-therapists-message i {
+    font-size: 3rem;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+}
+
+.no-therapists-message p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.no-therapists-message p:first-of-type {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Add disabled state for time slots */
+.time-slot input[type="radio"]:disabled + label {
+    background-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    border-color: #dee2e6;
+}
+
+.time-slot input[type="radio"]:disabled + label:hover {
+    transform: none;
+    box-shadow: none;
+}

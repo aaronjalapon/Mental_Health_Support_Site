@@ -1,64 +1,45 @@
 <?php
 session_start();
-include_once '../db.php';
+require_once '../db.php';
 
+// Set proper headers
 header('Content-Type: application/json');
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 
 if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
-    echo json_encode(['error' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
     exit();
 }
 
 try {
     // Get form data
-    $firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_STRING);
-    $lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_STRING);
-    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $firstName = $_POST['firstName'];
+    $lastName = $_POST['lastName'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
-    $specialization = filter_input(INPUT_POST, 'specialization', FILTER_SANITIZE_STRING);
-    $experience = filter_input(INPUT_POST, 'experience', FILTER_SANITIZE_NUMBER_INT);
-    $bio = filter_input(INPUT_POST, 'bio', FILTER_SANITIZE_STRING) ?? '';
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $specialization = $_POST['specialization'];
+    $experience = $_POST['experience'];
+    $bio = $_POST['bio'] ?? '';
 
     // Validate required fields
-    if (!$firstName || !$lastName || !$username || !$email || !$password) {
+    if (!$firstName || !$lastName || !$username || !$password || !$email) {
         throw new Exception('All required fields must be filled');
     }
 
-    // Check if username exists
-    $stmt = $conn->prepare("SELECT username FROM therapists WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
-        echo json_encode(['error' => 'Username already exists']);
-        exit();
-    }
-
-    // Check if email exists
-    $stmt = $conn->prepare("SELECT email FROM therapists WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    if ($stmt->get_result()->num_rows > 0) {
-        echo json_encode(['error' => 'Email already exists']);
-        exit();
-    }
-
-    // Generate unique_id and hash password
-    $unique_id = uniqid();
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
+    // Start transaction
     $conn->begin_transaction();
 
     try {
-        // Insert therapist data
-        $stmt = $conn->prepare("
-            INSERT INTO therapists (
-                unique_id, first_name, last_name, username, password,
-                email, phone, specialization, experience_years, bio
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+        // Generate unique_id
+        $unique_id = uniqid();
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+        // Insert therapist first
+        $stmt = $conn->prepare("INSERT INTO therapists (unique_id, first_name, last_name, username, password, email, phone, specialization, experience_years, bio, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')");
+        
         $stmt->bind_param("ssssssssss",
             $unique_id,
             $firstName,
@@ -73,40 +54,43 @@ try {
         );
 
         if (!$stmt->execute()) {
-            throw new Exception("Failed to add therapist");
+            throw new Exception("Failed to add therapist: " . $stmt->error);
         }
 
-        // Handle availability if provided
-        if (!empty($_POST['availableDays'])) {
-            $therapist_id = $stmt->insert_id;
-            
-            // First delete existing availability for this therapist
-            $delete_stmt = $conn->prepare("DELETE FROM therapist_availability WHERE therapist_id = ?");
-            $delete_stmt->bind_param("i", $therapist_id);
-            $delete_stmt->execute();
+        $therapist_id = $conn->insert_id;
 
-            // Then insert new availability
-            $avail_stmt = $conn->prepare("
-                INSERT INTO therapist_availability 
-                (therapist_id, day, start_time, end_time, break_start, break_end)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ");
+        // Handle availability if provided
+        if (isset($_POST['availableDays']) && is_array($_POST['availableDays'])) {
+            $avail_stmt = $conn->prepare("INSERT INTO therapist_availability (therapist_id, day, start_time, end_time, break_start, break_end) VALUES (?, ?, ?, ?, ?, ?)");
 
             foreach ($_POST['availableDays'] as $day) {
+                $start_time = $_POST['startTime'];
+                $end_time = $_POST['endTime'];
+                $break_start = $_POST['breakStart'] ?: null;
+                $break_end = $_POST['breakEnd'] ?: null;
+
                 $avail_stmt->bind_param("isssss",
                     $therapist_id,
                     $day,
-                    $_POST['startTime'],
-                    $_POST['endTime'],
-                    $_POST['breakStart'] ?: null,
-                    $_POST['breakEnd'] ?: null
+                    $start_time,
+                    $end_time,
+                    $break_start,
+                    $break_end
                 );
-                $avail_stmt->execute();
+
+                if (!$avail_stmt->execute()) {
+                    throw new Exception("Failed to add availability: " . $avail_stmt->error);
+                }
             }
         }
 
+        // Commit transaction
         $conn->commit();
-        echo json_encode(['success' => true, 'message' => 'Therapist added successfully']);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Therapist added successfully'
+        ]);
 
     } catch (Exception $e) {
         $conn->rollback();
@@ -115,7 +99,10 @@ try {
 
 } catch (Exception $e) {
     error_log("Error in add_therapist.php: " . $e->getMessage());
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage()
+    ]);
 }
 
 $conn->close();

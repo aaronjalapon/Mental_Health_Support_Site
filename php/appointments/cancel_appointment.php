@@ -50,11 +50,15 @@ try {
         throw new Exception('Appointment not found or cannot be cancelled');
     }
 
+    // Set expiry time to 24 hours from now
+    $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
     // Update appointment status and set cancellation reason
     $stmt = $conn->prepare("
         UPDATE appointments 
         SET status = 'cancellation_pending',
             cancellation_reason = ?,
+            request_expiry = ?,
             updated_at = CURRENT_TIMESTAMP
         WHERE appointment_id = ? 
         AND client_id = ?
@@ -62,7 +66,7 @@ try {
     
     // Use NULL if no reason provided, otherwise use the provided reason
     $reason = !empty($data['reason']) ? $data['reason'] : null;
-    $stmt->bind_param("sii", $reason, $data['appointmentId'], $client_id);
+    $stmt->bind_param("ssii", $reason, $expiry, $data['appointmentId'], $client_id);
     
     if ($stmt->execute()) {
         echo json_encode([

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once '../db.php';
+include_once "../db.php";  // Fix the path to point one directory up
 
 header('Content-Type: application/json');
 
@@ -24,7 +24,7 @@ try {
     // Get day name (Monday, Tuesday, etc.)
     $dayName = strtolower(date('l', strtotime($data['date'])));
     
-    // Updated query to handle time slots properly
+    // Updated query to properly check unavailable statuses
     $sql = "SELECT DISTINCT t.*, 
             GROUP_CONCAT(DISTINCT ta.day) as working_days,
             ta.start_time,
@@ -36,7 +36,7 @@ try {
             LEFT JOIN appointments a ON t.therapist_id = a.therapist_id 
                 AND a.appointment_date = ? 
                 AND a.appointment_time = ?
-                AND a.status NOT IN ('cancelled', 'rejected')
+                AND a.status IN ('pending', 'upcoming', 'reschedule_pending', 'reschedule_requested', 'cancellation_pending')
             WHERE t.status = 'Active'
             AND LOWER(ta.day) = ?
             AND ? >= ta.start_time 
@@ -49,7 +49,7 @@ try {
                 OR ? NOT BETWEEN ta.break_start AND SUBTIME(ta.break_end, '00:00:01')
             )
             -- Check there's no existing appointment at this time
-            AND (a.appointment_id IS NULL OR a.status IN ('cancelled', 'rejected'))";
+            AND a.appointment_id IS NULL";  // This ensures no conflicting appointments exist
 
     $params = [
         $data['date'], 

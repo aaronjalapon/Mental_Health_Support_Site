@@ -147,9 +147,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn btn-danger" onclick="deleteTherapist(${therapist.therapist_id})">
                         <i class="fas fa-trash"></i>
                     </button>
+                   
                 </td>
             </tr>
         `).join('');
+
+        // Add event listener for message buttons
+        document.querySelectorAll('.message-client').forEach(btn => 
+            btn.addEventListener('click', handleMessageClient));
+    }
+
+    // Add the message handler function
+    async function handleMessageClient(event) {
+        const clientId = event.currentTarget.dataset.clientId;
+        const clientName = event.currentTarget.dataset.client;
+        
+        // Open email client with pre-filled recipient
+        window.location.href = `mailto:${clientId}?subject=MindSpace: Message from your therapist`;
     }
 
     addTherapistBtn.addEventListener('click', toggleAddModal);
@@ -207,50 +221,75 @@ document.addEventListener('DOMContentLoaded', function() {
     addTherapistForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Validate password match if needed
-        const password = document.getElementById('therapistPassword').value;
-        
-        // Create FormData object like in client management
-        const formData = new FormData();
-        formData.append('firstName', document.getElementById('therapistFirstName').value.trim());
-        formData.append('lastName', document.getElementById('therapistLastName').value.trim());
-        formData.append('username', document.getElementById('therapistUsername').value.trim());
-        formData.append('password', password);
-        formData.append('email', document.getElementById('therapistEmail').value.trim());
-        formData.append('phone', document.getElementById('therapistPhone').value.trim());
-        formData.append('specialization', document.getElementById('therapistSpecialization').value.trim());
-        formData.append('experience', document.getElementById('therapistExperience').value);
-        formData.append('bio', document.getElementById('therapistBio').value.trim());
-
-        // Add availability data
-        const availableDays = Array.from(document.querySelectorAll('input[name="availableDays"]:checked'))
-            .map(checkbox => checkbox.value);
-        availableDays.forEach(day => formData.append('availableDays[]', day));
-        
-        formData.append('startTime', document.querySelector('input[name="startTime"]').value);
-        formData.append('endTime', document.querySelector('input[name="endTime"]').value);
-        formData.append('breakStart', document.querySelector('input[name="breakStart"]').value);
-        formData.append('breakEnd', document.querySelector('input[name="breakEnd"]').value);
-
         try {
+            // Validate required fields
+            const requiredFields = {
+                'therapistFirstName': 'First Name',
+                'therapistLastName': 'Last Name',
+                'therapistUsername': 'Username',
+                'therapistPassword': 'Password',
+                'therapistEmail': 'Email',
+                'therapistSpecialization': 'Specialization',
+                'therapistExperience': 'Experience'
+            };
+
+            for (const [id, label] of Object.entries(requiredFields)) {
+                const value = document.getElementById(id).value.trim();
+                if (!value) {
+                    throw new Error(`${label} is required`);
+                }
+            }
+
+            // Validate availability
+            const availableDays = Array.from(document.querySelectorAll('input[name="availableDays"]:checked'));
+            if (availableDays.length === 0) {
+                throw new Error('Please select at least one working day');
+            }
+
+            const startTime = document.querySelector('input[name="startTime"]').value;
+            const endTime = document.querySelector('input[name="endTime"]').value;
+            if (!startTime || !endTime) {
+                throw new Error('Working hours are required');
+            }
+
+            // Create FormData
+            const formData = new FormData();
+            formData.append('firstName', document.getElementById('therapistFirstName').value.trim());
+            formData.append('lastName', document.getElementById('therapistLastName').value.trim());
+            formData.append('username', document.getElementById('therapistUsername').value.trim());
+            formData.append('password', document.getElementById('therapistPassword').value);
+            formData.append('email', document.getElementById('therapistEmail').value.trim());
+            formData.append('phone', document.getElementById('therapistPhone').value.trim());
+            formData.append('specialization', document.getElementById('therapistSpecialization').value.trim());
+            formData.append('experience', document.getElementById('therapistExperience').value);
+            formData.append('bio', document.getElementById('therapistBio').value.trim());
+
+            // Add availability data
+            availableDays.forEach(day => formData.append('availableDays[]', day.value));
+            formData.append('startTime', startTime);
+            formData.append('endTime', endTime);
+            formData.append('breakStart', document.querySelector('input[name="breakStart"]').value);
+            formData.append('breakEnd', document.querySelector('input[name="breakEnd"]').value);
+
             const response = await fetch('../php/CRUDTherapist/add_therapist.php', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
             
-            if (data.success) {
-                await fetchTherapists();
-                toggleAddModal();
-                addTherapistForm.reset();
-                alert('Therapist added successfully');
-            } else {
-                alert(data.error || 'Failed to add therapist');
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to add therapist');
             }
+
+            await fetchTherapists();
+            toggleAddModal();
+            addTherapistForm.reset();
+            alert('Therapist added successfully');
+
         } catch (error) {
             console.error('Error adding therapist:', error);
-            alert('Failed to add therapist');
+            alert(error.message || 'Failed to add therapist');
         }
     });
 

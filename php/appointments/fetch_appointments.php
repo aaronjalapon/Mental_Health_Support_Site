@@ -1,6 +1,10 @@
 <?php
 session_start();
 include_once '../db.php';
+include_once 'auto_cancel_appointments.php';
+
+// Run auto-cancellation check before fetching appointments
+autoCancelExpiredAppointments();
 
 header('Content-Type: application/json');
 

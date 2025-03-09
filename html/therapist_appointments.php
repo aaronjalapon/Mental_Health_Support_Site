@@ -238,6 +238,14 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                         <input type="time" id="newTime" required>
                     </div>
                     <div class="form-group">
+                        <label for="sessionType">Session Type</label>
+                        <select id="sessionType" name="sessionType" required>
+                            <option value="video">Video Call</option>
+                            <option value="voice">Voice Call</option>
+                            <option value="chat">Chat Session</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="rescheduleNotes">Notes (Optional)</label>
                         <textarea id="rescheduleNotes" placeholder="Add a note about rescheduling..."></textarea>
                     </div>
@@ -247,6 +255,34 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
                     <button type="button" class="btn btn-secondary close-modal">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="cancel-modal-content">
+            <button type="button" class="modal-close">×</button>
+            <div class="cancel-modal-header">
+                <h2>Cancel Appointment</h2>
+                <p>Are you sure you want to cancel this appointment?</p>
+            </div>
+            <div class="cancel-appointment-info">
+                <p><strong>Session with Chris Tucks</strong></p>
+                <p><i class="fas fa-calendar"></i> Monday, March 24, 2025</p>
+                <p><i class="fas fa-clock"></i> 10:00 AM</p>
+            </div>
+            <div class="cancel-reason-group">
+                <label for="therapistCancelReason">Reason for cancellation (optional):</label>
+                <textarea id="therapistCancelReason" placeholder="Please provide a reason for cancellation..."></textarea>
+            </div>
+            <div class="cancel-modal-actions">
+                <button type="button" class="appointment-btn appointment-btn-danger" id="therapistConfirmCancel">
+                    Yes, Cancel Appointment
+                </button>
+                <button type="button" class="appointment-btn appointment-btn-secondary" id="therapistKeepAppointment">
+                    No, Keep Appointment
+                </button>
+            </div>
         </div>
     </div>
 

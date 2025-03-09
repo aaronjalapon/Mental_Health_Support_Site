@@ -5,15 +5,16 @@ include_once '../db.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['unique_id'])) {
-    echo json_encode(['success' => false, 'error' => 'Unauthorized access']);
+    echo json_encode(['success' => false, 'error' => 'Not authenticated']);
     exit();
 }
 
 try {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    if (!isset($data['appointmentId']) || !isset($data['newDate']) || !isset($data['newTime'])) {
-        throw new Exception('Required parameters missing');
+    if (!isset($data['appointmentId']) || !isset($data['newDate']) || 
+        !isset($data['newTime']) || !isset($data['sessionType'])) {
+        throw new Exception('Missing required parameters');
     }
 
     // Get user info based on role
@@ -35,24 +36,31 @@ try {
     $user = $result->fetch_assoc();
     $userId = $user[$userIdField];
 
+    // Set expiry time to 24 hours from now
+    $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+
     // Update appointment with new schedule request
     $sql = "UPDATE appointments 
             SET status = ?, 
                 proposed_date = ?,
                 proposed_time = ?,
+                session_type = ?,
                 reschedule_notes = ?,
                 reschedule_by = ?,
+                request_expiry = ?,
                 updated_at = CURRENT_TIMESTAMP
             WHERE appointment_id = ? 
             AND {$userIdField} = ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssii", 
+    $stmt->bind_param("ssssssisi", 
         $newStatus,
         $data['newDate'],
         $data['newTime'],
+        $data['sessionType'],
         $data['notes'],
         $rescheduleBy,
+        $expiry,
         $data['appointmentId'],
         $userId
     );

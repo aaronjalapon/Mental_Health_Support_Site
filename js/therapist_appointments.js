@@ -1,10 +1,32 @@
 // Add these utility functions to global scope first
 function showError(message) {
-    alert(message); // Simple alert for now
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-error';
+    notification.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 function showSuccess(message) {
-    alert(message); // Simple alert for now
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-success';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 function formatDate(dateString) {
@@ -57,19 +79,25 @@ window.handleReschedule = async function(appointmentId) {
         const appointment = data.appointment;
         const modal = document.getElementById('rescheduleModal');
         
-        // Populate modal with appointment details
+        // Add null checks and default values
+        const clientName = appointment.client_name || 'Not specified';
+        const sessionType = appointment.session_type || 'video'; // Default to video if not set
+        
+        // Populate modal with appointment details including session type
         document.getElementById('rescheduleInfo').innerHTML = `
             <h4>Current Schedule</h4>
-            <p><strong>Client:</strong> ${appointment.client_name}</p>
+            <p><strong>Client:</strong> ${clientName}</p>
             <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
             <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
+            <p><strong>Session Type:</strong> ${formatSessionType(sessionType)}</p>
         `;
 
         // Set minimum date to today
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('newDate').min = today;
-        document.getElementById('newDate').value = appointment.date;
-        document.getElementById('newTime').value = appointment.time;
+        document.getElementById('newDate').value = appointment.date || '';
+        document.getElementById('newTime').value = appointment.time || '';
+        document.getElementById('sessionType').value = sessionType;
 
         modal.style.display = 'block';
 
@@ -86,6 +114,7 @@ window.handleReschedule = async function(appointmentId) {
                         appointmentId: id,
                         newDate: document.getElementById('newDate').value,
                         newTime: document.getElementById('newTime').value,
+                        sessionType: document.getElementById('sessionType').value,
                         notes: document.getElementById('rescheduleNotes').value
                     })
                 });
@@ -230,8 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         list.innerHTML = appointments.map(appointment => {
             const status = appointment.status.toLowerCase();
-            const statusText = (status === 'reschedule_pending' && appointment.reschedule_by === 'therapist') 
-                ? 'Waiting Client Response' 
+            const statusText = (status === 'reschedule_pending') 
+                ? (appointment.reschedule_by === 'therapist' ? 'Waiting Client Response' : 'Therapist Requested Reschedule')
                 : formatStatus(status);
                 
             const statusIcon = {
@@ -250,45 +279,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 'chat': 'fa-comments'
             }[appointment.session_type.toLowerCase()] || 'fa-video';
 
-            // Add proposed schedule info if available
-            let proposedScheduleInfo = '';
-            if (appointment.proposed_date && appointment.proposed_time) {
-                proposedScheduleInfo = `
-                    <div class="reschedule-info">
-                        <p><strong>Proposed Date:</strong> ${formatDate(appointment.proposed_date)}</p>
-                        <p><strong>Proposed Time:</strong> ${formatTime(appointment.proposed_time)}</p>
-                        ${appointment.reschedule_notes ? 
-                            `<p><strong>${appointment.reschedule_by === 'client' ? "Client's" : 'Your'} Note:</strong> ${appointment.reschedule_notes}</p>` 
-                            : ''
-                        }
-                    </div>
-                `;
-            }
-
-            let actions = '';
+            let buttons = '';
         
-            // Add actions based on appointment status
-            if (appointment.status === 'cancellation_pending') {
-                actions = `
-                    <div class="cancellation-notice">
-                        <p><strong>Client Requested Cancellation</strong></p>
-                        <p><strong>Reason:</strong> ${appointment.cancellation_reason || 'No reason provided'}</p>
-                    </div>
-                    <div class="appointment-actions">
-                        <button class="btn btn-danger" onclick="handleCancellationResponse(${appointment.id}, 'approve')">
-                            <i class="fas fa-check"></i> Approve Cancellation
+            // Add buttons for pending status
+            if (status === 'pending') {
+                buttons = `
+                    <div class="btn-container">
+                        <button class="appointment-btn appointment-btn-primary approve-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-check"></i> Approve
                         </button>
-                        <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
-                            <i class="fas fa-calendar-alt"></i> Suggest Reschedule
+                        <button class="appointment-btn appointment-btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-calendar-alt"></i> Reschedule
+                        </button>
+                        <button class="btn btn-info message-client" 
+                            data-id="${appointment.id}" 
+                            data-client="${appointment.client_name}"
+                            data-client-id="${appointment.client_id}">
+                            <i class="fas fa-comment"></i> Message Client
                         </button>
                     </div>`;
             }
-
-            // Add status class for cancellation_pending
-            const statusClasses = {
-                'cancellation_pending': 'status-warning',
-                // ...existing status classes...
-            };
 
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
@@ -315,11 +325,24 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="detail-value">${formatSessionType(appointment.session_type)}</span>
                         </div>
                     </div>
-                    ${proposedScheduleInfo}
+                    ${appointment.status === 'cancellation_pending' ? `
+                        <div class="cancellation-notice">
+                            <p><strong>Client Requested Cancellation</strong></p>
+                            <p><strong>Reason:</strong> ${appointment.cancellation_reason || 'No reason provided'}</p>
+                        </div>
+                        <div class="appointment-actions">
+                            <button class="btn btn-danger" onclick="handleCancellationResponse(${appointment.id}, 'approve')">
+                                <i class="fas fa-check"></i> Approve Cancellation
+                            </button>
+                            <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                                <i class="fas fa-calendar-alt"></i> Suggest Reschedule
+                            </button>
+                        </div>
+                    ` : ''}
                     <div class="btn-container">
+                        ${buttons}
                         ${renderAppointmentActions(appointment)}
                     </div>
-                    ${actions}
                 </div>
             `;
         }).join('');
@@ -330,11 +353,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderAppointmentActions(appointment) {
         const status = appointment.status.toLowerCase();
-        const actions = [];
+        let actions = '';
 
         switch(status) {
+            case 'reschedule_pending':
+                if (appointment.reschedule_by === 'therapist') {
+                    actions = `
+                        <div class="reschedule-notice">
+                            <p>Your Reschedule Request:</p>
+                            <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                            <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                            <p><strong>Proposed Session Type:</strong> ${formatSessionType(appointment.proposed_session_type || appointment.session_type)}</p>
+                            <p><strong>Your Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
+                            <p class="status-note">Waiting for client's response...</p>
+                        </div>`;
+                }
+                break;
+
+            case 'reschedule_requested':
+                actions = `
+                    <div class="reschedule-notice">
+                        <p>Client has requested to reschedule to:</p>
+                        <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                        <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                        <p><strong>Proposed Session Type:</strong> ${formatSessionType(appointment.proposed_session_type || appointment.session_type)}</p>
+                        <p><strong>Client's Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-primary accept-reschedule" data-id="${appointment.id}">
+                            <i class="fas fa-check"></i> Accept New Schedule
+                        </button>
+                        <button class="btn btn-secondary suggest-time" data-id="${appointment.id}">
+                            <i class="fas fa-clock"></i> Suggest Different Time
+                        </button>
+                        <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-times"></i> Cancel Appointment
+                        </button>
+                    </div>`;
+                break;
+
             case 'upcoming':
-                return `
+                actions = `
                     <div class="btn-container">
                         <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
                             <i class="fas fa-calendar-alt"></i> Reschedule
@@ -349,90 +408,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas fa-comment"></i> Message Client
                         </button>
                     </div>`;
-            case 'pending':
-                actions.push(`
-                    <button class="btn btn-primary approve-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-check"></i> Approve
-                    </button>
-                    <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
-                        <i class="fas fa-calendar-alt"></i> Reschedule
-                    </button>
-                    <button class="btn btn-info message-client" 
-                        data-id="${appointment.id}" 
-                        data-client="${appointment.client_name}"
-                        data-client-id="${appointment.client_id}">
-                        <i class="fas fa-comment"></i> Message Client
-                    </button>
-                `);
                 break;
-            case 'completed':
-                actions.push(`
-                    <button class="btn btn-info message-client" 
-                        data-id="${appointment.id}" 
-                        data-client="${appointment.client_name}"
-                        data-client-id="${appointment.client_id}">
-                        <i class="fas fa-comment"></i> Message Client
-                    </button>
-                `);
-                break;
-            case 'reschedule_requested':
-                actions.push(`
-                    <div class="reschedule-notice">
-                        <p>Client has requested to reschedule to:</p>
-                        <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date) || 'Not specified'}</p>
-                        <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time) || 'Not specified'}</p>
-                        <p><strong>Client's Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
-                    </div>
-                    <div class="appointment-actions">
-                        <button class="btn btn-primary accept-reschedule" data-id="${appointment.id}">
-                            <i class="fas fa-check"></i> Accept New Schedule
-                        </button>
-                        <button class="btn btn-secondary suggest-time" data-id="${appointment.id}">
-                            <i class="fas fa-clock"></i> Suggest Different Time
-                        </button>
-                        <button class="btn btn-danger cancel-appointment" data-id="${appointment.id}">
-                            <i class="fas fa-times"></i> Cancel Appointment
-                        </button>
-                    </div>
-                `);
-                break;
-            case 'reschedule_pending':
-                return `
-                    <div class="btn-container">
-                        <button class="btn btn-info message-client" 
-                            data-id="${appointment.id}" 
-                            data-client="${appointment.client_name}"
-                            data-client-id="${appointment.client_id}">
-                            <i class="fas fa-comment"></i> Message Client
-                        </button>
-                    </div>`;
+
+            // ...rest of the cases...
         }
 
-        if (appointment.reschedule_by === 'client' && appointment.status === 'reschedule_requested') {
-            actions.push(`
-                <div class="reschedule-notice">
-                    <p>Client has requested to reschedule to:</p>
-                    <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
-                    <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
-                    <p><strong>Client's Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
-                </div>
-                // ...rest of actions...
-            `);
-        } else if (appointment.reschedule_by === 'therapist' && appointment.status === 'reschedule_requested') {
-            // Show as reschedule_pending in therapist view when therapist requests
-            status = 'reschedule_pending';
-            actions.push(`
-                <div class="reschedule-notice">
-                    <p>Waiting for client's response on your reschedule request:</p>
-                    <p><strong>New Date:</strong> ${formatDate(appointment.proposed_date)}</p>
-                    <p><strong>New Time:</strong> ${formatTime(appointment.proposed_time)}</p>
-                    <p><strong>Your Note:</strong> ${appointment.reschedule_notes || 'No note provided'}</p>
-                </div>
-                // ...rest of actions...
-            `);
-        }
-        
-        return actions.length ? `<div class="btn-container">${actions.join('')}</div>` : '';
+        return actions;
     }
 
     function getSessionTypeIcon(type) {
@@ -507,11 +488,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function handleReschedule(event) {
-        const appointmentId = event.currentTarget.dataset.id;
-        const appointmentCard = event.currentTarget.closest('.appointment-card');
+        // Get appointment ID and prevent default if it's an event
+        if (event.preventDefault) event.preventDefault();
         
+        const appointmentId = event.currentTarget?.dataset?.id;
+        if (!appointmentId) {
+            showError('Could not find appointment ID');
+            return;
+        }
+    
         try {
-            // Fetch appointment details from server
             const response = await fetch('../php/appointments/fetch_appointment_details.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -522,187 +508,160 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
             
             const appointment = data.appointment;
-
-            // Populate reschedule modal with fetched data
-            document.getElementById('rescheduleInfo').innerHTML = `
+            const modal = document.getElementById('rescheduleModal');
+    
+            // Add defensive checks for all properties
+            const clientName = appointment?.client_name || 'Not specified';
+            const sessionType = appointment?.session_type || 'video';
+            const currentDate = appointment?.date || '';
+            const currentTime = appointment?.time || '';
+            
+            // Check if this is a response to client's reschedule request
+            const isClientRequest = appointment?.status?.toLowerCase() === 'reschedule_requested' && 
+                                  appointment?.reschedule_by === 'client';
+    
+            // Prepare display content based on request type
+            let modalContent = `
                 <h4>Current Schedule</h4>
-                <p><strong>Client:</strong> ${appointment.client_name}</p>
-                <p><strong>Date:</strong> ${formatDate(appointment.date)}</p>
-                <p><strong>Time:</strong> ${formatTime(appointment.time)}</p>
-            `;
-
+                <p><strong>Client:</strong> ${clientName}</p>
+                <p><strong>Date:</strong> ${formatDate(currentDate)}</p>
+                <p><strong>Time:</strong> ${formatTime(currentTime)}</p>
+                <p><strong>Session Type:</strong> ${formatSessionType(sessionType)}</p>`;
+    
+            // Add client's requested schedule if exists
+            if (isClientRequest && appointment.proposed_date) {
+                modalContent += `
+                    <div class="reschedule-notice">
+                        <h4>Client's Requested Schedule</h4>
+                        <p><strong>Proposed Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                        <p><strong>Proposed Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                        <p><strong>Proposed Session Type:</strong> ${formatSessionType(appointment.proposed_session_type || sessionType)}</p>
+                        ${appointment.reschedule_notes ? `<p><strong>Client's Note:</strong> ${appointment.reschedule_notes}</p>` : ''}
+                    </div>`;
+            }
+    
+            // Update modal content
+            document.getElementById('rescheduleInfo').innerHTML = modalContent;
+    
             // Set minimum date to today
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('newDate').min = today;
             
-            // Pre-fill the form with current values
-            document.getElementById('newDate').value = appointment.date;
-            document.getElementById('newTime').value = appointment.time;
-
+            // Pre-fill form with appropriate values
+            if (isClientRequest && appointment.proposed_date) {
+                // Use client's proposed values if available
+                document.getElementById('newDate').value = appointment.proposed_date;
+                document.getElementById('newTime').value = appointment.proposed_time;
+                document.getElementById('sessionType').value = appointment.proposed_session_type || sessionType;
+            } else {
+                // Use current values
+                document.getElementById('newDate').value = currentDate;
+                document.getElementById('newTime').value = currentTime;
+                document.getElementById('sessionType').value = sessionType;
+            }
+    
             // Show modal
-            const modal = document.getElementById('rescheduleModal');
             modal.style.display = 'block';
-
+    
             // Handle form submission
-            const form = document.getElementById('rescheduleForm');
-            form.onsubmit = async function(e) {
-                e.preventDefault();
-                
-                const newDate = document.getElementById('newDate').value;
-                const newTime = document.getElementById('newTime').value;
-                const notes = document.getElementById('rescheduleNotes').value;
-
-                try {
-                    const response = await fetch('../php/appointments/reschedule_appointment.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            appointmentId,
-                            newDate,
-                            newTime,
-                            notes
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    if (data.success) {
-                        showSuccess('Appointment rescheduled successfully');
-                        modal.style.display = 'none';
-                        loadAppointments(); // Refresh the appointments list
-                    } else {
-                        throw new Error(data.error || 'Failed to reschedule appointment');
-                    }
-                } catch (error) {
-                    showError('Failed to reschedule appointment: ' + error.message);
-                }
-            };
+            setupRescheduleFormSubmit(appointment);
+    
         } catch (error) {
+            console.error('Reschedule error:', error);
             showError('Failed to load appointment details: ' + error.message);
         }
     }
-
-    async function handleCancel(event) {
-        const appointmentId = event.currentTarget.dataset.id;
-        const reason = prompt('Please provide a reason for cancellation:');
-        
-        if (reason && confirm('Are you sure you want to cancel this appointment?')) {
+    
+    // Update the setupRescheduleFormSubmit function to handle null values
+    function setupRescheduleFormSubmit(appointment) {
+        const form = document.getElementById('rescheduleForm');
+        if (!form) return;
+    
+        form.onsubmit = async function(e) {
+            e.preventDefault();
+            
             try {
-                const response = await fetch('../php/appointments/cancel_appointment.php', {
+                // Add defensive check for appointment.id
+                const appointmentId = appointment?.id;
+                if (!appointmentId) throw new Error('Invalid appointment ID');
+    
+                const response = await fetch('../php/appointments/reschedule_appointment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        appointmentId,
-                        reason
+                        appointmentId: appointmentId,
+                        newDate: document.getElementById('newDate').value,
+                        newTime: document.getElementById('newTime').value,
+                        sessionType: document.getElementById('sessionType').value,
+                        notes: document.getElementById('rescheduleNotes').value
                     })
                 });
                 
                 const data = await response.json();
                 if (data.success) {
-                    showSuccess('Appointment cancelled successfully');
+                    showSuccess('Reschedule request sent successfully');
+                    document.getElementById('rescheduleModal').style.display = 'none';
                     loadAppointments();
                 } else {
-                    throw new Error(data.error || 'Failed to cancel appointment');
+                    throw new Error(data.error || 'Failed to reschedule appointment');
                 }
             } catch (error) {
-                showError('Failed to cancel appointment: ' + error.message);
+                showError('Failed to reschedule appointment: ' + error.message);
             }
-        }
+        };
+    }
+    
+
+    async function handleCancel(event) {
+        const appointmentId = event.target.closest('.cancel-appointment').dataset.id;
+        showCancellationModal(appointmentId);
     }
 
     async function handleAvailabilityModal() {
         try {
-            toggleAvailabilityModal(true); // Show modal first for better UX
-
+            const modal = document.getElementById('availabilityModal');
+            modal.style.display = 'block';
+    
             const response = await fetch('../php/appointments/fetch_therapist_availability.php');
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch availability: ${response.statusText}`);
+            }
             
             const data = await response.json();
-            
-            if (data.success) {
-                populateAvailabilityForm(data.availability);
-            } else {
+            if (!data.success) {
                 throw new Error(data.error || 'Failed to load availability');
             }
+    
+            populateAvailabilityForm(data.availability);
         } catch (error) {
             console.error('Error loading availability:', error);
-            showError('Failed to load availability settings');
-            toggleAvailabilityModal(false);
+            showError('Failed to load availability settings: ' + error.message);
         }
     }
-
-    function toggleAvailabilityModal(show) {
-        const modal = document.getElementById('availabilityModal');
-        if (show) {
-            modal.style.display = 'flex';
-            // Use requestAnimationFrame to ensure the display change has taken effect
-            requestAnimationFrame(() => {
-                modal.classList.add('show');
-            });
-        } else {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300); // Match the transition duration
-        }
-    }
-
-    function populateAvailabilityForm(availability = {}) {
-        const form = document.getElementById('availabilityForm');
-        
-        // Reset form first
-        form.reset();
-        
-        // Set working days
-        if (availability.days && Array.isArray(availability.days)) {
-            availability.days.forEach(day => {
-                const checkbox = form.querySelector(`input[value="${day}"]`);
-                if (checkbox) checkbox.checked = true;
-            });
-        }
-        
-        // Set working hours with null checks
-        const hours = availability.hours || {};
-        form.querySelector('input[name="startTime"]').value = hours.start || '';
-        form.querySelector('input[name="endTime"]').value = hours.end || '';
-        
-        // Set break times with null checks
-        const breakTimes = hours.break || {};
-        form.querySelector('input[name="breakStart"]').value = breakTimes.start || '';
-        form.querySelector('input[name="breakEnd"]').value = breakTimes.end || '';
-    }
-
+    
     async function handleAvailabilitySubmit(event) {
         event.preventDefault();
         
-        // Validate form
-        const form = event.target;
-        const selectedDays = form.querySelectorAll('input[name="availableDays"]:checked');
-        const startTime = form.querySelector('input[name="startTime"]').value;
-        const endTime = form.querySelector('input[name="endTime"]').value;
-        
-        if (selectedDays.length === 0) {
-            showError('Please select at least one working day');
-            return;
-        }
-        
-        if (!startTime || !endTime) {
-            showError('Please set your working hours');
-            return;
-        }
-        
-        const formData = {
-            days: Array.from(selectedDays).map(cb => cb.value),
-            hours: {
-                start: startTime,
-                end: endTime,
-                break: {
-                    start: form.querySelector('input[name="breakStart"]').value || null,
-                    end: form.querySelector('input[name="breakEnd"]').value || null
-                }
-            }
-        };
-
         try {
+            const form = event.target;
+            const selectedDays = Array.from(form.querySelectorAll('input[name="availableDays"]:checked')).map(cb => cb.value);
+            
+            if (selectedDays.length === 0) {
+                throw new Error('Please select at least one working day');
+            }
+    
+            const formData = {
+                days: selectedDays,
+                hours: {
+                    start: form.querySelector('input[name="startTime"]').value,
+                    end: form.querySelector('input[name="endTime"]').value,
+                    break: {
+                        start: form.querySelector('input[name="breakStart"]').value || null,
+                        end: form.querySelector('input[name="breakEnd"]').value || null
+                    }
+                }
+            };
+    
             const response = await fetch('../php/appointments/update_therapist_availability.php', {
                 method: 'POST',
                 headers: {
@@ -710,19 +669,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(formData)
             });
-
-            if (!response.ok) throw new Error('Network response was not ok');
-            const result = await response.json();
-            
-            if (result.success) {
-                showSuccess('Availability updated successfully');
-                toggleAvailabilityModal(false);
-            } else {
-                throw new Error(result.error || 'Failed to update availability');
+    
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to update availability');
             }
+    
+            showSuccess('Availability updated successfully');
+            document.getElementById('availabilityModal').style.display = 'none';
+            
         } catch (error) {
             console.error('Error updating availability:', error);
-            showError('Failed to update availability: ' + error.message);
+            showError(error.message);
         }
     }
 
@@ -752,16 +710,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error formatting time:', error);
             return 'Not specified';
         }
-    }
-
-    function showError(message) {
-        // Implement error notification
-        alert(message);
-    }
-
-    function showSuccess(message) {
-        // Implement success notification
-        alert(message);
     }
 
     function showEmptyState() {
@@ -975,3 +923,343 @@ async function handleCancellationResponse(appointmentId, action) {
         showNotification(error.message, 'error');
     }
 }
+
+async function handleReschedule(event) {
+    // Get appointment ID and prevent default if it's an event
+    if (event.preventDefault) event.preventDefault();
+    
+    const appointmentId = event.currentTarget?.dataset?.id;
+    if (!appointmentId) {
+        showError('Could not find appointment ID');
+        return;
+    }
+
+    try {
+        const response = await fetch('../php/appointments/fetch_appointment_details.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ appointmentId })
+        });
+        
+        const data = await response.json();
+        if (!data.success) throw new Error(data.error || 'Failed to fetch appointment details');
+        
+        const appointment = data.appointment;
+        const modal = document.getElementById('rescheduleModal');
+
+        // Add defensive checks for all properties
+        const clientName = appointment?.client_name || 'Not specified';
+        const sessionType = appointment?.session_type || 'video';
+        const currentDate = appointment?.date || '';
+        const currentTime = appointment?.time || '';
+        
+        // Check if this is a response to client's reschedule request
+        const isClientRequest = appointment?.status?.toLowerCase() === 'reschedule_requested' && 
+                              appointment?.reschedule_by === 'client';
+
+        // Prepare display content based on request type
+        let modalContent = `
+            <h4>Current Schedule</h4>
+            <p><strong>Client:</strong> ${clientName}</p>
+            <p><strong>Date:</strong> ${formatDate(currentDate)}</p>
+            <p><strong>Time:</strong> ${formatTime(currentTime)}</p>
+            <p><strong>Session Type:</strong> ${formatSessionType(sessionType)}</p>`;
+
+        // Add client's requested schedule if exists
+        if (isClientRequest && appointment.proposed_date) {
+            modalContent += `
+                <div class="reschedule-notice">
+                    <h4>Client's Requested Schedule</h4>
+                    <p><strong>Proposed Date:</strong> ${formatDate(appointment.proposed_date)}</p>
+                    <p><strong>Proposed Time:</strong> ${formatTime(appointment.proposed_time)}</p>
+                    <p><strong>Proposed Session Type:</strong> ${formatSessionType(appointment.proposed_session_type || sessionType)}</p>
+                    ${appointment.reschedule_notes ? `<p><strong>Client's Note:</strong> ${appointment.reschedule_notes}</p>` : ''}
+                </div>`;
+        }
+
+        // Update modal content
+        document.getElementById('rescheduleInfo').innerHTML = modalContent;
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('newDate').min = today;
+        
+        // Pre-fill form with appropriate values
+        if (isClientRequest && appointment.proposed_date) {
+            // Use client's proposed values if available
+            document.getElementById('newDate').value = appointment.proposed_date;
+            document.getElementById('newTime').value = appointment.proposed_time;
+            document.getElementById('sessionType').value = appointment.proposed_session_type || sessionType;
+        } else {
+            // Use current values
+            document.getElementById('newDate').value = currentDate;
+            document.getElementById('newTime').value = currentTime;
+            document.getElementById('sessionType').value = sessionType;
+        }
+
+        // Show modal
+        modal.style.display = 'block';
+
+        // Handle form submission
+        setupRescheduleFormSubmit(appointment);
+
+    } catch (error) {
+        console.error('Reschedule error:', error);
+        showError('Failed to load appointment details: ' + error.message);
+    }
+}
+
+function setupRescheduleFormSubmit(appointment) {
+    const form = document.getElementById('rescheduleForm');
+    if (!form) return;
+
+    form.onsubmit = async function(e) {
+        e.preventDefault();
+        
+        try {
+            // Add defensive check for appointment.id
+            const appointmentId = appointment?.id;
+            if (!appointmentId) throw new Error('Invalid appointment ID');
+
+            const response = await fetch('../php/appointments/reschedule_appointment.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    appointmentId: appointmentId,
+                    newDate: document.getElementById('newDate').value,
+                    newTime: document.getElementById('newTime').value,
+                    sessionType: document.getElementById('sessionType').value,
+                    notes: document.getElementById('rescheduleNotes').value
+                })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showSuccess('Reschedule request sent successfully');
+                document.getElementById('rescheduleModal').style.display = 'none';
+                loadAppointments();
+            } else {
+                throw new Error(data.error || 'Failed to reschedule appointment');
+            }
+        } catch (error) {
+            showError('Failed to reschedule appointment: ' + error.message);
+        }
+    };
+}
+
+// Add this helper function if it doesn't exist
+function formatSessionType(type) {
+    if (!type) return 'Video Call'; // Default value
+    const types = {
+        'video': 'Video Call',
+        'voice': 'Voice Call',
+        'chat': 'Chat Session'
+    };
+    return types[type.toLowerCase()] || 'Video Call';
+}
+
+// ...existing code...
+
+function showCancellationModal(appointmentId) {
+    // Instead of creating a new modal, use the existing one in the HTML
+    const modal = document.getElementById('cancelModal');
+    if (!modal) return;
+
+    const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
+    if (!appointmentCard) return;
+
+    const clientName = appointmentCard.querySelector('h3').textContent.replace('Session with ', '');
+    const date = appointmentCard.querySelector('.detail-value').textContent;
+    const time = appointmentCard.querySelectorAll('.detail-value')[1].textContent;
+
+    // Update the modal content
+    const appointmentInfo = modal.querySelector('.cancel-appointment-info');
+    if (appointmentInfo) {
+        appointmentInfo.innerHTML = `
+            <p><strong>Session with ${clientName}</strong></p>
+            <p><i class="fas fa-calendar"></i> ${date}</p>
+            <p><i class="fas fa-clock"></i> ${time}</p>
+        `;
+    }
+
+    // Show modal
+    modal.style.display = 'flex';
+
+    // Setup event listeners
+    const closeBtn = modal.querySelector('.modal-close');
+    const keepBtn = modal.querySelector('#therapistKeepAppointment');
+    const confirmBtn = modal.querySelector('#therapistConfirmCancel');
+
+    const closeModal = () => {
+        modal.style.display = 'none';
+        const reasonInput = document.getElementById('therapistCancelReason');
+        if (reasonInput) reasonInput.value = '';
+    };
+
+    closeBtn.onclick = closeModal;
+    keepBtn.onclick = closeModal;
+    confirmBtn.onclick = async () => {
+        const reason = document.getElementById('therapistCancelReason').value.trim();
+        await handleCancellationResponse(appointmentId, 'approve', reason);
+        closeModal();
+    };
+
+    // Handle outside click
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+}
+
+// ...rest of existing code...
+
+function populateAvailabilityForm(availability) {
+    try {
+        console.log('Populating form with availability:', availability); // Debug log
+
+        // Reset all checkboxes first
+        document.querySelectorAll('input[name="availableDays"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Check the days that are available
+        if (Array.isArray(availability.days)) {
+            availability.days.forEach(day => {
+                const checkbox = document.querySelector(`input[name="availableDays"][value="${day}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // Set working hours with null checks
+        const hours = availability.hours || {};
+        
+        // Set start time
+        const startTimeInput = document.querySelector('input[name="startTime"]');
+        if (startTimeInput && hours.start) {
+            startTimeInput.value = hours.start;
+        }
+
+        // Set end time
+        const endTimeInput = document.querySelector('input[name="endTime"]');
+        if (endTimeInput && hours.end) {
+            endTimeInput.value = hours.end;
+        }
+
+        // Set break times
+        const breakTimes = hours.break || {};
+        
+        // Set break start
+        const breakStartInput = document.querySelector('input[name="breakStart"]');
+        if (breakStartInput && breakTimes.start) {
+            breakStartInput.value = breakTimes.start;
+        }
+
+        // Set break end
+        const breakEndInput = document.querySelector('input[name="breakEnd"]');
+        if (breakEndInput && breakTimes.end) {
+            breakEndInput.value = breakTimes.end;
+        }
+
+    } catch (error) {
+        console.error('Error populating availability form:', error);
+        showError('Failed to populate availability form');
+    }
+}
+
+// Update handleAvailabilityModal to include better error handling
+async function handleAvailabilityModal() {
+    try {
+        const modal = document.getElementById('availabilityModal');
+        if (!modal) throw new Error('Modal element not found');
+
+        modal.style.display = 'block';
+
+        const response = await fetch('../php/appointments/fetch_therapist_availability.php');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch availability: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to load availability');
+        }
+
+        console.log('Received availability data:', data); // Debug log
+        populateAvailabilityForm(data.availability);
+
+    } catch (error) {
+        console.error('Error in handleAvailabilityModal:', error);
+        showError('Failed to load availability settings: ' + error.message);
+    }
+}
+
+// ...existing code...
+
+async function handleAvailabilitySubmit(event) {
+    event.preventDefault();
+    
+    try {
+        const form = event.target;
+        const selectedDays = Array.from(form.querySelectorAll('input[name="availableDays"]:checked')).map(cb => cb.value);
+        
+        if (selectedDays.length === 0) {
+            throw new Error('Please select at least one working day');
+        }
+
+        const formData = {
+            days: selectedDays,
+            hours: {
+                start: form.querySelector('input[name="startTime"]').value,
+                end: form.querySelector('input[name="endTime"]').value,
+                break: {
+                    start: form.querySelector('input[name="breakStart"]').value || null,
+                    end: form.querySelector('input[name="breakEnd"]').value || null
+                }
+            }
+        };
+
+        // Add validation for working hours
+        if (!formData.hours.start || !formData.hours.end) {
+            throw new Error('Please set your working hours');
+        }
+
+        // Validate that end time is after start time
+        if (formData.hours.start >= formData.hours.end) {
+            throw new Error('End time must be after start time');
+        }
+
+        // Validate break times if provided
+        if (formData.hours.break.start && formData.hours.break.end) {
+            if (formData.hours.break.start >= formData.hours.break.end) {
+                throw new Error('Break end time must be after break start time');
+            }
+            if (formData.hours.break.start <= formData.hours.start || 
+                formData.hours.break.end >= formData.hours.end) {
+                throw new Error('Break time must be within working hours');
+            }
+        }
+
+        const response = await fetch('../php/appointments/update_therapist_availability.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to update availability');
+        }
+
+        showSuccess('Availability updated successfully');
+        document.getElementById('availabilityModal').style.display = 'none';
+        
+    } catch (error) {
+        console.error('Error updating availability:', error);
+        showError(error.message);
+    }
+}
+
+// ...existing code...

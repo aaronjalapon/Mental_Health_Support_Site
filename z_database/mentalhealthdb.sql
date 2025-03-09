@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2025 at 07:05 PM
+-- Generation Time: Mar 09, 2025 at 04:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,13 +34,14 @@ CREATE TABLE `appointments` (
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `session_type` enum('video','voice','chat') NOT NULL,
-  `status` enum('pending','upcoming','completed','cancelled','rejected','reschedule_pending','reschedule_requested','cancellation_pending') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','upcoming','completed','cancelled','reschedule_pending','reschedule_requested','cancellation_pending') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
   `cancellation_reason` text DEFAULT NULL,
   `reschedule_notes` text DEFAULT NULL,
   `reschedule_by` enum('therapist','client') DEFAULT NULL,
   `proposed_date` date DEFAULT NULL,
   `proposed_time` time DEFAULT NULL,
+  `request_expiry` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -49,17 +50,21 @@ CREATE TABLE `appointments` (
 -- Dumping data for table `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `client_id`, `therapist_id`, `appointment_date`, `appointment_time`, `session_type`, `status`, `notes`, `cancellation_reason`, `reschedule_notes`, `reschedule_by`, `proposed_date`, `proposed_time`, `created_at`, `updated_at`) VALUES
-(1, 12, 4, '2025-03-25', '09:00:00', 'voice', 'cancelled', '', 'asdasd', NULL, NULL, NULL, NULL, '2025-03-06 16:27:40', '2025-03-06 16:57:49'),
-(2, 12, 5, '2025-03-30', '09:00:00', 'chat', 'cancelled', 'asdasdas', 'I have something important to do', NULL, NULL, NULL, NULL, '2025-03-06 16:50:05', '2025-03-06 17:01:35'),
-(6, 12, 3, '2025-03-21', '11:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, '2025-03-06 20:37:40', '2025-03-06 20:37:53'),
-(7, 12, 3, '2025-03-21', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, '2025-03-06 22:46:54', '2025-03-06 22:51:58'),
-(8, 12, 3, '2025-03-11', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, '2025-03-07 00:17:35', '2025-03-07 00:17:53'),
-(9, 12, 3, '2025-03-18', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, '2025-03-07 00:19:56', '2025-03-07 00:26:06'),
-(10, 12, 3, '2025-03-21', '10:00:00', 'video', 'pending', '', NULL, NULL, NULL, NULL, NULL, '2025-03-07 05:26:35', '2025-03-07 05:26:35'),
-(11, 15, 3, '2025-03-20', '10:00:00', 'voice', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, '2025-03-07 07:45:14', '2025-03-07 07:52:30'),
-(12, 15, 3, '2025-03-17', '10:00:00', 'video', 'reschedule_pending', '', NULL, 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Error fuga quia nihil quos officia omnis, eos suscipit. Nemo, in tenetur. Rerum alias ea repudiandae sit molestias quibusdam accusamus consequatur ab.\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Error fuga quia nihil quos officia omnis, eos suscipit. Nemo, in tenetur. Rerum alias ea repudiandae sit molestias quibusdam accusamus consequatur ab.\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Error fuga quia nihil quos officia omnis, eos suscipit. Nemo, in tenetur. Rerum alias ea repudiandae sit molestias quibusdam accusamus consequatur ab.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Error fuga quia nihil quos officia omnis, eos suscipit. Nemo, in tenetur. Rerum alias ea repudiandae sit molestias quibusdam accusamus consequatur ab.\n', 'therapist', '2025-03-19', '09:00:00', '2025-03-07 07:46:53', '2025-03-08 17:37:05'),
-(13, 15, 3, '2025-03-14', '11:00:00', 'chat', 'pending', '', NULL, NULL, NULL, NULL, NULL, '2025-03-08 18:01:57', '2025-03-08 18:01:57');
+INSERT INTO `appointments` (`appointment_id`, `client_id`, `therapist_id`, `appointment_date`, `appointment_time`, `session_type`, `status`, `notes`, `cancellation_reason`, `reschedule_notes`, `reschedule_by`, `proposed_date`, `proposed_time`, `request_expiry`, `created_at`, `updated_at`) VALUES
+(2, 12, 5, '2025-03-30', '09:00:00', 'chat', 'cancelled', 'asdasdas', 'I have something important to do', NULL, NULL, NULL, NULL, NULL, '2025-03-06 16:50:05', '2025-03-06 17:01:35'),
+(6, 12, 3, '2025-03-21', '11:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-06 20:37:40', '2025-03-06 20:37:53'),
+(7, 12, 3, '2025-03-21', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-06 22:46:54', '2025-03-06 22:51:58'),
+(8, 12, 3, '2025-03-11', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-07 00:17:35', '2025-03-07 00:17:53'),
+(9, 12, 3, '2025-03-18', '09:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-07 00:19:56', '2025-03-07 00:26:06'),
+(10, 12, 3, '2025-03-21', '10:00:00', 'video', 'pending', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-07 05:26:35', '2025-03-07 05:26:35'),
+(13, 15, 3, '2025-03-15', '11:00:00', 'chat', 'cancelled', '', NULL, 'can we reschedule it to march 15,2025?', NULL, NULL, NULL, NULL, '2025-03-08 18:01:57', '2025-03-09 04:37:10'),
+(14, 15, 3, '2025-04-25', '00:00:00', 'video', 'upcoming', 'I need to talk, that I\'ve been hiding..', 'I can\'t sorry', 'asdasdas', NULL, NULL, NULL, '0000-00-00 00:00:00', '2025-03-09 04:58:31', '2025-03-09 11:45:02'),
+(15, 15, 3, '2025-03-24', '10:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-09 05:24:47', '2025-03-09 06:17:06'),
+(16, 15, 3, '2025-05-02', '11:00:00', 'chat', 'upcoming', '', 'asd', '', NULL, NULL, NULL, NULL, '2025-03-09 06:18:16', '2025-03-09 07:28:50'),
+(17, 15, 3, '2025-03-25', '10:00:00', 'video', 'upcoming', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-09 10:46:09', '2025-03-09 11:46:24'),
+(18, 15, 3, '2025-03-26', '11:00:00', 'video', 'upcoming', '', NULL, 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nulla odit esse ullam impedit, maiores iste adipisci earum cupiditate corrupti. Iste dolores enim illo deleniti, fugit quia id odio libero?\n', NULL, NULL, NULL, '0000-00-00 00:00:00', '2025-03-09 11:34:47', '2025-03-09 11:55:08'),
+(19, 15, 3, '2025-03-10', '11:00:00', 'video', 'upcoming', '', NULL, 'adasdsa', NULL, NULL, NULL, '0000-00-00 00:00:00', '2025-03-09 11:57:18', '2025-03-09 12:51:15'),
+(20, 15, 3, '2025-03-10', '10:00:00', 'video', 'upcoming', '', NULL, '<p><strong>Your Note:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n</p>\n\n<p><strong>Your Note:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n</p>\n\n\n<p><strong>Your Note:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n</p>\n\n<p><strong>Your Note:</strong> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n\n\nLorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere architecto exercitationem nulla, tempora minus culpa omnis adipisci tempore accusamus labore totam possimus numquam maiores reiciendis atque neque eum assumenda.\n</p>\n', NULL, NULL, NULL, '0000-00-00 00:00:00', '2025-03-09 11:57:35', '2025-03-09 12:46:13');
 
 -- --------------------------------------------------------
 
@@ -94,7 +99,8 @@ INSERT INTO `client` (`client_id`, `unique_id`, `firstName`, `lastName`, `userna
 (5, 469102382, 'Annika', 'Dumalogdog', 'annikangs', '$2y$10$Dpv6P8PwG1VEgS9Jq4o2LOy4nJKfPkGtRqc024SA6cbKUp7f//dGO', 'a.dumalogdog.547692@umindanao.edu.ph', '09123456789', 'They/Them/Theirs', 'Davao City', '1740447980_715644717626391a.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
 (8, 87204975, 'Claire', 'Green', 'greenclaire', '$2y$10$ZFxkMZFatdxjWEqiFWDNducdhV1ybBjepRvc8iZh8u6lKuokEeLkm', 'greenclaire@gmail.com', '09123456789', 'They/Them/Theirs', 'Davao City', '1740465251_27ff3be4eadd91f0.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
 (13, 1426136559, 'Kids', 'Kid', 'kid123', '$2y$10$i/WZcbdUSwavWxWZX/L8guEQx77zquqHbeGLB7xV5wVPwEojL8pdW', 'johnDoe@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741065740_3b0f983446a29a47.jpg', 0, 'Approved', '1', 'client', '2025-03-04'),
-(15, 1388596494, 'Chris', 'Tucks', 'christuckin', '$2y$10$fxibUNkK24wjHiGip5IngexBaRquGcPVFxdeWNfZOnQJfD6SM2zZC', 'kidshine19@gmail.com', '09123456789', 'He/Him/His', 'Matina, Davao City', '1741326948_3de9808a18e846bc.jpg', 0, 'Pending', '1', 'client', '2025-03-07');
+(15, 1388596494, 'Chris', 'Tucks', 'christuckin', '$2y$10$fxibUNkK24wjHiGip5IngexBaRquGcPVFxdeWNfZOnQJfD6SM2zZC', 'kidshine19@gmail.com', '09123456789', 'He/Him/His', 'Matina, Davao City', '1741326948_3de9808a18e846bc.jpg', 0, 'Approved', '1', 'client', '2025-03-07'),
+(16, 1316509445, 'Richard', 'Neto', 'rDoe123', '$2y$10$al8A1QraFSfi/pIjrQc22eiexBM7qTEO143xiv1EHYGpHLo0Kw//q', 'richardneto@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741533446_e8c83761c6f50490.png', 0, 'Pending', '1', 'client', '2025-03-09');
 
 -- --------------------------------------------------------
 
@@ -274,11 +280,20 @@ INSERT INTO `therapist_availability` (`id`, `therapist_id`, `day`, `start_time`,
 (67, 2, 'wednesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
 (68, 2, 'thursday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
 (69, 2, 'friday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(74, 3, 'monday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(75, 3, 'tuesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(76, 3, 'wednesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(77, 3, 'thursday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(78, 3, 'friday', '09:00:00', '12:00:00', '00:00:00', '00:00:00');
+(92, 67, 'sunday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(93, 67, 'monday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(94, 67, 'tuesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(95, 67, 'wednesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(96, 67, 'thursday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(97, 67, 'friday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(98, 67, 'saturday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(106, 3, 'sunday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(107, 3, 'monday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(108, 3, 'tuesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(109, 3, 'wednesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(110, 3, 'thursday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(111, 3, 'friday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(112, 3, 'saturday', '09:00:00', '13:00:00', '00:00:00', '00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -348,13 +363,13 @@ ALTER TABLE `therapist_availability`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `comments`
@@ -384,13 +399,13 @@ ALTER TABLE `testimonials`
 -- AUTO_INCREMENT for table `therapists`
 --
 ALTER TABLE `therapists`
-  MODIFY `therapist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `therapist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `therapist_availability`
 --
 ALTER TABLE `therapist_availability`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

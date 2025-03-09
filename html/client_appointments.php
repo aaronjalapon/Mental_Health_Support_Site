@@ -83,8 +83,8 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 <!-- Appointment info will be populated dynamically -->
             </div>
             <div class="cancel-reason-group">
-                <label for="cancelReason">Reason for cancellation (optional):</label>
-                <textarea id="cancelReason" placeholder="Please provide a reason for cancellation..."></textarea>
+                <label for="clientCancelReason">Reason for cancellation (optional):</label>
+                <textarea id="clientCancelReason" placeholder="Please provide a reason for cancellation..."></textarea>
             </div>
             <div class="cancel-modal-actions">
                 <button type="button" id="confirmCancel" class="appointment-btn appointment-btn-danger">
@@ -106,7 +106,6 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
             </div>
             <form id="rescheduleForm">
                 <div class="reschedule-section">
-                    <!-- This div will be populated dynamically by JavaScript -->
                     <div class="appointment-info" id="rescheduleInfo">
                         <!-- Content will be inserted here by handleSuggestTime function -->
                     </div>
@@ -117,6 +116,14 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                     <div class="form-group">
                         <label for="newTime">New Time</label>
                         <input type="time" id="newTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionType">Session Type</label>
+                        <select id="sessionType" name="sessionType" required>
+                            <option value="video">Video Call</option>
+                            <option value="voice">Voice Call</option>
+                            <option value="chat">Chat Session</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="rescheduleNotes">Notes (Optional)</label>
