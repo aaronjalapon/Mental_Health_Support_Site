@@ -286,6 +286,31 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'therapist') {
         </div>
     </div>
 
+    <!-- Cancellation Modal -->
+    <div id="cancellationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cancel Appointment</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="cancel-appointment-info">
+                <!-- Appointment details will be populated here -->
+            </div>
+            <div class="form-group">
+                <label for="cancellationReason">Reason for cancellation:</label>
+                <textarea id="cancellationReason" placeholder="Please provide a reason for cancellation..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="therapistConfirmCancel" class="btn btn-danger">
+                    Confirm Cancellation
+                </button>
+                <button type="button" id="therapistKeepAppointment" class="btn btn-secondary">
+                    Keep Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/therapist_appointments.js"></script>
 </body>
 </html>

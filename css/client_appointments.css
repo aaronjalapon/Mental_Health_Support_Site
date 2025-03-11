@@ -107,7 +107,7 @@
     padding: 1.5rem;
     margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .appointment-card:hover {
@@ -132,13 +132,15 @@
 
 /* Update Status Badge Styles */
 .appointment-status {
-    padding: 0.5rem 1rem;
+    padding: 8px 12px;
     border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 0.9em;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease;
 }
 
 .status-cancellation_pending {
@@ -149,6 +151,37 @@
 
 .status-cancellation_pending i {
     color: #f57c00;
+}
+
+/* Add specific styles for cancellation statuses */
+.status-cancellation_requested {
+    background-color: #fff0f0;
+    color: #dc3545;
+    border: 1px solid #ffcdd2;
+}
+
+.status-cancellation_requested i,
+.status-cancellation_pending i {
+    font-size: 1.1em;
+}
+
+.status-cancellation_requested:hover {
+    background-color: #ffebee;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+.status-cancellation_pending:hover {
+    background-color: #fff8e1;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.1);
+}
+
+/* Update icon styles for cancellation statuses */
+.status-cancellation_requested i {
+    color: #dc3545;
+}
+
+.status-cancellation_pending i {
+    color: #ff9800;
 }
 
 /* Update Details Section */
@@ -166,6 +199,12 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
 }
 
 .detail-item i {
@@ -173,6 +212,8 @@
     color: #1e9160;
     width: 20px;
     text-align: center;
+    margin-right: 8px;
+    color: #666;
 }
 
 .detail-label {
@@ -1648,4 +1689,136 @@
 
 .reschedule-notice p:last-child {
     margin-bottom: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add styles for cancellation request actions */
+.cancellation-notice {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    color: #f57c00;
+}
+
+.cancellation-notice p {
+    margin: 0.5rem 0;
+}
+
+.cancellation-notice p strong {
+    color: #e65100;
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.appointment-actions button {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1rem;
+}
+
+/* Confirmation Notification Styles */
+.confirmation-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 90%;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+}
+
+.confirmation-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.confirmation-notification .notification-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.confirmation-notification i {
+    font-size: 1.5rem;
+    color: #f57c00;
+}
+
+.confirmation-notification p {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.confirmation-notification .notification-actions {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.confirmation-notification button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.confirmation-notification .confirm-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.confirmation-notification .confirm-btn:hover {
+    background: #c82333;
+}
+
+.confirmation-notification .cancel-btn {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.confirmation-notification .cancel-btn:hover {
+    background: #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .confirmation-notification {
+        left: 20px;
+        width: auto;
+    }
 }

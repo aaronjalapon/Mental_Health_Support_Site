@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-if (!isset($_SESSION['unique_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'client') {
-    echo json_encode(['success' => false, 'error' => 'User not authenticated or not authorized']);
+if (!isset($_SESSION['unique_id'])) {
+    echo json_encode(['success' => false, 'error' => 'Not authenticated']);
     exit();
 }
 
@@ -21,63 +21,68 @@ try {
         throw new Exception('Appointment ID is required');
     }
 
-    // Get client_id from the session
-    $stmt = $conn->prepare("SELECT client_id FROM client WHERE unique_id = ?");
-    $stmt->bind_param("s", $_SESSION['unique_id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $appointmentId = intval($data['appointmentId']);
+    $reason = isset($data['reason']) ? $data['reason'] : '';
+    $role = $_SESSION['role']; // Get role from session
     
-    if ($result->num_rows === 0) {
-        throw new Exception('Client not found');
+    // Explicitly verify role matches
+    if ($role !== 'therapist' && $role !== 'client') {
+        throw new Exception('Invalid user role');
     }
     
-    $client = $result->fetch_assoc();
-    $client_id = $client['client_id'];
+    // Set status based on who initiates
+    $newStatus = $role === 'therapist' ? 'cancellation_requested' : 'cancellation_pending';
 
-    // Verify appointment belongs to client and is cancelable
-    $stmt = $conn->prepare("
-        SELECT status 
+    // Debug logs
+    error_log("Raw appointmentId from request: " . $data['appointmentId']);
+    error_log("Attempting to cancel - Appointment ID: $appointmentId");
+    error_log("Session role: $role");
+    error_log("Cancel appointment request - Role: $role, Status: $newStatus");
+
+    // First, get the client_id for this appointment
+    $verify = $conn->prepare("
+        SELECT client_id 
         FROM appointments 
-        WHERE appointment_id = ? 
-        AND client_id = ? 
-        AND status NOT IN ('completed', 'cancelled')
+        WHERE appointment_id = ?
     ");
-    $stmt->bind_param("ii", $data['appointmentId'], $client_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    
+    $verify->bind_param("i", $appointmentId);
+    $verify->execute();
+    $result = $verify->get_result();
 
     if ($result->num_rows === 0) {
-        throw new Exception('Appointment not found or cannot be cancelled');
+        error_log("No appointment found with ID: $appointmentId");
+        throw new Exception('Appointment not found');
     }
 
-    // Set expiry time to 24 hours from now
-    $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
+    $appointment = $result->fetch_assoc();
+    error_log("Appointment found with client_id: " . $appointment['client_id']);
 
-    // Update appointment status and set cancellation reason
+    // Update appointment
     $stmt = $conn->prepare("
         UPDATE appointments 
-        SET status = 'cancellation_pending',
+        SET status = ?,
             cancellation_reason = ?,
-            request_expiry = ?,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE appointment_id = ? 
-        AND client_id = ?
+            cancellation_by = ?,
+            updated_at = CURRENT_TIMESTAMP 
+        WHERE appointment_id = ?
     ");
     
-    // Use NULL if no reason provided, otherwise use the provided reason
-    $reason = !empty($data['reason']) ? $data['reason'] : null;
-    $stmt->bind_param("ssii", $reason, $expiry, $data['appointmentId'], $client_id);
+    $stmt->bind_param("sssi", $newStatus, $reason, $role, $appointmentId);
     
-    if ($stmt->execute()) {
+    if ($stmt->execute() && $stmt->affected_rows > 0) {
+        error_log("Successfully cancelled appointment $appointmentId");
         echo json_encode([
             'success' => true,
-            'message' => 'Cancellation request sent to therapist'
+            'message' => 'Cancellation request submitted successfully'
         ]);
     } else {
+        error_log("Failed to cancel appointment - No rows affected");
         throw new Exception('Failed to submit cancellation request');
     }
 
 } catch (Exception $e) {
+    error_log("Error in cancel_appointment.php: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage()
@@ -85,3 +90,4 @@ try {
 }
 
 $conn->close();
+?>

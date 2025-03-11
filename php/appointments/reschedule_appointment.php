@@ -36,9 +36,6 @@ try {
     $user = $result->fetch_assoc();
     $userId = $user[$userIdField];
 
-    // Set expiry time to 24 hours from now
-    $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
     // Update appointment with new schedule request
     $sql = "UPDATE appointments 
             SET status = ?, 
@@ -47,20 +44,18 @@ try {
                 session_type = ?,
                 reschedule_notes = ?,
                 reschedule_by = ?,
-                request_expiry = ?,
                 updated_at = CURRENT_TIMESTAMP
             WHERE appointment_id = ? 
             AND {$userIdField} = ?";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssisi", 
+    $stmt->bind_param("ssssssis", 
         $newStatus,
         $data['newDate'],
         $data['newTime'],
         $data['sessionType'],
         $data['notes'],
         $rescheduleBy,
-        $expiry,
         $data['appointmentId'],
         $userId
     );

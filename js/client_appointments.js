@@ -1,3 +1,67 @@
+// Utility functions - make these available globally
+window.showError = function(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-error';
+    notification.innerHTML = `
+        <i class="fas fa-exclamation-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+};
+
+window.showSuccess = function(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification notification-success';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.classList.add('show'), 100);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+};
+
+window.loadAppointments = async function(status = 'all', type = 'all', date = '') {
+    try {
+        let url = '../php/appointments/fetch_appointments.php';
+        const params = new URLSearchParams();
+        if (status !== 'all') params.append('status', status);
+        if (type !== 'all') params.append('type', type);
+        if (date) params.append('date', date);
+        
+        if (params.toString()) {
+            url += `?${params.toString()}`;
+        }
+
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to load appointments');
+        }
+        
+        if (!result.data || result.data.length === 0) {
+            document.getElementById('appointmentsList').style.display = 'none';
+            document.getElementById('noAppointments').style.display = 'block';
+        } else {
+            renderAppointments(result.data);
+        }
+    } catch (error) {
+        console.error('Error loading appointments:', error);
+        window.showError('Failed to load appointments: ' + error.message);
+        document.getElementById('appointmentsList').style.display = 'none';
+        document.getElementById('noAppointments').style.display = 'block';
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the page
     loadAppointments();
@@ -76,6 +140,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 'completed': 'fa-check-circle',
                 'cancelled': 'fa-times-circle',
                 'rejected': 'fa-times-circle',
+                'cancellation_pending': 'fa-clock',    // Updated icon for pending cancellation
+                'cancellation_requested': 'fa-times',   // Updated icon for cancellation request
                 'reschedule_pending': 'fa-calendar-alt',
                 'reschedule_requested': 'fa-calendar-alt'
             }[status] || 'fa-calendar';
@@ -99,6 +165,24 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas fa-times"></i> Cancel Appointment
                         </button>
                     </div>`;
+            }
+
+            // Add cancellation actions for cancellation_requested status
+            if (appointment.status === 'cancellation_requested') {
+                actions = `
+                    <div class="cancellation-notice">
+                        <p><strong>Therapist Requested Cancellation</strong></p>
+                        <p><strong>Reason:</strong> ${appointment.cancellation_reason || 'No reason provided'}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-danger" onclick="handleCancellationResponse(${appointment.id}, 'approve')">
+                            <i class="fas fa-check"></i> Approve Cancellation
+                        </button>
+                        <button class="btn btn-secondary reschedule-appointment" data-id="${appointment.id}">
+                            <i class="fas fa-calendar-alt"></i> Reschedule
+                        </button>
+                    </div>
+                `;
             }
 
             return `
@@ -234,47 +318,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function cancelAppointment(appointmentId, reason) {
         try {
+            if (!appointmentId) {
+                throw new Error('Invalid appointment ID');
+            }
+
+            // Debug logs
+            console.log('Attempting to cancel appointment:', {
+                appointmentId: appointmentId,
+                reason: reason
+            });
+
             const response = await fetch('../php/appointments/cancel_appointment.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    appointmentId: parseInt(appointmentId),
-                    reason: reason
+                    appointmentId: String(appointmentId), // Convert to string
+                    reason: reason || ''
                 })
             });
 
             const result = await response.json();
+            console.log('Cancel appointment response:', result); // Debug log
             
             if (!result.success) {
                 throw new Error(result.error || 'Failed to cancel appointment');
             }
 
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.className = 'alert alert-success';
-            successMessage.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                Appointment cancelled successfully
-            `;
-            document.querySelector('.appointments-container').insertBefore(
-                successMessage, 
-                document.querySelector('.appointments-list')
-            );
-
-            // Reload appointments and close modal
+            showSuccess('Cancellation request sent successfully');
             await loadAppointments();
-            closeModal();
-
-            // Remove success message after 3 seconds
-            setTimeout(() => {
-                successMessage.remove();
-            }, 3000);
+            return true;
 
         } catch (error) {
             console.error('Error cancelling appointment:', error);
             showError(error.message || 'Failed to cancel appointment');
+            return false;
         }
     }
 
@@ -587,7 +666,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'completed': 'Completed',
             'cancelled': 'Cancelled',
             'rejected': 'Rejected',
-            'cancellation_pending': 'Cancellation Pending',  // Add this line
+            'cancellation_pending': 'Your Cancellation Request',       // When client initiates
+            'cancellation_requested': 'Therapist Requested Cancellation', // When therapist initiates
             'reschedule_pending': 'Therapist Requested Reschedule',
             'reschedule_requested': 'Your Reschedule Request'
         };
@@ -599,8 +679,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('cancellationModal');
         if (!modal) return;
 
+        // Important: Use appointment_id instead of id to match database column
         const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
         if (!appointmentCard) return;
+
+        // Store the appointment ID in the modal's dataset
+        modal.dataset.appointmentId = appointmentId;  // Add this line
 
         // Get appointment details
         const therapistName = appointmentCard.querySelector('h3').textContent;
@@ -638,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Setup new event handlers
         const closeModal = () => {
             modal.style.display = 'none';
-            const reasonInput = document.getElementById('cancelReason');
+            const reasonInput = document.getElementById('clientCancelReason');
             if (reasonInput) reasonInput.value = '';
         };
 
@@ -647,8 +731,14 @@ document.addEventListener('DOMContentLoaded', function() {
         newKeepBtn.onclick = closeModal;
         newConfirmBtn.onclick = async () => {
             const reason = document.getElementById('clientCancelReason').value.trim();
-            await handleCancellationResponse(appointmentId, 'approve', reason);
+            const appointmentIdToCancel = appointmentCard.dataset.id; // Get ID from dataset
+            if (!appointmentIdToCancel) {
+                showError('Invalid appointment ID');
+                return;
+            }
+            await cancelAppointment(appointmentIdToCancel, reason); // Parse as integer
             closeModal();
+            await loadAppointments(); // Refresh the appointments list
         };
 
         // Handle click outside modal
@@ -687,6 +777,23 @@ document.addEventListener('DOMContentLoaded', function() {
         // Suggest time buttons
         document.querySelectorAll('.suggest-time').forEach(btn => {
             btn.removeEventListener('click', handleSuggestTime); // Remove any existing listener
+            btn.addEventListener('click', handleSuggestTime);
+        });
+
+        // Add handlers for cancellation response
+        document.querySelectorAll('.btn-danger[onclick*="handleCancellationResponse"]').forEach(btn => {
+            const match = btn.getAttribute('onclick').match(/handleCancellationResponse\((\d+),\s*'(\w+)'\)/);
+            if (match) {
+                const [_, appointmentId, action] = match;
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    handleCancellationResponse(appointmentId, action);
+                };
+            }
+        });
+
+        // Add handlers for reschedule buttons
+        document.querySelectorAll('.reschedule-appointment').forEach(btn => {
             btn.addEventListener('click', handleSuggestTime);
         });
     }
@@ -977,6 +1084,9 @@ function showCancellationModal(appointmentId) {
     const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
     if (!appointmentCard) return;
 
+    // Store the appointment ID in the modal's dataset
+    modal.dataset.appointmentId = appointmentId;  // Add this line
+
     // Get appointment details
     const therapistName = appointmentCard.querySelector('h3').textContent;
     const date = appointmentCard.querySelector('.detail-value').textContent;
@@ -1013,7 +1123,7 @@ function showCancellationModal(appointmentId) {
     // Setup new event handlers
     const closeModal = () => {
         modal.style.display = 'none';
-        const reasonInput = document.getElementById('cancelReason');
+        const reasonInput = document.getElementById('clientCancelReason');
         if (reasonInput) reasonInput.value = '';
     };
 
@@ -1022,8 +1132,14 @@ function showCancellationModal(appointmentId) {
     newKeepBtn.onclick = closeModal;
     newConfirmBtn.onclick = async () => {
         const reason = document.getElementById('clientCancelReason').value.trim();
-        await handleCancellationResponse(appointmentId, 'approve', reason);
+        const appointmentIdToCancel = appointmentCard.dataset.id; // Get ID from dataset
+        if (!appointmentIdToCancel) {
+            showError('Invalid appointment ID');
+            return;
+        }
+        await cancelAppointment(appointmentIdToCancel, reason); // Parse as integer
         closeModal();
+        await loadAppointments(); // Refresh the appointments list
     };
 
     // Handle click outside modal
@@ -1036,3 +1152,107 @@ function showCancellationModal(appointmentId) {
 document.querySelectorAll('.close-modal').forEach(button => {
     button.removeEventListener('click', null);
 });
+
+// Update the formatStatus function
+function formatStatus(status, initiator) {
+    const statusMap = {
+        'pending': 'Pending',
+        'upcoming': 'Upcoming',
+        'completed': 'Completed',
+        'cancelled': 'Cancelled',
+        'rejected': 'Rejected',
+        'cancellation_pending': 'Your Cancellation Request',     // Changed for client view
+        'cancellation_requested': 'Therapist Requested Cancellation',
+        'reschedule_pending': 'Therapist Requested Reschedule',
+        'reschedule_requested': 'Your Reschedule Request'
+    };
+    return statusMap[status.toLowerCase()] || status;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+    
+    // Add these utility functions
+    async function handleCancellationResponse(appointmentId, action) {
+        if (!confirm('Are you sure you want to ' + (action === 'approve' ? 'approve' : 'reject') + ' this cancellation?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('../php/appointments/respond_to_cancellation.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    appointmentId: appointmentId,
+                    action: action
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                showSuccess(data.message || 'Cancellation request processed');
+                loadAppointments(); // Refresh appointments list
+            } else {
+                throw new Error(data.error || 'Failed to process cancellation');
+            }
+        } catch (error) {
+            showError('Error processing cancellation: ' + error.message);
+        }
+    }
+
+    // Initialize additional event listeners
+    function initializeAppointmentButtons() {
+        // ...existing code...
+
+        // Add handlers for cancellation response
+        document.querySelectorAll('.btn-danger[onclick*="handleCancellationResponse"]').forEach(btn => {
+            const match = btn.getAttribute('onclick').match(/handleCancellationResponse\((\d+),\s*'(\w+)'\)/);
+            if (match) {
+                const [_, appointmentId, action] = match;
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    handleCancellationResponse(appointmentId, action);
+                };
+            }
+        });
+
+        // Add handlers for reschedule buttons
+        document.querySelectorAll('.reschedule-appointment').forEach(btn => {
+            btn.addEventListener('click', handleSuggestTime);
+        });
+    }
+
+    // ...existing code...
+});
+
+// Make handleCancellationResponse available globally
+window.handleCancellationResponse = async function(appointmentId, action) {
+    if (!confirm('Are you sure you want to ' + (action === 'approve' ? 'approve' : 'reject') + ' this cancellation?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('../php/appointments/respond_to_cancellation.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                appointmentId: appointmentId,
+                action: action
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            showSuccess(data.message || 'Cancellation request processed');
+            loadAppointments(); // Refresh appointments list
+        } else {
+            throw new Error(data.error || 'Failed to process cancellation');
+        }
+    } catch (error) {
+        showError('Error processing cancellation: ' + error.message);
+    }
+};

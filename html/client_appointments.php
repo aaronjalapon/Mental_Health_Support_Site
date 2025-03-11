@@ -44,10 +44,12 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending</option>
-                        <option value="cancellation_pending">Cancellation Pending</option>
+                        <option value="cancellation_pending">Your Cancellation Request</option>
+                        <option value="cancellation_requested">Therapist Requested Cancellation</option>
                         <option value="reschedule_pending">Therapist Requested Reschedule</option>
                         <option value="reschedule_requested">Your Reschedule Request</option>
                     </select>
+
                     <select id="typeFilter">
                         <option value="all">All Types</option>
                         <option value="video">Video Call</option>

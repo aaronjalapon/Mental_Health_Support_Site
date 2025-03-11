@@ -34,14 +34,14 @@ CREATE TABLE `appointments` (
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `session_type` enum('video','voice','chat') NOT NULL,
-  `status` enum('pending','upcoming','completed','cancelled','reschedule_pending','reschedule_requested','cancellation_pending') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','upcoming','completed','cancelled','reschedule_pending','reschedule_requested','cancellation_pending','cancellation_requested') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
   `cancellation_reason` text DEFAULT NULL,
+  `cancellation_by` enum('therapist','client') DEFAULT NULL,
   `reschedule_notes` text DEFAULT NULL,
   `reschedule_by` enum('therapist','client') DEFAULT NULL,
   `proposed_date` date DEFAULT NULL,
   `proposed_time` time DEFAULT NULL,
-  `request_expiry` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
