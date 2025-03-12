@@ -113,7 +113,7 @@
     gap: clamp(1px, 0.5vw, 4px);
     background-color: #e9ecef;
     margin-top: 1rem;
-    min-height: clamp(250px, 45vh, 400px);
+    min-height: clamp(350px, 55vh, 500px); /* Increased min-height */
     padding: clamp(1px, 0.5vw, 4px);
     gap: 1px;
     background: #e9ecef;
@@ -121,7 +121,8 @@
 }
 
 .calendar-day {
-    min-height: clamp(60px, 15vh, 120px);
+    min-height: clamp(80px, 12vh, 100px); /* Adjusted min-height */
+    max-height: none; /* Remove any max-height constraints */
     background: white;
     padding: clamp(0.25rem, 1vw, 0.5rem);
     position: relative;
@@ -130,7 +131,7 @@
     border-radius: 4px;
     display: flex;
     flex-direction: column;
-    aspect-ratio: 1;
+    aspect-ratio: auto; /* Remove fixed aspect ratio */
     cursor: pointer;
     min-height: 100px;
 }
