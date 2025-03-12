@@ -583,7 +583,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
             
             if (result.success) {
-                renderTherapistList(result.data);
+                if (result.data.length === 0) {
+                    showNoTherapistsMessage();
+                } else {
+                    renderTherapistList(result.data);
+                }
             } else {
                 throw new Error(result.error || 'Failed to fetch available therapists');
             }
@@ -591,6 +595,16 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error filtering therapists:', error);
             showError('Failed to load available therapists');
         }
+    }
+
+    function showNoTherapistsMessage() {
+        const list = document.getElementById('therapistList');
+        list.innerHTML = `
+            <div class="no-therapists-message">
+                <i class="fas fa-user-md"></i>
+                <p>No therapists available for the selected time slot.</p>
+                <p>Please try a different date or time.</p>
+            </div>`;
     }
 
     async function handleCheckAvailability() {

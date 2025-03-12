@@ -78,39 +78,7 @@
             </div>
         </section>
     </main>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About MindSpace</h3>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Our Team</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Services</h3>
-                <ul>
-                    <li><a href="#">Guided Meditation</a></li>
-                    <li><a href="#">Professional Support</a></li>
-                    <li><a href="#">Community Forum</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Connect With Us</h3>
-                <p>Follow us on social media</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 MindSpace. All rights reserved.</p>
-        </div>
-    </footer>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/footer.php'; ?>
     <script src="../js/about.js"></script>
 </body>
 </html>

@@ -16,8 +16,8 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Appointments - MindSpace</title>
 
-    <link rel="stylesheet" href="/css/client_appointments.css">
-    <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="../css/client_appointments.css">
+    <link rel="stylesheet" href="../css/community.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -44,7 +44,12 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="pending">Pending</option>
+                        <option value="cancellation_pending">Your Cancellation Request</option>
+                        <option value="cancellation_requested">Therapist Requested Cancellation</option>
+                        <option value="reschedule_pending">Therapist Requested Reschedule</option>
+                        <option value="reschedule_requested">Your Reschedule Request</option>
                     </select>
+
                     <select id="typeFilter">
                         <option value="all">All Types</option>
                         <option value="video">Video Call</option>
@@ -71,29 +76,71 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <!-- Cancellation Modal -->
     <div id="cancellationModal" class="cancel-appointment-modal">
         <div class="cancel-modal-content">
+            <button type="button" class="modal-close">&times;</button>
             <div class="cancel-modal-header">
                 <h2>Cancel Appointment</h2>
                 <p>Are you sure you want to cancel this appointment?</p>
             </div>
             <div class="cancel-appointment-info">
-                <!-- This will be populated dynamically -->
+                <!-- Appointment info will be populated dynamically -->
             </div>
             <div class="cancel-reason-group">
-                <label for="cancelReason">Reason for cancellation (optional):</label>
-                <textarea id="cancelReason"></textarea>
+                <label for="clientCancelReason">Reason for cancellation (optional):</label>
+                <textarea id="clientCancelReason" placeholder="Please provide a reason for cancellation..."></textarea>
             </div>
             <div class="cancel-modal-actions">
-                <button class="appointment-btn appointment-btn-danger" id="confirmCancel">
-                    Yes, Cancel
+                <button type="button" id="confirmCancel" class="appointment-btn appointment-btn-danger">
+                    Yes, Cancel Appointment
                 </button>
-                <button class="appointment-btn appointment-btn-secondary" id="keepAppointment">
-                    No, Keep
+                <button type="button" id="keepAppointment" class="appointment-btn appointment-btn-secondary">
+                    No, Keep Appointment
                 </button>
             </div>
         </div>
     </div>
 
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/client_appointments.js"></script>
+    <!-- Reschedule Modal -->
+    <div class="modal" id="rescheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reschedule Appointment</h2>
+                <span class="close-modal">×</span>
+            </div>
+            <form id="rescheduleForm">
+                <div class="reschedule-section">
+                    <div class="appointment-info" id="rescheduleInfo">
+                        <!-- Content will be inserted here by handleSuggestTime function -->
+                    </div>
+                    <div class="form-group">
+                        <label for="newDate">New Date</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newTime">New Time</label>
+                        <input type="time" id="newTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionType">Session Type</label>
+                        <select id="sessionType" name="sessionType" required>
+                            <option value="video">Video Call</option>
+                            <option value="voice">Voice Call</option>
+                            <option value="chat">Chat Session</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rescheduleNotes">Notes (Optional)</label>
+                        <textarea id="rescheduleNotes" placeholder="Add a note about why you need to reschedule..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="appointment-btn appointment-btn-primary">Send Request</button>
+                    <button type="button" class="appointment-btn appointment-btn-secondary close-modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/landing_page.js"></script>
+    <script src="../js/client_appointments.js"></script>
 </body>
 </html>

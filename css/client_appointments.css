@@ -23,36 +23,75 @@
     margin-bottom: 0.5rem;
 }
 
+/* Updated Filter Styles */
 .appointments-filters {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: white;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    background: #f8f9fa;
+    padding: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .filter-group {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+    width: 100%;
 }
 
 .filter-group select,
 .filter-group input {
+    width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    background: white;
+    height: 42px;
 }
 
-.filter-group select:hover,
-.filter-group input:hover {
-    border-color: #1e9160;
+#clearFilters {
+    align-self: flex-end;
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .appointments-filters {
+        padding: 1rem;
+    }
+
+    .filter-group {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.9rem;
+        padding: 0.625rem 0.875rem;
+    }
+
+    #clearFilters {
+        align-self: stretch;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointments-filters {
+        padding: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.875rem;
+    }
 }
 
 .appointments-list {
@@ -61,33 +100,162 @@
     gap: 1rem;
 }
 
+/* Update Appointment Card Styles */
 .appointment-card {
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
+    margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    backdrop-filter: blur(10px);
-    animation: slideIn 0.3s ease-out forwards;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .appointment-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .appointment-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .appointment-header h3 {
     font-size: 1.25rem;
     color: #2c3e50;
-    font-weight: 600;
+    margin: 0;
+}
+
+/* Update Status Badge Styles */
+.appointment-status {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s ease;
+}
+
+.status-cancellation_pending {
+    background: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffb74d;
+}
+
+.status-cancellation_pending i {
+    color: #f57c00;
+}
+
+/* Add specific styles for cancellation statuses */
+.status-cancellation_requested {
+    background-color: #fff0f0;
+    color: #dc3545;
+    border: 1px solid #ffcdd2;
+}
+
+.status-cancellation_requested i,
+.status-cancellation_pending i {
+    font-size: 1.1em;
+}
+
+.status-cancellation_requested:hover {
+    background-color: #ffebee;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+.status-cancellation_pending:hover {
+    background-color: #fff8e1;
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.1);
+}
+
+/* Update icon styles for cancellation statuses */
+.status-cancellation_requested i {
+    color: #dc3545;
+}
+
+.status-cancellation_pending i {
+    color: #ff9800;
+}
+
+/* Update Details Section */
+.appointment-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item i {
+    font-size: 1.1rem;
+    color: #1e9160;
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+    color: #666;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-width: 60px;
+}
+
+.detail-value {
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    .appointment-card {
+        padding: 1rem;
+    }
+
+    .appointment-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .appointment-details {
+        grid-template-columns: 1fr;
+        padding: 0.75rem;
+    }
+}
+
+/* Add hover effect for status badge */
+.appointment-status:hover {
+    filter: brightness(0.95);
+}
+
+/* Add transition effects */
+.appointment-card,
+.appointment-status,
+.detail-item i {
+    transition: all 0.3s ease;
 }
 
 .appointment-status {
@@ -124,9 +292,18 @@
 }
 
 .status-reschedule_pending {
-    background: #e8f5fe;
-    color: #0288d1;
-    border: 1px solid #29b6f6;
+    background: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.status-reschedule_requested {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .appointment-status i {
@@ -150,7 +327,11 @@
 }
 
 .status-reschedule_pending i {
-    color: #0288d1;
+    color: #1565c0;
+}
+
+.status-reschedule_requested i {
+    color: #1565c0;
 }
 
 .appointment-details {
@@ -175,24 +356,32 @@
     font-weight: 500;
 }
 
+/* Update appointment actions container */
 .appointment-actions {
     display: flex;
-    gap: 1rem;
+    flex-direction: row !important; /* Force row direction */
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 1rem;
-    padding-top: 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid #e9ecef;
+    justify-content: flex-start;
 }
 
+/* Fix button sizing and layout */
 .appointment-btn {
-    padding: 0.75rem 1.5rem;
+    flex: 1 1 auto;
+    min-width: 150px;
+    max-width: calc(33.333% - 0.5rem); /* Ensure 3 buttons fit in a row with gap */
+    padding: 0.75rem 1rem;
     border-radius: 8px;
     font-weight: 500;
-    letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .appointment-btn i {
@@ -378,13 +567,46 @@
 }
 
 .reschedule-notice {
-    background: #e3f2fd;
-    padding: 1rem;
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
     border-radius: 8px;
-    margin-bottom: 1rem;
-    border: 1px solid #90caf9;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    display: block;
+    width: 100%;
+}
+
+.reschedule-notice p {
+    margin: 0.75rem 0;
     color: #1565c0;
     font-size: 0.95rem;
+    line-height: 1.5;
+    display: block;
+}
+
+.reschedule-notice strong {
+    color: #0d47a1;
+    display: inline-block;
+    min-width: 120px;
+    margin-right: 0.5rem;
+}
+
+/* Add specific styling for therapist note */
+.reschedule-notice p:last-child {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    border-left: 4px solid #1565c0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.reschedule-notice p:last-child strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(21, 101, 192, 0.1);
+    padding-bottom: 0.5rem;
 }
 
 @keyframes slideIn {
@@ -393,6 +615,14 @@
         opacity: 0;
     }
     to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
         transform: translateY(0);
         opacity: 1;
     }
@@ -410,12 +640,24 @@
     }
 
     .appointments-filters {
-        flex-direction: column;
-        gap: 1rem;
+        padding: 1rem;
     }
 
     .filter-group {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.9rem;
+        padding: 0.625rem 0.875rem;
+    }
+
+    #clearFilters {
+        align-self: stretch;
         width: 100%;
+        margin-top: 0.5rem;
     }
 
     .appointment-details {
@@ -424,6 +666,21 @@
 
     .appointment-actions {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointments-filters {
+        padding: 0.75rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.875rem;
+    }
+
+    .appointment-btn {
+        max-width: 100%; /* Full width on very small screens */
     }
 }
 
@@ -510,4 +767,1077 @@
 .btn-secondary,
 .btn-danger {
     /* Remove these classes as they conflict with header.css */
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    margin: 2rem auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.close-modal {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #666;
+    
+}
+
+.reschedule-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Fix for nested appointment-actions and reschedule notice */
+.appointment-card .appointment-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.appointment-card .reschedule-notice {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.appointment-card .reschedule-notice p {
+    margin: 0.75rem 0;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.appointment-card .reschedule-notice p:first-child {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.appointment-card .reschedule-notice strong {
+    display: inline-block;
+    min-width: 100px;
+    color: #2c3e50;
+}
+
+/* Fix for nested buttons container */
+.appointment-card .appointment-actions .appointment-actions {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 1rem;
+}
+
+.appointment-card .appointment-actions button {
+    flex: 1;
+    min-width: 200px;
+    max-width: calc(50% - 0.5rem);
+}
+
+/* Remove nested appointment actions overrides */
+.appointment-card .appointment-actions {
+    flex-direction: row !important;
+    margin-top: 1rem;
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+    .appointment-card .appointment-actions button {
+        max-width: 100%;
+        margin: 0.25rem 0;
+    }
+    
+    .appointment-card .reschedule-notice {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointment-btn {
+        max-width: 100%; /* Full width on very small screens */
+    }
+}
+
+.appointment-card .appointment-actions button {
+    flex: 1 1 auto;
+    min-width: 140px;
+    margin: 0.25rem;
+}
+
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification i {
+    font-size: 1.25rem;
+}
+
+.notification-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.notification-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Add responsive styles for notifications */
+@media (max-width: 768px) {
+    .notification {
+        left: 20px;
+        right: 20px;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* Reset the modal styles completely */
+.cancel-appointment-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+}
+
+.cancel-modal-header {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.cancel-appointment-info {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.cancel-reason-group {
+    margin: 1.5rem 0;
+}
+
+.cancel-reason-group textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.cancel-modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Remove any conflicting modal styles */
+.modal,
+.modal-overlay,
+.modal-content {
+    /* Remove these styles */
+}
+
+/* Cancel Modal Styles */
+.cancel-appointment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.cancel-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Update Cancel Modal Styles */
+.cancel-appointment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+    z-index: 1;
+}
+
+/* Update button styles to fix font */
+.cancel-modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.cancel-modal-actions button {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.75rem 6.0rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 160px;
+}
+
+.cancel-modal-actions .appointment-btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
+.cancel-modal-actions .appointment-btn-secondary {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 1px solid #dee2e6;
+    color: #2c3e50;
+}
+
+/* Enhanced Reschedule Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    padding: 1rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.modal-header h2 {
+    font-size: 1.75rem;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+.close-modal {
+    font-size: 2rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.reschedule-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#rescheduleInfo {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#rescheduleInfo h4 {
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+#rescheduleInfo p {
+    margin: 0.75rem 0;
+    color: #4a5568;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+#rescheduleInfo strong {
+    color: #2c3e50;
+    display: inline-block;
+    min-width: 120px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #2c3e50;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #1e9160;
+    box-shadow: 0 0 0 3px rgba(30, 145, 96, 0.1);
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #f0f0f0;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.appointment-btn-primary {
+    background: linear-gradient(135deg, #1e9160, #168554);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(30, 145, 96, 0.2);
+}
+
+.appointment-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 145, 96, 0.3);
+}
+
+.appointment-btn-secondary {
+    background: #f8f9fa;
+    border: 2px solid #e2e8f0;
+    color: #2c3e50;
+}
+
+.appointment-btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions button {
+        width: 100%;
+    }
+}
+/* Improved Cancel Modal Styles */
+.cancel-appointment-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.cancel-modal-content {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0.5rem;
+    margin: -0.5rem;
+    line-height: 1;
+    z-index: 2;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.cancel-modal-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.cancel-modal-header h2 {
+    font-size: 1.5rem;
+    color: #dc3545;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.cancel-modal-header p {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.cancel-appointment-info {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin: 1.25rem 0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cancel-appointment-info p {
+    margin: 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cancel-appointment-info p:first-child {
+    font-weight: 600;
+    color: #1e1e1e;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cancel-appointment-info i {
+    color: var(--primary-color, #1e9160);
+    width: 20px;
+    text-align: center;
+}
+
+.cancel-reason-group {
+    margin: 1.25rem 0;
+}
+
+.cancel-reason-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.cancel-reason-group textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.875rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    background: white;
+    resize: vertical;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.cancel-reason-group textarea:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    outline: none;
+}
+
+.cancel-reason-group textarea::placeholder {
+    color: #a0aec0;
+}
+
+/* Simplified Cancel Modal Actions Styles */
+.cancel-modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.cancel-modal-actions button {
+    flex: 1;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+}
+
+.cancel-modal-actions .appointment-btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.2);
+}
+
+.cancel-modal-actions .appointment-btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.25);
+}
+
+.cancel-modal-actions .appointment-btn-secondary {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #e2e8f0;
+}
+
+.cancel-modal-actions .appointment-btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+/* Consistent responsive adjustments */
+@media (max-width: 768px) {
+    .cancel-modal-content {
+        padding: 1.5rem;
+    }
+    
+    .modal-close {
+        right: 1rem;
+        top: 1rem;
+    }
+    
+    .cancel-modal-header h2 {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cancel-modal-content {
+        padding: 1.25rem;
+        width: 95%;
+    }
+    
+    .cancel-modal-header {
+        margin-bottom: 1.25rem;
+    }
+    
+    .cancel-appointment-info {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .cancel-modal-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    /* Keep "Yes, Cancel" on top and "No, Keep" below for mobile */
+    .cancel-modal-actions .appointment-btn-danger {
+        order: 1;
+    }
+    
+    .cancel-modal-actions .appointment-btn-secondary {
+        order: 2;
+    }
+    
+    .cancel-modal-actions button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animation keyframes */
+@keyframes modalSlideIn {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Updated Cancel Modal Actions Styles */
+.cancel-modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.cancel-modal-actions button {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.875rem 1rem;
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+/* Responsive styles for buttons */
+@media (max-width: 768px) {
+    .cancel-modal-actions {
+        gap: 0.75rem;
+    }
+
+    .cancel-modal-actions button {
+        max-width: none;
+        width: 100%;
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cancel-modal-actions {
+        flex-direction: column;
+    }
+
+    .cancel-modal-actions button {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+        width: 100%;
+        /* Ensure "Yes, Cancel" stays on top */
+        &.appointment-btn-danger {
+            order: 1;
+        }
+        &.appointment-btn-secondary {
+            order: 2;
+        }
+    }
+}
+
+.reschedule-notice .status-note {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(30, 145, 96, 0.1);
+    color: #1e9160;
+    border-radius: 6px;
+    font-style: italic;
+    text-align: center;
+}
+
+.reschedule-notice p:last-child {
+    margin-bottom: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add styles for cancellation request actions */
+.cancellation-notice {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    color: #f57c00;
+}
+
+.cancellation-notice p {
+    margin: 0.5rem 0;
+}
+
+.cancellation-notice p strong {
+    color: #e65100;
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.appointment-actions button {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1rem;
+}
+
+/* Cancellation Notice Styles */
+.cancellation-notice {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.cancellation-notice p {
+    margin: 0.5rem 0;
+    color: #e65100;
+}
+
+.cancellation-notice p:first-child {
+    color: #f57c00;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* Action Buttons */
+.appointment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.appointment-actions .btn {
+    flex: 1 1 auto;
+    min-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Button Colors */
+.btn.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+}
+
+.btn.btn-secondary {
+    background: #f8f9fa;
+    color: #2c3e50;
+    border: 1px solid #dee2e6;
+}
+
+.btn.btn-secondary:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Status Badge for Cancellation */
+.status-cancellation_requested {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-cancellation_requested i {
+    margin-right: 0.5rem;
+}
+
+/* Improve button container spacing */
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Add icons styling */
+.btn i {
+    font-size: 1rem;
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+    .appointment-actions {
+        flex-direction: column;
+    }
+
+    .appointment-actions .btn {
+        width: 100%;
+    }
 }

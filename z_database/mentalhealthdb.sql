@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2025 at 08:21 PM
+-- Generation Time: Mar 12, 2025 at 12:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,9 +34,14 @@ CREATE TABLE `appointments` (
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `session_type` enum('video','voice','chat') NOT NULL,
-  `status` enum('pending','upcoming','completed','cancelled','rejected') NOT NULL DEFAULT 'pending',
+  `status` enum('pending','upcoming','completed','cancelled','reschedule_pending','reschedule_requested','cancellation_pending','cancellation_requested') NOT NULL DEFAULT 'pending',
   `notes` text DEFAULT NULL,
   `cancellation_reason` text DEFAULT NULL,
+  `cancellation_by` enum('therapist','client') DEFAULT NULL,
+  `reschedule_notes` text DEFAULT NULL,
+  `reschedule_by` enum('therapist','client') DEFAULT NULL,
+  `proposed_date` date DEFAULT NULL,
+  `proposed_time` time DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -45,10 +50,27 @@ CREATE TABLE `appointments` (
 -- Dumping data for table `appointments`
 --
 
-INSERT INTO `appointments` (`appointment_id`, `client_id`, `therapist_id`, `appointment_date`, `appointment_time`, `session_type`, `status`, `notes`, `cancellation_reason`, `created_at`, `updated_at`) VALUES
-(1, 12, 4, '2025-03-25', '09:00:00', 'voice', 'cancelled', '', 'asdasd', '2025-03-06 16:27:40', '2025-03-06 16:57:49'),
-(2, 12, 5, '2025-03-30', '09:00:00', 'chat', 'cancelled', 'asdasdas', 'I have something important to do', '2025-03-06 16:50:05', '2025-03-06 17:01:35'),
-(3, 12, 6, '2025-03-27', '09:00:00', 'video', 'pending', '', NULL, '2025-03-06 17:02:29', '2025-03-06 17:02:29');
+INSERT INTO `appointments` (`appointment_id`, `client_id`, `therapist_id`, `appointment_date`, `appointment_time`, `session_type`, `status`, `notes`, `cancellation_reason`, `cancellation_by`, `reschedule_notes`, `reschedule_by`, `proposed_date`, `proposed_time`, `created_at`, `updated_at`) VALUES
+(38, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:52:10', '2025-03-10 21:52:43'),
+(39, 15, 3, '2025-03-25', '10:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:52:58', '2025-03-10 21:55:43'),
+(40, 15, 3, '2025-03-18', '11:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:56:25', '2025-03-10 21:59:52'),
+(41, 15, 3, '2025-03-28', '11:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:57:11', '2025-03-10 21:57:33'),
+(42, 15, 3, '2025-03-26', '10:00:00', 'video', 'cancelled', '', 'fsdfd', 'client', 'dasdasd', NULL, NULL, NULL, '2025-03-10 22:00:41', '2025-03-10 22:06:28'),
+(43, 15, 3, '2025-03-25', '11:00:00', 'video', 'cancelled', '', 'dasdasd', 'therapist', 'why not reschedule', NULL, NULL, NULL, '2025-03-10 22:01:11', '2025-03-10 22:16:26'),
+(44, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', '', 'asd', 'therapist', 'no', 'client', '2025-03-12', '10:00:00', '2025-03-10 22:24:39', '2025-03-10 22:25:32'),
+(45, 15, 3, '2025-03-19', '10:00:00', 'video', 'cancelled', '', 'asd', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:25:57', '2025-03-10 22:26:15'),
+(46, 15, 3, '2025-03-19', '10:00:00', 'video', 'cancelled', '', 'awdasd', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:28:37', '2025-03-10 22:33:55'),
+(47, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', 'dasdasd', 'pleaseee', 'therapist', '', 'client', '2025-03-12', '10:00:00', '2025-03-10 22:36:03', '2025-03-11 14:17:02'),
+(48, 15, 3, '2025-03-26', '10:00:00', 'video', 'cancelled', '', 'dasdas', 'client', '', NULL, NULL, NULL, '2025-03-10 22:36:13', '2025-03-11 11:57:22'),
+(49, 15, 3, '2025-03-16', '10:00:00', 'video', 'cancelled', '', 'dasds', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:36:24', '2025-03-10 23:22:01'),
+(50, 15, 3, '2025-03-22', '11:00:00', 'chat', 'cancelled', 'sdfdf', 'I have an important meeting sorry..', 'client', '', NULL, NULL, NULL, '2025-03-11 11:58:57', '2025-03-11 14:39:06'),
+(51, 15, 3, '2025-03-18', '09:00:00', 'voice', 'cancelled', '', 'asdasd', 'client', 'Hellow there', 'therapist', '2025-03-18', '09:00:00', '2025-03-11 11:59:17', '2025-03-11 14:32:36'),
+(52, 15, 3, '2025-03-26', '09:00:00', 'video', 'cancelled', '', 'i can\'t', 'therapist', NULL, NULL, NULL, NULL, '2025-03-11 14:35:24', '2025-03-11 14:35:43'),
+(53, 15, 3, '2025-03-29', '09:00:00', 'video', 'upcoming', '', NULL, NULL, 'dasda', NULL, NULL, NULL, '2025-03-11 14:36:13', '2025-03-11 14:39:54'),
+(54, 15, 3, '2025-03-31', '10:00:00', 'video', 'cancelled', '', 'dasdas', 'therapist', NULL, NULL, NULL, NULL, '2025-03-11 14:40:12', '2025-03-11 14:41:50'),
+(55, 15, 3, '2025-03-24', '09:00:00', 'chat', 'reschedule_requested', '', NULL, NULL, 'can you do this instead..', 'client', '2025-03-24', '09:00:00', '2025-03-11 22:54:17', '2025-03-11 23:22:23'),
+(56, 15, 3, '2025-03-19', '11:00:00', 'video', 'cancelled', '', 'I can\'t do this', 'client', 'dasdasdasd', NULL, NULL, NULL, '2025-03-11 23:10:14', '2025-03-11 23:22:51'),
+(57, 15, 3, '2025-03-20', '10:00:00', 'video', 'cancelled', '', 'NOOOO', 'therapist', '', 'client', '2025-03-20', '10:00:00', '2025-03-11 23:21:28', '2025-03-11 23:24:01');
 
 -- --------------------------------------------------------
 
@@ -82,8 +104,9 @@ CREATE TABLE `client` (
 INSERT INTO `client` (`client_id`, `unique_id`, `firstName`, `lastName`, `username`, `password`, `email`, `contactNumber`, `Pronouns`, `Address`, `ValidID`, `otp`, `Status`, `verification_status`, `Role`, `RegisterDate`) VALUES
 (5, 469102382, 'Annika', 'Dumalogdog', 'annikangs', '$2y$10$Dpv6P8PwG1VEgS9Jq4o2LOy4nJKfPkGtRqc024SA6cbKUp7f//dGO', 'a.dumalogdog.547692@umindanao.edu.ph', '09123456789', 'They/Them/Theirs', 'Davao City', '1740447980_715644717626391a.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
 (8, 87204975, 'Claire', 'Green', 'greenclaire', '$2y$10$ZFxkMZFatdxjWEqiFWDNducdhV1ybBjepRvc8iZh8u6lKuokEeLkm', 'greenclaire@gmail.com', '09123456789', 'They/Them/Theirs', 'Davao City', '1740465251_27ff3be4eadd91f0.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
-(12, 1630821502, 'John', 'Doe', 'jjDOES', '$2y$10$tR/DErDyrDDS7MFt8aR8yuQWlTGwW5RQnRuzviUvcluaZ83W0zSGC', 'kidshine19@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1740557639_6b8d60b138796572.jpg', 0, 'Approved', '1', 'client', '2025-02-26'),
-(13, 1426136559, 'Kids', 'Kid', 'kid123', '$2y$10$i/WZcbdUSwavWxWZX/L8guEQx77zquqHbeGLB7xV5wVPwEojL8pdW', 'johnDoe@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741065740_3b0f983446a29a47.jpg', 0, 'Approved', '1', 'client', '2025-03-04');
+(13, 1426136559, 'Kids', 'Kid', 'kid123', '$2y$10$i/WZcbdUSwavWxWZX/L8guEQx77zquqHbeGLB7xV5wVPwEojL8pdW', 'johnDoe@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741065740_3b0f983446a29a47.jpg', 0, 'Approved', '1', 'client', '2025-03-04'),
+(15, 1388596494, 'Chris', 'Tucks', 'christuckin', '$2y$10$fxibUNkK24wjHiGip5IngexBaRquGcPVFxdeWNfZOnQJfD6SM2zZC', 'kidshine19@gmail.com', '09123456789', 'He/Him/His', 'Matina, Davao City', '1741326948_3de9808a18e846bc.jpg', 0, 'Approved', '1', 'client', '2025-03-07'),
+(16, 1316509445, 'Richard', 'Neto', 'rDoe123', '$2y$10$al8A1QraFSfi/pIjrQc22eiexBM7qTEO143xiv1EHYGpHLo0Kw//q', 'richardneto@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741533446_e8c83761c6f50490.png', 0, 'Pending', '1', 'client', '2025-03-09');
 
 -- --------------------------------------------------------
 
@@ -199,7 +222,7 @@ CREATE TABLE `testimonials` (
 
 INSERT INTO `testimonials` (`testimonial_id`, `username`, `content`, `rating`, `created_at`) VALUES
 (5, 'jDoe123', 'I want everything to work', 4, '2025-02-23 11:08:43'),
-(6, 'IronHeart', 'Life is not daijoubo', 5, '2025-02-24 14:40:32'),
+(6, 'IronHeart', 'Life is not daijoubo yes I am left', 5, '2025-02-24 14:40:32'),
 (7, 'Jm', 'I love Cho Miyeon yeppey', 5, '2025-02-24 14:40:48'),
 (8, 'DoubleCake', 'Ayoko yung lasa ng C2 na kulay green', 5, '2025-02-24 14:41:18'),
 (9, 'SungJinwoo', 'Can I aura farm here', 5, '2025-02-24 14:41:45'),
@@ -235,7 +258,7 @@ CREATE TABLE `therapists` (
 INSERT INTO `therapists` (`therapist_id`, `unique_id`, `first_name`, `last_name`, `username`, `password`, `specialization`, `experience_years`, `email`, `phone`, `bio`, `status`, `created_at`, `updated_at`) VALUES
 (2, '67c9ec78b8c9b', 'Robert', 'Johnson', 'robert', '$2y$10$DFwklh6BjSqZemAF7mnpHOQHiMvF3B70KKHQ9vccTouEbFzbbfv7.', 'Psychological Engineer', 69, 'robertjohnson@gmail.com', '09123456789', '', 'Active', '2025-03-06 18:42:01', '2025-03-06 18:42:01'),
 (3, '67c9ef10c61e6', 'Ben', 'Tennyson', 'bentong', '$2y$10$9IyO3pA5.w7gduxlLHRyIOJA/u8X9tWQRIEZo2sS0m8p740CmOANG', 'Alien Mind Universe Traveller', 66, 'ben100@gmail.com', '09123456789', '', 'Active', '2025-03-06 18:53:05', '2025-03-06 18:53:05'),
-(4, '67c9f537eb989', 'Aaron', 'Jalapon', 'aaron123', '$2y$10$YgFbJX8AFNrmn7uA3GiXQuXZ/DFlEblV/BY3rhXRXx2A3iEoqYaLC', 'Computer Science Major in Mind Controlling', 69, 'aaron69@gmail.com', '09123456789', '', 'Active', '2025-03-06 19:19:20', '2025-03-06 19:19:20');
+(10, '67cdb24818dc3', 'Aaron', 'Jalapon', 'aaron123', '$2y$10$VUGQCdDyI02pNPeaCRJIPe29N5WnNL/JyRKOnUVlM02IJkqwBg.yG', 'Computer Science Major in Mind Controlling', 666, 'aaron69@gmail.com', '09123456789', 'I am God of mind fucking', 'Active', '2025-03-09 15:22:48', '2025-03-09 15:22:48');
 
 -- --------------------------------------------------------
 
@@ -258,31 +281,29 @@ CREATE TABLE `therapist_availability` (
 --
 
 INSERT INTO `therapist_availability` (`id`, `therapist_id`, `day`, `start_time`, `end_time`, `break_start`, `break_end`) VALUES
-(14, 3, 'monday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(15, 3, 'tuesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(16, 3, 'wednesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(17, 3, 'thursday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(18, 3, 'friday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(19, 3, 'monday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(20, 3, 'tuesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(21, 3, 'wednesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(47, 2, 'sunday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(48, 2, 'monday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(49, 2, 'tuesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(50, 2, 'wednesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(51, 2, 'thursday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(52, 2, 'friday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(53, 2, 'saturday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(54, 4, 'wednesday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(55, 4, 'thursday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(56, 4, 'friday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(57, 4, 'sunday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(58, 4, 'monday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(59, 4, 'tuesday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(60, 4, 'wednesday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(61, 4, 'thursday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(62, 4, 'friday', '09:00:00', '05:00:00', '12:00:00', '13:00:00'),
-(63, 4, 'saturday', '09:00:00', '05:00:00', '12:00:00', '13:00:00');
+(64, 2, 'sunday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(65, 2, 'monday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(66, 2, 'tuesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(67, 2, 'wednesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(68, 2, 'thursday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(69, 2, 'friday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(92, 67, 'sunday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(93, 67, 'monday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(94, 67, 'tuesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(95, 67, 'wednesday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(96, 67, 'thursday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(97, 67, 'friday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(98, 67, 'saturday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
+(106, 3, 'sunday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(107, 3, 'monday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(108, 3, 'tuesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(109, 3, 'wednesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(110, 3, 'thursday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(111, 3, 'friday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(112, 3, 'saturday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(122, 10, 'sunday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(123, 10, 'wednesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(124, 10, 'saturday', '09:00:00', '17:00:00', '12:00:00', '13:00:00');
 
 --
 -- Indexes for dumped tables
@@ -342,8 +363,7 @@ ALTER TABLE `therapists`
 --
 ALTER TABLE `therapist_availability`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `therapist_day` (`therapist_id`,`day`),
-  ADD UNIQUE KEY `unique_therapist_day` (`therapist_id`, `day`);
+  ADD KEY `therapist_day` (`therapist_id`,`day`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -353,13 +373,13 @@ ALTER TABLE `therapist_availability`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `comments`
@@ -389,13 +409,13 @@ ALTER TABLE `testimonials`
 -- AUTO_INCREMENT for table `therapists`
 --
 ALTER TABLE `therapists`
-  MODIFY `therapist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `therapist_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `therapist_availability`
 --
 ALTER TABLE `therapist_availability`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
