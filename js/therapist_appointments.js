@@ -97,6 +97,26 @@ class AppointmentManager {
 
         // Modals
         this.setupModalHandlers();
+
+        // Add logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', () => this.handleLogout());
+    }
+
+    async handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            try {
+                const response = await fetch('../php/logout.php');
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '../html/login.php';
+                } else {
+                    throw new Error(data.error || 'Logout failed');
+                }
+            } catch (error) {
+                Utils.showError('Logout failed: ' + error.message);
+            }
+        }
     }
 
     async loadAppointments(filters = {}) {
@@ -112,6 +132,18 @@ class AppointmentManager {
             const result = await response.json();
             
             if (result.success) {
+                // Check for any appointments that need status updates
+                result.data = result.data.map(appointment => {
+                    if (appointment.status === 'upcoming') {
+                        const appointmentDateTime = new Date(`${appointment.date} ${appointment.time}`);
+                        const appointmentEndTime = new Date(appointmentDateTime.getTime() + (60 * 60 * 1000)); // Add 1 hour
+                        if (appointmentEndTime < new Date()) {
+                            appointment.status = 'completed';
+                        }
+                    }
+                    return appointment;
+                });
+
                 this.renderAppointments(result.data);
                 this.updateSummaryCount(result.data);
             } else {
@@ -149,8 +181,9 @@ class AppointmentManager {
     updateSummaryCount(appointments) {
         const today = new Date().toISOString().split('T')[0];
         
+        // Change this to only count upcoming appointments for today
         const todayCount = appointments.filter(app => 
-            app.date === today).length;
+            app.date === today && app.status.toLowerCase() === 'upcoming').length;
         
         const upcomingCount = appointments.filter(app => 
             app.status.toLowerCase() === 'upcoming').length;
@@ -236,6 +269,23 @@ class AppointmentManager {
                     </div>`;
             }
 
+            // Only show notes for pending appointments
+            const showNotes = status === 'pending';
+            const notesSection = showNotes && appointment.notes ? `
+                <div class="detail-item notes-section">
+                    <i class="fas fa-sticky-note"></i>
+                    <span class="detail-label">Client Notes:</span>
+                    <span class="detail-value">${appointment.notes}</span>
+                </div>
+            ` : '';
+
+            // Add waiting message for therapist cancellation requests
+            const cancellationMessage = status === 'cancellation_requested' ? `
+                <div class="cancellation-notice">
+                    <p><strong>Waiting for client's response to your cancellation request</strong></p>
+                </div>
+            ` : '';
+
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
@@ -260,7 +310,9 @@ class AppointmentManager {
                             <span class="detail-label">Type:</span>
                             <span class="detail-value">${Utils.formatSessionType(appointment.session_type)}</span>
                         </div>
+                        ${notesSection}
                     </div>
+                    ${cancellationMessage}
                     ${appointment.status === 'cancellation_pending' ? `
                         <div class="cancellation-notice">
                             <p><strong>Client Requested Cancellation</strong></p>

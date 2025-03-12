@@ -1396,3 +1396,26 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
+/* Add styles for notes section */
+.notes-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.notes-section .detail-value {
+    display: block;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    font-style: italic;
+    color: #666;
+    white-space: pre-wrap;
+    line-height: 1.4;
+}
+
+.notes-section i {
+    color: #6c757d;
+}

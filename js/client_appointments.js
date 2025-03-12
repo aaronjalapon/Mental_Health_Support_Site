@@ -110,6 +110,18 @@ class AppointmentManager {
             if (!result.data || result.data.length === 0) {
                 this.showEmptyState();
             } else {
+                // Check for any appointments that need status updates
+                result.data = result.data.map(appointment => {
+                    if (appointment.status === 'upcoming') {
+                        const appointmentDateTime = new Date(`${appointment.date} ${appointment.time}`);
+                        const appointmentEndTime = new Date(appointmentDateTime.getTime() + (60 * 60 * 1000)); // Add 1 hour
+                        if (appointmentEndTime < new Date()) {
+                            appointment.status = 'completed';
+                        }
+                    }
+                    return appointment;
+                });
+
                 this.renderAppointments(result.data);
             }
         } catch (error) {
@@ -189,6 +201,23 @@ class AppointmentManager {
                 `;
             }
 
+            // Only show notes for pending appointments
+            const showNotes = status === 'pending';
+            const notesSection = showNotes && appointment.notes ? `
+                <div class="detail-item notes-section">
+                    <i class="fas fa-sticky-note"></i>
+                    <span class="detail-label">Client Notes:</span>
+                    <span class="detail-value">${appointment.notes}</span>
+                </div>
+            ` : '';
+
+            // Add waiting message for client's cancellation request
+            const cancellationMessage = status === 'cancellation_pending' ? `
+                <div class="cancellation-notice">
+                    <p><strong>Waiting for therapist's response to your cancellation request</strong></p>
+                </div>
+            ` : '';
+
             return `
                 <div class="appointment-card" data-id="${appointment.id}">
                     <div class="appointment-header">
@@ -213,7 +242,9 @@ class AppointmentManager {
                             <span class="detail-label">Type:</span>
                             <span class="detail-value">${Utils.formatSessionType(sessionType)}</span>
                         </div>
+                        ${notesSection}
                     </div>
+                    ${cancellationMessage}
                     <div class="btn-container">
                         ${actions}
                         ${this.renderAppointmentActions(appointment)}

@@ -80,6 +80,23 @@ try {
 
     $appointments = [];
     while ($row = $result->fetch_assoc()) {
+        $appointmentDateTime = $row['appointment_date'] . ' ' . $row['appointment_time'];
+        $currentDateTime = date('Y-m-d H:i:s');
+        
+        // Add 1 hour to appointment time to get end time
+        $appointmentEndTime = date('Y-m-d H:i:s', strtotime($appointmentDateTime . ' +1 hour'));
+        
+        // If the appointment is 'upcoming' and end time has passed, mark it as 'completed'
+        if ($row['status'] === 'upcoming' && strtotime($appointmentEndTime) < strtotime($currentDateTime)) {
+            // Update the status in database
+            $updateSql = "UPDATE appointments SET status = 'completed' WHERE appointment_id = ?";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("i", $row['appointment_id']);
+            $updateStmt->execute();
+            
+            $row['status'] = 'completed';
+        }
+
         $appointments[] = [
             'id' => $row['appointment_id'],
             'therapist_name' => $row['therapist_name'] ?? 'Not Assigned',
