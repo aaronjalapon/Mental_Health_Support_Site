@@ -247,6 +247,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.appointment-calendar')) {
         window.appointmentManager = new AppointmentCalendar();
     }
+    // Add event listener to toggle calendar collapse
+    const calendarToggle = document.getElementById('calendarToggle');
+    const calendarContent = document.getElementById('calendarContent');
+    calendarToggle?.addEventListener('click', () => {
+        calendarContent.classList.toggle('collapsed');
+        const icon = calendarToggle.querySelector('.collapse-icon');
+        icon.classList.toggle('collapsed');
+    });
 });
 
 // Add these new functions
