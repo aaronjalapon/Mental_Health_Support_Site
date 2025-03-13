@@ -563,6 +563,15 @@ class AppointmentManager {
         const modal = document.getElementById('cancellationModal');
         if (!modal) return;
 
+        // Add overflow-y auto to the modal content
+        const modalContent = modal.querySelector('.cancel-modal-content');
+        if (modalContent) {
+            modalContent.style.maxHeight = '90vh';  // Maximum height of 90% viewport height
+            modalContent.style.overflowY = 'auto';  // Enable vertical scrolling
+            modalContent.style.display = 'flex';
+            modalContent.style.flexDirection = 'column';
+        }
+
         const appointmentCard = document.querySelector(`.appointment-card[data-id="${appointmentId}"]`);
         if (!appointmentCard) return;
 

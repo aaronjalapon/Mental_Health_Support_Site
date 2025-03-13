@@ -25,10 +25,11 @@ function redirectToLogin() {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/landing_page.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/images/Logo.svg" type="image/x-icon">
 </head>
 <body>
 
-    <?php include 'components/header.php'; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/header.php'; ?>  
 
   <main>
     <!-- Hero Section -->

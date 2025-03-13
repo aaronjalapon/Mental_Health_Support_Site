@@ -44,11 +44,16 @@ function setupDropdowns() {
 
     // Close dropdowns when clicking outside
     window.addEventListener('click', (e) => {
-        if (!selfHelpBtn?.contains(e.target)) {
-            dropdownContent?.classList.remove('show');
+        if (selfHelpBtn && !selfHelpBtn.contains(e.target)) {
+            if (dropdownContent) {
+                dropdownContent.classList.remove('show');
+            }
         }
-        if (!userDropdownBtn?.contains(e.target) && !userDropdownMenu?.contains(e.target)) {
-            userDropdownMenu?.classList.remove('show');
+        if ((userDropdownBtn && !userDropdownBtn.contains(e.target)) && 
+            (userDropdownMenu && !userDropdownMenu.contains(e.target))) {
+            if (userDropdownMenu) {
+                userDropdownMenu.classList.remove('show');
+            }
         }
     });
 }
@@ -139,7 +144,7 @@ function setupProfileModal() {
     
     if (!modal) return; // Guard clause if modal doesn't exist
     
-    const closeBtn = modal.querySelector('.close-modal');
+    const closeBtn = modal.querySelector('.profile-close-modal');
     const cancelBtn = modal.querySelector('.edit-cancel-btn');
     const form = document.getElementById('editProfileForm');
 

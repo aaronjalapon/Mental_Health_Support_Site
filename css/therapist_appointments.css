@@ -1328,6 +1328,57 @@ body {
     animation: modalSlideIn 0.3s ease;
 }
 
+/* Updated Cancel Modal Styles */
+.cancel-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar styling */
+.cancel-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cancel-modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.cancel-modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.cancel-modal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@media screen and (max-height: 600px) {
+    .cancel-modal-content {
+        max-height: 85vh;
+        margin: 10px auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .cancel-modal-content {
+        width: 95%;
+        padding: 15px;
+        margin: 10px auto;
+    }
+}
+
 .cancel-modal-header {
     margin-bottom: 1.5rem;
     border-bottom: 1px solid #f0f0f0;

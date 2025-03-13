@@ -20,23 +20,32 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'pending_verification') {
-            alert(data.message);
-            window.location.href = data.redirect;
-        } else if (data.status === 'success') {
-            alert(data.message);
-            switch(data.role) {
-                case 'therapist':
-                    window.location.href = '../html/therapist_appointments.php';
-                    break;
-                case 'admin':
-                    window.location.href = '../html/admin_panel.php';
-                    break;
-                default:
-                    window.location.href = '/index.php';
-            }
-        } else {
-            alert(data.message);
+        switch(data.status) {
+            case 'blocked':
+                alert(data.message);
+                break;
+            case 'pending':
+                alert(data.message);
+                break;
+            case 'pending_verification':
+                alert(data.message);
+                window.location.href = data.redirect;
+                break;
+            case 'success':
+                alert(data.message);
+                switch(data.role) {
+                    case 'therapist':
+                        window.location.href = '../html/therapist_appointments.php';
+                        break;
+                    case 'admin':
+                        window.location.href = '../html/admin_panel.php';
+                        break;
+                    default:
+                        window.location.href = '/index.php';
+                }
+                break;
+            default:
+                alert(data.message);
         }
     })
     .catch(error => {
@@ -44,7 +53,6 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
         alert('An error occurred during login. Please try again.');
     });
 });
-
 
 // ...rest of your existing code...
 function togglePassword(inputId) {

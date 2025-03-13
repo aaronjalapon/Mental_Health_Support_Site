@@ -5,6 +5,31 @@ include_once '../db.php';
 header('Content-Type: application/json');
 
 try {
+    // Check if we want just the names
+    if (isset($_GET['names_only']) && $_GET['names_only'] === 'true') {
+        $sql = "SELECT therapist_id, first_name, last_name, specialization 
+                FROM therapists 
+                WHERE status = 'Active'
+                ORDER BY first_name, last_name";
+                
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $therapists = [];
+        while ($row = $result->fetch_assoc()) {
+            $therapists[] = [
+                'therapist_id' => (int)$row['therapist_id'],
+                'first_name' => trim($row['first_name']),
+                'last_name' => trim($row['last_name']),
+                'specialization' => trim($row['specialization'])
+            ];
+        }
+        
+        echo json_encode(['success' => true, 'data' => $therapists]);
+        exit();
+    }
+
     // Add debug logging
     error_log("Fetching therapists...");
 
@@ -79,9 +104,48 @@ try {
 } catch (Exception $e) {
     error_log("Error in fetch_therapist.php: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 } finally {
+    if (isset($stmt)) $stmt->close();
     if (isset($avail_stmt)) $avail_stmt->close();
     $conn->close();
+}
+
+// Update the fetchTherapistNames function to be cleaner
+function fetchTherapistNames($conn) {
+    try {
+        $sql = "SELECT therapist_id, first_name, last_name, specialization 
+                FROM therapists 
+                WHERE status = 'Active'
+                ORDER BY first_name, last_name";
+                
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $therapists = [];
+        while ($row = $result->fetch_assoc()) {
+            $therapists[] = [
+                'therapist_id' => (int)$row['therapist_id'],
+                'first_name' => trim(htmlspecialchars($row['first_name'])),
+                'last_name' => trim(htmlspecialchars($row['last_name'])),
+                'specialization' => trim(htmlspecialchars($row['specialization']))
+            ];
+        }
+        
+        return $therapists;
+    } catch (Exception $e) {
+        error_log("Error fetching therapist names: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Clean up the endpoint logic
+if (isset($_GET['names_only']) && $_GET['names_only'] === 'true') {
+    ob_clean(); // Clear any previous output
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => fetchTherapistNames($conn)]);
+    $conn->close();
+    exit();
 }
 ?>

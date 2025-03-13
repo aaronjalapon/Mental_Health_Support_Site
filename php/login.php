@@ -39,7 +39,24 @@ try {
         $row = $result->fetch_assoc();
         
         if (password_verify($password, $row['password'])) {
-            // Check verification status first
+            // First check if account is blocked or pending
+            if ($row['Status'] === 'Blocked') {
+                echo json_encode([
+                    'status' => 'blocked',
+                    'message' => 'Your account has been blocked by the admin.'
+                ]);
+                exit();
+            }
+            
+            if ($row['Status'] === 'Pending') {
+                echo json_encode([
+                    'status' => 'pending',
+                    'message' => 'Your account is pending approval from admin.'
+                ]);
+                exit();
+            }
+
+            // Then check verification status
             if ($row['verification_status'] != '1') {
                 // User account is not verified yet
                 
@@ -82,7 +99,7 @@ try {
                 exit();
             }
             
-            // Account is verified, proceed with login
+            // Account is verified and approved, proceed with login
             $_SESSION['unique_id'] = $row['unique_id'];
             $_SESSION['email'] = $row['email'];
             $_SESSION['firstName'] = $row['firstName'];

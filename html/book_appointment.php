@@ -21,11 +21,13 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/book_appointment.css">
+    <link rel="icon" href="/images/Logo.svg" type="image/x-icon">
+
 </head>
 <body>
     
 
-    <?php include '../components/header.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/components/header.php'; ?>
 
     <div class="page-container">
         <div class="booking-container">
@@ -89,10 +91,6 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         </div>
                     </div>
                 </div>
-
-                <!-- <div id="availabilityMessage" class="availability-message" style="display: none;">
-                    <p>Showing therapists available on <span id="selectedDateTime"></span></p>
-                </div> -->
 
                 <div class="therapist-selection">
                     <h2>Select a Therapist</h2>
@@ -163,8 +161,6 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </div>
 
-
-    <!-- Update script paths to use relative paths -->
    
     <script src="../js/book_appointment.js"></script>
 </body>

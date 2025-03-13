@@ -17,30 +17,64 @@ $otp6 = isset($_POST['otp6']) ? $_POST['otp6'] : '';
 $OTP = $otp1.$otp2.$otp3.$otp4.$otp5.$otp6;
 
 if(!empty($OTP)){
-    // Use prepared statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT * FROM client WHERE unique_id = ? AND otp = ?");
-    $stmt->bind_param("is", $unique_id, $OTP);
+    // Check if this is a password reset verification
+    if (isset($_SESSION['reset_email'])) {
+        $stmt = $conn->prepare("SELECT * FROM client WHERE email = ? AND otp = ?");
+        $stmt->bind_param("ss", $_SESSION['reset_email'], $OTP);
+    } else {
+        // Regular registration verification
+        $stmt = $conn->prepare("SELECT * FROM client WHERE unique_id = ? AND otp = ?");
+        $stmt->bind_param("is", $unique_id, $OTP);
+    }
+    
     $stmt->execute();
     $result = $stmt->get_result();
 
     if($result->num_rows > 0){ 
-        // OTP matches
         $row = $result->fetch_assoc();
         
-        // Update user verification status
-        $stmt2 = $conn->prepare("UPDATE client SET verification_status = '1', otp = '0' WHERE unique_id = ?");
-        $stmt2->bind_param("i", $unique_id);
-        
-        if($stmt2->execute()){
-            $_SESSION['unique_id'] = $row['unique_id'];
-            $_SESSION['username'] = $row['username']; // Set the username session variable
-            $_SESSION['verification_status'] = '1';
-            echo "Success";
+        if (isset($_SESSION['reset_email'])) {
+            $_SESSION['reset_verified'] = true;
+            echo json_encode([
+                'status' => 'success',
+                'type' => 'reset_password',
+                'message' => 'OTP verified successfully'
+            ]);
         } else {
-            echo "Update failed!";
+            // Regular registration verification
+            $stmt2 = $conn->prepare("UPDATE client SET verification_status = '1', otp = '0' WHERE unique_id = ?");
+            $stmt2->bind_param("i", $unique_id);
+            
+            if($stmt2->execute()){
+                // Check client's status
+                $status_stmt = $conn->prepare("SELECT Status FROM client WHERE unique_id = ?");
+                $status_stmt->bind_param("i", $unique_id);
+                $status_stmt->execute();
+                $status_result = $status_stmt->get_result();
+                $status_row = $status_result->fetch_assoc();
+                
+                session_unset();
+                session_destroy();
+
+                echo json_encode([
+                    'status' => 'success',
+                    'type' => 'registration',
+                    'message' => 'Email verified successfully',
+                    'accountStatus' => $status_row['Status']
+                ]);
+                $status_stmt->close();
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Update failed!'
+                ]);
+            }
         }
     } else {
-        echo "Wrong OTP!";
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Wrong OTP!'
+        ]);
     }
 } else {
     echo "Enter OTP!";

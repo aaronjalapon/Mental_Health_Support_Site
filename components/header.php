@@ -50,39 +50,39 @@ if (session_status() === PHP_SESSION_NONE) {
 </header>
 
 <!-- Edit Profile Modal -->
-<div id="editProfileModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
+<div id="editProfileModal" class="profile-modal-overlay">
+    <div class="profile-modal-contents">
+        <div class="profile-modal-header">
             <h2>Edit Profile</h2>
-            <span class="close-modal">&times;</span>
+            <span class="profile-close-modal">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="profile-modal-body">
             <form id="editProfileForm">
                 <input type="hidden" id="profileId" name="profileId">
-                <div class="form-grid">
-                    <div class="form-group">
+                <div class="profile-form-grid">
+                    <div class="profile-form-group">
                         <label for="editFirstName">First Name</label>
-                        <input type="text" class="form-input" id="editFirstName" name="firstName" required>
+                        <input type="text" class="profile-form-input" id="editFirstName" name="firstName" required>
                     </div>
-                    <div class="form-group">
+                    <div class="profile-form-group">
                         <label for="editLastName">Last Name</label>
-                        <input type="text" class="form-input" id="editLastName" name="lastName" required>
+                        <input type="text" class="profile-form-input" id="editLastName" name="lastName" required>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="profile-form-group">
                     <label for="editUsername">Username</label>
-                    <input type="text" class="form-input" id="editUsername" name="username" required>
+                    <input type="text" class="profile-form-input" id="editUsername" name="username" required>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
+                <div class="profile-form-grid">
+                    <div class="profile-form-group">
                         <label for="editContact">Contact Number</label>
-                        <input type="tel" class="form-input" id="editContact" name="contact" required>
+                        <input type="tel" class="profile-form-input" id="editContact" name="contact" required>
                     </div>
-                    <div class="form-group">
+                    <div class="profile-form-group">
                         <label for="editPronouns">Pronouns</label>
-                        <select class="form-input" id="editPronouns" name="pronouns" required>
+                        <select class="profile-form-input" id="editPronouns" name="pronouns" required>
                             <option value="He/Him/His">He/Him/His</option>
                             <option value="She/Her/Hers">She/Her/Hers</option>
                             <option value="They/Them/Theirs">They/Them/Theirs</option>
@@ -91,14 +91,14 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="profile-form-group">
                     <label for="editAddress">Address</label>
-                    <input type="text" class="form-input" id="editAddress" name="address" required>
+                    <input type="text" class="profile-form-input" id="editAddress" name="address" required>
                 </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-secondary edit-cancel-btn">Cancel</button>
+                <div class="profile-form-actions">
+                    <button type="submit" class="profile-btn profile-btn-primary">Save Changes</button>
+                    <button type="button" class="profile-btn profile-btn-secondary edit-cancel-btn">Cancel</button>
                 </div>
             </form>
         </div>
