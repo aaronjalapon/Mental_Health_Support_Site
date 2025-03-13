@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Edit client handler
     window.editClient = function(id) {
-        const client = clients.find(c => c.id === id);
+        const client = clients.find(c => c.id === parseInt(id));
         if (!client) {
             console.error('Client not found:', id);
             return;
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Client pronouns:', client.pronouns);
 
         // Populate edit form
-        document.getElementById('editClientId').value = client.id;
+        document.getElementById('editClientId').value = id;
         document.getElementById('editFirstName').value = client.firstName;
         document.getElementById('editLastName').value = client.lastName;
         document.getElementById('editUsername').value = client.username;
@@ -208,8 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Server response:', data); // Debug log
             
             if (data.success) {
-                await fetchClients();
-                toggleModal(editClientModal);
+                location.reload(); // Force page reload to refresh data
                 alert('Client updated successfully');
             } else {
                 alert(data.error || 'Failed to update client');
