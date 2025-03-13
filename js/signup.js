@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('fileInput');
     const fileLabel = document.querySelector('.file-name');
     const registerBtn = document.querySelector('.register-btn');
+    const blankModal = document.getElementById('blankModal');
+    const blankModalClose = document.getElementById('blankModalClose');
 
     // File upload handler
     fileInput.addEventListener('change', function() {
@@ -29,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
 
+            // Open blank modal
+            blankModal.classList.remove('hidden');
+
             let formData = new FormData(form);
             
             // Debug: Log form data
@@ -53,11 +58,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Error:', data);
                     alert(data);
                 }
+
+                // Optionally close the modal upon completion
+                blankModal.classList.add('hidden');
             };
 
             xhr.onerror = () => {
                 console.error('Request failed');
                 alert('Error submitting form. Please try again.');
+                blankModal.classList.add('hidden');
             }
 
             xhr.send(formData);
@@ -70,6 +79,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             registerBtn.disabled = false;
         }, 2000);
+    });
+
+    // Close blank modal when clicking on close button
+    blankModalClose.addEventListener('click', function() {
+        blankModal.classList.add('hidden');
     });
 
     // Terms and Conditions Modal
