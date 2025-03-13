@@ -40,21 +40,20 @@ document.addEventListener('DOMContentLoaded', function() {
             xhr.open("POST", "../php/signup.php", true);
             
             xhr.onload = () => {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        let data = xhr.response;
-                        console.log('Server response:', data);
-                        
-                        if (data.trim() === "Success") {
-                            window.location.href = '../html/verify.php';
-                            
-                        } else {
-                            console.log('Error:', data);
-                            alert(data);
-                        }
-                    }
+                if (xhr.readyState !== XMLHttpRequest.DONE) return;
+            
+                if (xhr.status !== 200) return;
+            
+                let data = xhr.response;
+                console.log('Server response:', data);
+            
+                if (data.trim() === "Success") {
+                    window.location.href = '../html/verify.php';
+                } else {
+                    console.log('Error:', data);
+                    alert(data);
                 }
-            }
+            };
 
             xhr.onerror = () => {
                 console.error('Request failed');
