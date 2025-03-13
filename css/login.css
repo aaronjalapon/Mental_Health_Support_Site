@@ -886,3 +886,34 @@ input[type="file"] {
 .accept-terms-btn:hover {
     background: linear-gradient(90deg, hsl(162, 69%, 74%), hsl(154, 66%, 42%));
 }
+
+.modal-content-loading {
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    position: relative;
+}
+.loader {
+    width: 150px;
+    aspect-ratio: 1;
+    color:#6EE4C1;
+    background:
+     radial-gradient(circle at 60% 65%, currentColor 62%, #0000 65%) top left,
+     radial-gradient(circle at 40% 65%, currentColor 62%, #0000 65%) top right,
+     linear-gradient(to bottom left, currentColor 42%,#0000 43%) bottom left ,
+     linear-gradient(to bottom right,currentColor 42%,#0000 43%) bottom right;
+    background-size: 50% 50%;
+    background-repeat: no-repeat;
+    position: relative;
+  }
+  .loader:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    opacity: 0.4;
+    animation: l3 1s infinite;
+  }
+  @keyframes l3 {
+    to {transform:scale(1.8);opacity:0}
+  }
