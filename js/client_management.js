@@ -109,12 +109,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Add cancel button event listener for edit modal
+    document.querySelector('.edit-cancel-btn').addEventListener('click', function() {
+        toggleModal(editClientModal);
+    });
+
     searchInput.addEventListener('input', filterClients);
     statusFilter.addEventListener('change', filterClients);
 
     // Edit client handler
     window.editClient = function(id) {
-        const client = clients.find(c => c.id === parseInt(id));
+        const client = clients.find(c => c.id == id); // Change from === to ==
         if (!client) {
             console.error('Client not found:', id);
             return;
