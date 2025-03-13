@@ -159,19 +159,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ id: parseInt(id) })
             });
 
             const data = await response.json();
             
             if (data.success) {
-                await fetchClients(); // Refresh the list
+                location.reload(); // Reload the page to refresh the list
                 alert('Client deleted successfully');
             } else {
                 alert(data.error || 'Failed to delete client');
             }
         } catch (error) {
-            console.error('Error deleting client:', error);
+            console.error('Error:', error);
             alert('Failed to delete client');
         }
     };
