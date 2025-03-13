@@ -387,59 +387,16 @@
 
 /* Quick Actions */
 .quick-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    display: none;
 }
 
 .quick-action-btn {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    display: none;
 }
 
-.quick-action-btn:hover {
-    background: #f8f9fa;
-    border-color: #1e9160;
-    color: #1e9160;
-}
-
-.quick-action-btn.active {
-    background: #1e9160;
-    color: white;
-    border-color: #1e9160;
-    font-weight: 500;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(30, 145, 96, 0.2);
-}
-
-.quick-action-btn:active {
-    transform: translateY(0);
-    box-shadow: none;
-}
-
+/* View Toggle */
 .view-toggle {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.view-toggle button {
-    padding: 0.5rem 1rem;
-    border: 1px solid #e9ecef;
-    background: white;
-    border-radius: 6px;
-    color: #495057;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.view-toggle button.active {
-    background: #1e9160;
-    color: white;
-    border-color: #1e9160;
+    display: none;
 }
 
 /* Week View Styles */
@@ -1339,4 +1296,41 @@ tr:last-child td {
 .status-cancelled {
     background: #ffebee;
     color: #c62828;
+}
+
+.appointment-list {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.appointment-item {
+    background: rgba(30, 145, 96, 0.1);
+    border-left: 3px solid #1e9160;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    font-size: 0.75rem;
+}
+
+.appointment-label {
+    color: #1e9160;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.appointment-details {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.appointment-details .time {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.appointment-details .client {
+    color: #666;
 }

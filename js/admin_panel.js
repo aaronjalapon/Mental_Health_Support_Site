@@ -69,137 +69,110 @@ function initSidebar() {
 
 // Chart initialization
 function initCharts() {
-    // Client Growth Chart
-    const clientGrowth = new Chart(
-        document.getElementById('clientGrowthChart'),
-        {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'New Clients',
-                    data: [65, 78, 90, 85, 99, 112],
-                    borderColor: '#1e9160',
-                    tension: 0.3,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                }
-            }
-        }
-    );
+    const ctx = document.getElementById('clientGrowthChart');
+    
+    // Check if chart exists and destroy it
+    if (window.clientGrowthChart) {
+        window.clientGrowthChart.destroy();
+    }
 
-    // Session Distribution Chart
-    const sessionDist = new Chart(
-        document.getElementById('sessionDistChart'),
-        {
-            type: 'doughnut',
-            data: {
-                labels: ['Individual', 'Group', 'Family', 'Couples'],
-                datasets: [{
-                    data: [45, 25, 20, 10],
-                    backgroundColor: [
-                        '#1e9160',
-                        '#2fb344',
-                        '#3cc04c',
-                        '#4acd54'
-                    ]
-                }]
+    window.clientGrowthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Registered Clients',
+                data: Array(12).fill(0),
+                borderColor: '#1e9160',
+                backgroundColor: 'rgba(30, 145, 96, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Clients: ${context.parsed.y}`;
+                        }
+                    }
+                }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'right'
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
                     }
                 }
             }
         }
-    );
-
-    // Monthly Statistics Chart
-    const monthlyStats = new Chart(
-        document.getElementById('monthlyStatsChart'),
-        {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Sessions',
-                    data: [120, 150, 180, 165, 190, 210],
-                    backgroundColor: '#1e9160'
-                },
-                {
-                    label: 'Active Clients',
-                    data: [90, 100, 125, 130, 140, 150],
-                    backgroundColor: '#2fb344'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        }
-    );
+    });
 }
 
-// Handle logout functionality
-function handleLogout(event) {
-    event.preventDefault(); // Prevent default link behavior
-    
-    fetch('/php/logout.php')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+// Function to update chart data
+function updateChartData(growthData) {
+    if (window.clientGrowthChart) {
+        // Map the data to the correct months
+        const monthData = Array(12).fill(0);
+        growthData.forEach((item, index) => {
+            const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                .indexOf(item.month);
+            if (monthIndex !== -1) {
+                monthData[monthIndex] = item.count;
             }
-            return response.json();
-        })
+        });
+
+        // Update chart data
+        window.clientGrowthChart.data.datasets[0].data = monthData;
+        window.clientGrowthChart.update();
+    }
+}
+
+
+
+// Function to fetch dashboard statistics
+function fetchDashboardStats() {
+    fetch('/php/admin/fetch_dashboard_stats.php')
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Clear any stored session data on client side
-                sessionStorage.clear();
-                localStorage.clear();
-                
-                // Redirect to landing page
-                window.location.href = '/index.php';
-            } else {
-                throw new Error(data.message || 'Logout failed');
+                // Update card values
+                document.querySelector('.card-value[data-type="clients"]').textContent = data.data.totalClients;
+                document.querySelector('.card-value[data-type="sessions"]').textContent = data.data.activeSessions;
+
+                // Update chart with new data
+                updateChartData(data.data.growthData);
             }
         })
-        .catch(error => {
-            console.error('Logout error:', error);
-            alert('Logout failed. Please try again.');
-            // Redirect anyway as fallback
-            window.location.href = '/index.php';
-        });
+        .catch(error => console.error('Error fetching dashboard stats:', error));
 }
 
-// Add event listener to all logout links
-document.addEventListener('DOMContentLoaded', function() {
-    const logoutLinks = document.querySelectorAll('a[onclick*="handleLogout"]');
-    logoutLinks.forEach(link => {
-        link.addEventListener('click', handleLogout);
-    });
-});
+// Function to update client growth chart
+function updateClientGrowthChart(growthData) {
+    if (window.clientGrowthChart) {
+        const data = Array(12).fill(0);
+        growthData.forEach((item) => {
+            const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(item.month);
+            if (monthIndex !== -1) {
+                data[monthIndex] = item.count;
+            }
+        });
+        
+        window.clientGrowthChart.data.datasets[0].data = data;
+        window.clientGrowthChart.update();
+    }
+}
 
-// Initialize sidebar and charts when DOM is loaded
+// Initialize dashboard with real data
 document.addEventListener('DOMContentLoaded', function() {
-    // Only initialize sidebar functionality if we're on mobile
+    // Remove the separate initCharts() call since we'll initialize the chart when we get data
     if (window.innerWidth <= 768) {
         initSidebar();
     }
@@ -208,15 +181,59 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', () => {
         const mobileToggle = document.querySelector('.mobile-toggle');
         if (window.innerWidth > 768) {
-            // Remove toggle button on desktop
             if (mobileToggle) mobileToggle.remove();
-            // Ensure sidebar is visible
             document.querySelector('.sidebar').classList.remove('show');
         } else if (!mobileToggle) {
-            // Re-initialize for mobile if toggle doesn't exist
             initSidebar();
         }
     });
 
-    initCharts();
+    // Fetch data and initialize chart
+    fetch('/php/admin/fetch_dashboard_stats.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update card values
+                document.querySelector('.card-value[data-type="clients"]').textContent = data.data.totalClients;
+                document.querySelector('.card-value[data-type="sessions"]').textContent = data.data.activeSessions;
+
+                // Initialize and update chart with data
+                const ctx = document.getElementById('clientGrowthChart');
+                window.clientGrowthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        datasets: [{
+                            label: 'Registered Clients',
+                            data: data.data.growthData.map(item => item.count),
+                            borderColor: '#1e9160',
+                            backgroundColor: 'rgba(30, 145, 96, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+    // Refresh stats every 5 minutes
+    setInterval(fetchDashboardStats, 300000);
 });

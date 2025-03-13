@@ -277,18 +277,19 @@
         transform: translateY(0);
     }
 }
-
-/* Burger Menu Styles */
+/* Burger Menu Styles - Update this section */
 .burger-menu {
-    display: none;
+    display: none; /* Initially hidden on desktop */
     flex-direction: column;
     justify-content: space-between;
     height: 20px;
     width: 30px;
+    padding: 0;
     background: none;
     border: none;
     cursor: pointer;
-    z-index: 10;
+    z-index: 1000;
+
 }
 
 .burger-menu .bar {
@@ -298,6 +299,7 @@
     border-radius: 2px;
     transition: transform 0.3s ease;
 }
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -350,8 +352,8 @@
     }
 }
 
-/* Profile Modal Styles */
-.modal-overlay {
+/* Profile Modal Styles - Group all profile related styles together */
+.profile-modal-overlay {
     display: none;
     position: fixed;
     top: 0;
@@ -364,7 +366,8 @@
     align-items: center;
 }
 
-.modal-content {
+/* Modal Container */
+.profile-modal-contents {
     background: white;
     border-radius: 20px;
     padding: 2rem;
@@ -373,17 +376,18 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
-    animation: modalSlideIn 0.3s ease;
+    animation: profileModalSlideIn 0.3s ease;
 }
 
-.modal-header {
+/* Modal Header */
+.profile-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
 }
 
-.modal-header h2 {
+.profile-modal-header h2 {
     margin: 0;
     color: #1e9160;
     font-size: 1.5rem;
@@ -391,7 +395,7 @@
     font-weight: 600;
 }
 
-.close-modal {
+.profile-close-modal {
     cursor: pointer;
     font-size: 1.5rem;
     color: #666;
@@ -401,22 +405,23 @@
     padding: 0.5rem;
 }
 
-.close-modal:hover {
+.profile-close-modal:hover {
     color: #1e9160;
 }
 
-.form-grid {
+/* Form Layout */
+.profile-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin-bottom: 1rem;
 }
 
-.form-group {
+.profile-form-group {
     margin-bottom: 1rem;
 }
 
-.form-group label {
+.profile-form-group label {
     display: block;
     margin-bottom: 0.5rem;
     color: #333;
@@ -424,7 +429,8 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.form-input {
+/* Form Inputs */
+.profile-form-input {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ddd;
@@ -434,20 +440,22 @@
     font-family: inherit;
 }
 
-.form-input:focus {
+.profile-form-input:focus {
     outline: none;
     border-color: #1e9160;
     box-shadow: 0 0 0 2px rgba(30, 145, 96, 0.1);
 }
 
-.form-actions {
+/* Form Actions */
+.profile-form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 2rem;
 }
 
-.btn {
+/* Profile Modal Buttons */
+.profile-btn {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 8px;
@@ -458,55 +466,50 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.btn-primary {
+.profile-btn-primary {
     background: #1e9160;
     color: white;
 }
 
-.btn-primary:hover {
+.profile-btn-primary:hover {
     background: #187a4d;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-secondary {
+.profile-btn-secondary {
     background: #e9ecef;
     color: #333;
 }
 
-.btn-secondary:hover {
+.profile-btn-secondary:hover {
     background: #dee2e6;
     transform: translateY(-1px);
 }
 
-@keyframes modalSlideIn {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+/* Profile Modal Animation */
+@keyframes profileModalSlideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-/* Modal Responsive Styles */
+/* Profile Modal Responsive Styles */
 @media (max-width: 768px) {
-    .modal-content {
+    .profile-modal-contents {
         width: 95%;
         padding: 1.5rem;
         margin: 1rem;
     }
 
-    .form-grid {
+    .profile-form-grid {
         grid-template-columns: 1fr;
     }
 
-    .form-actions {
+    .profile-form-actions {
         flex-direction: column;
     }
 
-    .form-actions .btn {
+    .profile-form-actions .profile-btn {
         width: 100%;
     }
 }

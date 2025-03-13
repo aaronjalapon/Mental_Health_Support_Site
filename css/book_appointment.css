@@ -235,20 +235,6 @@ body {
     text-align: center;
 }
 
-/* Remove the generic modal styles that conflict with header.css */
-/* Remove these:
-.modal-overlay {
-    display: none;
-    position: fixed;
-    ...
-}
-
-.modal-content {
-    background: white;
-    border-radius: 20px;
-    ...
-}
-*/
 
 .modal {
     display: none;

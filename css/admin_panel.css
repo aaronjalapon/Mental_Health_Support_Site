@@ -354,10 +354,8 @@ body {
 
 /* Chart Styles */
 .charts-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 1.5rem;
     margin-bottom: 2rem;
+    height: 400px; /* Set fixed height */
 }
 
 .chart-card {
@@ -365,6 +363,14 @@ body {
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 100%; /* Take full height of container */
+    width: 100%;
+    position: relative; /* For proper canvas positioning */
+}
+
+.chart-card canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .chart-card h3 {
@@ -373,12 +379,8 @@ body {
     font-size: 1.2rem;
 }
 
-.chart-card.full-width {
-    grid-column: 1 / -1;
-}
-
 @media (max-width: 768px) {
     .charts-container {
-        grid-template-columns: 1fr;
+        padding: 0 1rem;
     }
 }

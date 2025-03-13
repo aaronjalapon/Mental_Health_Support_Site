@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 12, 2025 at 12:30 AM
+-- Generation Time: Mar 13, 2025 at 02:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,32 +46,6 @@ CREATE TABLE `appointments` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `appointments`
---
-
-INSERT INTO `appointments` (`appointment_id`, `client_id`, `therapist_id`, `appointment_date`, `appointment_time`, `session_type`, `status`, `notes`, `cancellation_reason`, `cancellation_by`, `reschedule_notes`, `reschedule_by`, `proposed_date`, `proposed_time`, `created_at`, `updated_at`) VALUES
-(38, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:52:10', '2025-03-10 21:52:43'),
-(39, 15, 3, '2025-03-25', '10:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:52:58', '2025-03-10 21:55:43'),
-(40, 15, 3, '2025-03-18', '11:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:56:25', '2025-03-10 21:59:52'),
-(41, 15, 3, '2025-03-28', '11:00:00', 'video', 'cancelled', '', NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-10 21:57:11', '2025-03-10 21:57:33'),
-(42, 15, 3, '2025-03-26', '10:00:00', 'video', 'cancelled', '', 'fsdfd', 'client', 'dasdasd', NULL, NULL, NULL, '2025-03-10 22:00:41', '2025-03-10 22:06:28'),
-(43, 15, 3, '2025-03-25', '11:00:00', 'video', 'cancelled', '', 'dasdasd', 'therapist', 'why not reschedule', NULL, NULL, NULL, '2025-03-10 22:01:11', '2025-03-10 22:16:26'),
-(44, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', '', 'asd', 'therapist', 'no', 'client', '2025-03-12', '10:00:00', '2025-03-10 22:24:39', '2025-03-10 22:25:32'),
-(45, 15, 3, '2025-03-19', '10:00:00', 'video', 'cancelled', '', 'asd', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:25:57', '2025-03-10 22:26:15'),
-(46, 15, 3, '2025-03-19', '10:00:00', 'video', 'cancelled', '', 'awdasd', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:28:37', '2025-03-10 22:33:55'),
-(47, 15, 3, '2025-03-12', '10:00:00', 'video', 'cancelled', 'dasdasd', 'pleaseee', 'therapist', '', 'client', '2025-03-12', '10:00:00', '2025-03-10 22:36:03', '2025-03-11 14:17:02'),
-(48, 15, 3, '2025-03-26', '10:00:00', 'video', 'cancelled', '', 'dasdas', 'client', '', NULL, NULL, NULL, '2025-03-10 22:36:13', '2025-03-11 11:57:22'),
-(49, 15, 3, '2025-03-16', '10:00:00', 'video', 'cancelled', '', 'dasds', 'therapist', NULL, NULL, NULL, NULL, '2025-03-10 22:36:24', '2025-03-10 23:22:01'),
-(50, 15, 3, '2025-03-22', '11:00:00', 'chat', 'cancelled', 'sdfdf', 'I have an important meeting sorry..', 'client', '', NULL, NULL, NULL, '2025-03-11 11:58:57', '2025-03-11 14:39:06'),
-(51, 15, 3, '2025-03-18', '09:00:00', 'voice', 'cancelled', '', 'asdasd', 'client', 'Hellow there', 'therapist', '2025-03-18', '09:00:00', '2025-03-11 11:59:17', '2025-03-11 14:32:36'),
-(52, 15, 3, '2025-03-26', '09:00:00', 'video', 'cancelled', '', 'i can\'t', 'therapist', NULL, NULL, NULL, NULL, '2025-03-11 14:35:24', '2025-03-11 14:35:43'),
-(53, 15, 3, '2025-03-29', '09:00:00', 'video', 'upcoming', '', NULL, NULL, 'dasda', NULL, NULL, NULL, '2025-03-11 14:36:13', '2025-03-11 14:39:54'),
-(54, 15, 3, '2025-03-31', '10:00:00', 'video', 'cancelled', '', 'dasdas', 'therapist', NULL, NULL, NULL, NULL, '2025-03-11 14:40:12', '2025-03-11 14:41:50'),
-(55, 15, 3, '2025-03-24', '09:00:00', 'chat', 'reschedule_requested', '', NULL, NULL, 'can you do this instead..', 'client', '2025-03-24', '09:00:00', '2025-03-11 22:54:17', '2025-03-11 23:22:23'),
-(56, 15, 3, '2025-03-19', '11:00:00', 'video', 'cancelled', '', 'I can\'t do this', 'client', 'dasdasdasd', NULL, NULL, NULL, '2025-03-11 23:10:14', '2025-03-11 23:22:51'),
-(57, 15, 3, '2025-03-20', '10:00:00', 'video', 'cancelled', '', 'NOOOO', 'therapist', '', 'client', '2025-03-20', '10:00:00', '2025-03-11 23:21:28', '2025-03-11 23:24:01');
-
 -- --------------------------------------------------------
 
 --
@@ -102,11 +76,11 @@ CREATE TABLE `client` (
 --
 
 INSERT INTO `client` (`client_id`, `unique_id`, `firstName`, `lastName`, `username`, `password`, `email`, `contactNumber`, `Pronouns`, `Address`, `ValidID`, `otp`, `Status`, `verification_status`, `Role`, `RegisterDate`) VALUES
-(5, 469102382, 'Annika', 'Dumalogdog', 'annikangs', '$2y$10$Dpv6P8PwG1VEgS9Jq4o2LOy4nJKfPkGtRqc024SA6cbKUp7f//dGO', 'a.dumalogdog.547692@umindanao.edu.ph', '09123456789', 'They/Them/Theirs', 'Davao City', '1740447980_715644717626391a.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
-(8, 87204975, 'Claire', 'Green', 'greenclaire', '$2y$10$ZFxkMZFatdxjWEqiFWDNducdhV1ybBjepRvc8iZh8u6lKuokEeLkm', 'greenclaire@gmail.com', '09123456789', 'They/Them/Theirs', 'Davao City', '1740465251_27ff3be4eadd91f0.jpg', 0, 'Pending', '1', 'client', '2025-02-25'),
+(5, 469102382, 'Annika', 'Dumalogdog', 'annikangs', '$2y$10$Dpv6P8PwG1VEgS9Jq4o2LOy4nJKfPkGtRqc024SA6cbKUp7f//dGO', 'a.dumalogdog.547692@umindanao.edu.ph', '09123456789', 'They/Them/Theirs', 'Davao City', '1740447980_715644717626391a.jpg', 0, 'Approved', '1', 'client', '2025-02-25'),
+(8, 87204975, 'Claire', 'Green', 'greenclaire', '$2y$10$ZFxkMZFatdxjWEqiFWDNducdhV1ybBjepRvc8iZh8u6lKuokEeLkm', 'greenclaire@gmail.com', '09123456789', 'They/Them/Theirs', 'Davao City', '1740465251_27ff3be4eadd91f0.jpg', 0, 'Approved', '1', 'client', '2025-02-25'),
 (13, 1426136559, 'Kids', 'Kid', 'kid123', '$2y$10$i/WZcbdUSwavWxWZX/L8guEQx77zquqHbeGLB7xV5wVPwEojL8pdW', 'johnDoe@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741065740_3b0f983446a29a47.jpg', 0, 'Approved', '1', 'client', '2025-03-04'),
-(15, 1388596494, 'Chris', 'Tucks', 'christuckin', '$2y$10$fxibUNkK24wjHiGip5IngexBaRquGcPVFxdeWNfZOnQJfD6SM2zZC', 'kidshine19@gmail.com', '09123456789', 'He/Him/His', 'Matina, Davao City', '1741326948_3de9808a18e846bc.jpg', 0, 'Approved', '1', 'client', '2025-03-07'),
-(16, 1316509445, 'Richard', 'Neto', 'rDoe123', '$2y$10$al8A1QraFSfi/pIjrQc22eiexBM7qTEO143xiv1EHYGpHLo0Kw//q', 'richardneto@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741533446_e8c83761c6f50490.png', 0, 'Pending', '1', 'client', '2025-03-09');
+(17, 947464385, 'Jane', 'Smith', 'jane', '$2y$10$V0rIPRK55KGe6cX90km0qeLN1Z//DxpxtG.6ZoBXfGHcGVe/u1GBy', 'janesmith@gmail.com', '09123456789', 'They/Them/Theirs', 'Matina, Davao City', '1741796390_aec6d37ef93451c2.png', 0, 'Pending', '1', 'client', '2025-03-13'),
+(24, 870267291, 'Chris', 'Tucks', 'christuckin', '$2y$10$7foGFK60tq9xicfmT5dNpe8JflnfNDmkp2PY9Gq6mONkg7X2f8IMK', 'kidshine19@gmail.com', '09123456789', 'She/Her/Hers', 'Matina, Davao City', '1741826774_a1ed2bc2846feac3.png', 0, 'Approved', '1', 'client', '2025-03-13');
 
 -- --------------------------------------------------------
 
@@ -121,6 +95,34 @@ CREATE TABLE `comments` (
   `content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `meditation_videos`
+--
+
+CREATE TABLE `meditation_videos` (
+  `video_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `youtube_id` varchar(50) NOT NULL,
+  `category` enum('beginner','stress','sleep','mindfulness','anxiety','focus') NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `meditation_videos`
+--
+
+INSERT INTO `meditation_videos` (`video_id`, `title`, `description`, `youtube_id`, `category`, `created_at`, `updated_at`) VALUES
+(1, 'Beginner\'s Meditation', 'Perfect for those new to meditation. Learn the basics of mindfulness and breathing techniquess.', 'inpok4MKVLM', 'beginner', '2025-03-12 15:40:18', '2025-03-12 23:25:01'),
+(2, 'Stress Relief', 'Release tension and find calm with guided stress relief meditation sessions.', 'z6X5oEIg6Ak', 'stress', '2025-03-12 15:40:18', '2025-03-12 15:40:18'),
+(3, 'Sleep Meditation', 'Peaceful meditations to help you relax and prepare for restful sleep.', 'aEqlQvczMJQ', 'sleep', '2025-03-12 15:40:18', '2025-03-12 15:40:18'),
+(4, 'Mindfulness Practice', 'Develop present-moment awareness and enhance your mindfulness practice.', 'ZToicYcHIOU', 'mindfulness', '2025-03-12 15:40:18', '2025-03-12 15:40:18'),
+(5, 'Anxiety Relief', 'Calm your anxious thoughts and find inner peace with these targeted meditation practices.', 'O-6f5wQXSu8', 'anxiety', '2025-03-12 15:40:18', '2025-03-12 15:40:18'),
+(6, 'Focus & Concentration', 'Enhance your focus and mental clarity through concentration meditation techniques.', 'ez3GgRqhNvA', 'focus', '2025-03-12 15:40:18', '2025-03-12 15:40:18');
 
 -- --------------------------------------------------------
 
@@ -294,16 +296,16 @@ INSERT INTO `therapist_availability` (`id`, `therapist_id`, `day`, `start_time`,
 (96, 67, 'thursday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
 (97, 67, 'friday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
 (98, 67, 'saturday', '09:00:00', '12:00:00', '00:00:00', '00:00:00'),
-(106, 3, 'sunday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(107, 3, 'monday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(108, 3, 'tuesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(109, 3, 'wednesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(110, 3, 'thursday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(111, 3, 'friday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
-(112, 3, 'saturday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
 (122, 10, 'sunday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
 (123, 10, 'wednesday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
-(124, 10, 'saturday', '09:00:00', '17:00:00', '12:00:00', '13:00:00');
+(124, 10, 'saturday', '09:00:00', '17:00:00', '12:00:00', '13:00:00'),
+(131, 3, 'sunday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(132, 3, 'monday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(133, 3, 'tuesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(134, 3, 'wednesday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(135, 3, 'thursday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(136, 3, 'friday', '09:00:00', '13:00:00', '00:00:00', '00:00:00'),
+(137, 3, 'saturday', '09:00:00', '13:00:00', '00:00:00', '00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -328,6 +330,12 @@ ALTER TABLE `comments`
   ADD PRIMARY KEY (`comment_id`),
   ADD KEY `post_id` (`post_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `meditation_videos`
+--
+ALTER TABLE `meditation_videos`
+  ADD PRIMARY KEY (`video_id`);
 
 --
 -- Indexes for table `posts`
@@ -373,19 +381,25 @@ ALTER TABLE `therapist_availability`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
   MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `meditation_videos`
+--
+ALTER TABLE `meditation_videos`
+  MODIFY `video_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -415,7 +429,7 @@ ALTER TABLE `therapists`
 -- AUTO_INCREMENT for table `therapist_availability`
 --
 ALTER TABLE `therapist_availability`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

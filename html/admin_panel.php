@@ -15,6 +15,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     <link rel="stylesheet" href="/css/admin_panel.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/images/Logo.svg" type="image/x-icon">
 </head>
 <body>
     <div class="admin-container">
@@ -36,14 +37,14 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         <h3 class="card-title">Total Clients</h3>
                         <i class="fas fa-users"></i>
                     </div>
-                    <div class="card-value">1,234</div>
+                    <div class="card-value" data-type="clients">0</div>
                 </div>
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Active Sessions</h3>
                         <i class="fas fa-clock"></i>
                     </div>
-                    <div class="card-value">56</div>
+                    <div class="card-value" data-type="sessions">0</div>
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -59,22 +60,11 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                     <h3>Client Growth</h3>
                     <canvas id="clientGrowthChart"></canvas>
                 </div>
-                <div class="chart-card">
-                    <h3>Session Distribution</h3>
-                    <canvas id="sessionDistChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="charts-container">
-                <div class="chart-card full-width">
-                    <h3>Monthly Statistics</h3>
-                    <canvas id="monthlyStatsChart"></canvas> 
-                </div>
             </div>
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/js/landing_page.js"></script>
     <script src="/js/admin_panel.js"></script>
+    <script src="/js/admin_sidebar.js"></script>
 </body>
 </html>

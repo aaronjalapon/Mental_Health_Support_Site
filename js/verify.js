@@ -35,22 +35,30 @@ const submitBtn = form.querySelector('.submit .button');
 form.onsubmit = (e) => {
     e.preventDefault();
 
-    // Create XMLHttpRequest
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "../php/otp.php", true);
     xhr.onload = () => {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                let data = xhr.response;
-                if (data === "Success") {
-                    // Redirect after successful verification
-                    setTimeout(() => {
-                        alert("You are now Successfully Register\nPlease login your account.");
-                        window.location.href = "/index.php";
-                    }, 1500);
-                } else {
-                    // Show error in alert instead of error text
-                    alert(data);
+                try {
+                    const response = JSON.parse(xhr.response);
+                    if (response.status === 'success') {
+                        if (response.type === 'reset_password') {
+                            window.location.href = '../html/reset_password.php';
+                        } else if (response.type === 'registration') {
+                            if (response.accountStatus === 'Pending') {
+                                alert("Email verification successful!\nYour account is pending admin approval.\nYou will be able to login once approved.");
+                            } else {
+                                alert("Email verification successful!\nYou can now login to your account.");
+                            }
+                            window.location.href = "../html/login.php";
+                        }
+                    } else {
+                        alert(response.message);
+                    }
+                } catch (e) {
+                    console.error('Parse error:', e);
+                    alert('An error occurred. Please try again.');
                 }
             }
         }

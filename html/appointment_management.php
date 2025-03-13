@@ -17,6 +17,7 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
     <link rel="stylesheet" href="/css/appointment_management.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/images/Logo.svg" type="image/x-icon">
 </head>
 <body>
     <div class="admin-container">
@@ -51,12 +52,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                         <option value="pending">Pending</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="quick-actions">
-                <button class="quick-action-btn" data-period="today">Today</button>
-                <button class="quick-action-btn" data-period="tomorrow">Tomorrow</button>
-                <button class="quick-action-btn" data-period="week">This Week</button>
+                <div class="filter-group">
+                    <input type="date" class="form-input" id="filterDate">
+                </div>
             </div>
 
             <div class="calendar-container">
@@ -66,7 +64,31 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                 </div>
                 <div class="calendar-content" id="calendarContent">
                     <div class="appointment-calendar">
-                        <!-- Calendar view will be implemented with JavaScript -->
+                        <div class="calendar-controls">
+                            <div class="calendar-navigation">
+                                <button class="btn btn-secondary" id="prevMonth">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h3>March 2025</h3>
+                                <button class="btn btn-secondary" id="nextMonth">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="calendar-wrapper">
+                            <div class="calendar-weekdays">
+                                <div class="weekday">Sun</div>
+                                <div class="weekday">Mon</div>
+                                <div class="weekday">Tue</div>
+                                <div class="weekday">Wed</div>
+                                <div class="weekday">Thu</div>
+                                <div class="weekday">Fri</div>
+                                <div class="weekday">Sat</div>
+                            </div>
+                            <div class="calendar-grid">
+                                <!-- Calendar grid will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,9 +201,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                             <div class="form-group">
                                 <label class="form-label">Session Type</label>
                                 <select class="form-input" name="sessionType" required>
-                                    <option value="Video Call">Video Call</option>
-                                    <option value="Voice Call">Voice Call</option>
-                                    <option value="Chat Session">Chat Session</option>
+                                    <option value="video">Video Call</option>
+                                    <option value="voice">Voice Call</option>
+                                    <option value="chat">Chat Session</option>
                                 </select>
                             </div>
 
@@ -193,9 +215,11 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
                             <div class="form-group">
                                 <label class="form-label">Status</label>
                                 <select class="form-input" name="status" required>
-                                    <option value="Scheduled">Scheduled</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    
                                 </select>
                             </div>
 
@@ -227,9 +251,8 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             </div>
         </main>
     </div>
-    <script src="/js/landing_page.js"></script>
-    <script src="/js/admin_panel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/appointment_management.js"></script>
-   
+    <script src="/js/admin_sidebar.js"></script>
 </body>
 </html>

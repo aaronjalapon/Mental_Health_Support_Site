@@ -16,6 +16,7 @@ if(isset($_COOKIE['user_logged'])) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Potta+One:wght@400&display=swap" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="/images/Logo.svg" type="image/x-icon">
 </head>     
 <body>
     <div class="rectangle-parent">
