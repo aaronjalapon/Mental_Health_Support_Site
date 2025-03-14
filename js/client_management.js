@@ -109,12 +109,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Add cancel button event listener for edit modal
+    document.querySelector('.edit-cancel-btn').addEventListener('click', function() {
+        toggleModal(editClientModal);
+    });
+
     searchInput.addEventListener('input', filterClients);
     statusFilter.addEventListener('change', filterClients);
 
     // Edit client handler
     window.editClient = function(id) {
-        const client = clients.find(c => c.id === id);
+        const client = clients.find(c => c.id == id); // Change from === to ==
         if (!client) {
             console.error('Client not found:', id);
             return;
@@ -124,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Client pronouns:', client.pronouns);
 
         // Populate edit form
-        document.getElementById('editClientId').value = client.id;
+        document.getElementById('editClientId').value = id;
         document.getElementById('editFirstName').value = client.firstName;
         document.getElementById('editLastName').value = client.lastName;
         document.getElementById('editUsername').value = client.username;
@@ -159,19 +164,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ id: parseInt(id) })
             });
 
             const data = await response.json();
             
             if (data.success) {
-                await fetchClients(); // Refresh the list
+                location.reload(); // Reload the page to refresh the list
                 alert('Client deleted successfully');
             } else {
                 alert(data.error || 'Failed to delete client');
             }
         } catch (error) {
-            console.error('Error deleting client:', error);
+            console.error('Error:', error);
             alert('Failed to delete client');
         }
     };
@@ -208,8 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Server response:', data); // Debug log
             
             if (data.success) {
-                await fetchClients();
-                toggleModal(editClientModal);
+                location.reload(); // Force page reload to refresh data
                 alert('Client updated successfully');
             } else {
                 alert(data.error || 'Failed to update client');

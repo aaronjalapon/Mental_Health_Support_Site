@@ -5,6 +5,8 @@ class AppointmentCalendar {
         this.initializeCalendar();
         this.fetchAppointments();
         this.loadTherapists();
+        this.initializeCalendarToggle();
+        this.initializeAddAppointment();
     }
 
     async fetchAppointments() {
@@ -52,6 +54,37 @@ class AppointmentCalendar {
         
         // Initial render
         this.renderCalendar();
+    }
+
+    initializeCalendarToggle() {
+        const calendarToggle = document.getElementById('calendarToggle');
+        const calendarContent = document.getElementById('calendarContent');
+        const collapseIcon = calendarToggle?.querySelector('.collapse-icon');
+
+        if (calendarToggle && calendarContent && collapseIcon) {
+            // Set initial state
+            let isCollapsed = false;
+
+            const toggleCalendar = () => {
+                isCollapsed = !isCollapsed;
+                calendarContent.classList.toggle('collapsed', isCollapsed);
+                collapseIcon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0)';
+                
+                // Add transition end listener to clean up after collapse
+                calendarContent.addEventListener('transitionend', () => {
+                    if (isCollapsed) {
+                        calendarContent.style.display = 'none';
+                    }
+                }, { once: true });
+
+                // Show immediately when expanding
+                if (!isCollapsed) {
+                    calendarContent.style.display = 'block';
+                }
+            };
+
+            calendarToggle.addEventListener('click', toggleCalendar);
+        }
     }
 
     // Add updateTherapistFilter method
@@ -199,6 +232,100 @@ class AppointmentCalendar {
         }
     }
 
+    async loadTherapistsList() {
+        try {
+            const response = await fetch('/php/CRUDTherapist/fetch_therapist.php');
+            const therapists = await response.json();
+            
+            if (Array.isArray(therapists)) {  // Your PHP returns direct array
+                const therapistInput = document.getElementById('therapistInput');
+                const therapistDropdown = document.getElementById('therapistDropdown');
+                
+                therapistInput.addEventListener('input', () => {
+                    const value = therapistInput.value.toLowerCase();
+                    const filtered = therapists.filter(therapist => 
+                        `${therapist.firstName} ${therapist.lastName}`.toLowerCase().includes(value) ||
+                        therapist.specialization.toLowerCase().includes(value)
+                    );
+                    
+                    therapistDropdown.innerHTML = filtered.map(therapist => `
+                        <div class="dropdown-item" data-id="${therapist.therapist_id}">
+                            ${therapist.firstName} ${therapist.lastName} 
+                            ${therapist.specialization ? ` - ${therapist.specialization}` : ''}
+                        </div>
+                    `).join('');
+                    
+                    therapistDropdown.style.display = filtered.length ? 'block' : 'none';
+                });
+
+                // Handle therapist selection
+                therapistDropdown.addEventListener('click', (e) => {
+                    const item = e.target.closest('.dropdown-item');
+                    if (item) {
+                        therapistInput.value = item.textContent.trim();
+                        therapistInput.dataset.id = item.dataset.id;
+                        therapistDropdown.style.display = 'none';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!therapistInput.contains(e.target) && !therapistDropdown.contains(e.target)) {
+                        therapistDropdown.style.display = 'none';
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error loading therapists:', error);
+        }
+    }
+
+    async loadClientsList() {
+        try {
+            const response = await fetch('/php/CRUDClient/fetch_clients.php');
+            const clients = await response.json();
+            
+            if (Array.isArray(clients)) {  // Check if response is an array
+                const clientInput = document.getElementById('clientInput');
+                const clientDropdown = document.getElementById('clientDropdown');
+                
+                clientInput.addEventListener('input', () => {
+                    const value = clientInput.value.toLowerCase();
+                    const filtered = clients.filter(client => 
+                        `${client.firstName} ${client.lastName}`.toLowerCase().includes(value)
+                    );
+                    
+                    clientDropdown.innerHTML = filtered.map(client => `
+                        <div class="dropdown-item" data-id="${client.id}">
+                            ${client.firstName} ${client.lastName}
+                        </div>
+                    `).join('');
+                    
+                    clientDropdown.style.display = filtered.length ? 'block' : 'none';
+                });
+
+                // Handle client selection
+                clientDropdown.addEventListener('click', (e) => {
+                    const item = e.target.closest('.dropdown-item');
+                    if (item) {
+                        clientInput.value = item.textContent.trim();
+                        clientInput.dataset.id = item.dataset.id;
+                        clientDropdown.style.display = 'none';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!clientInput.contains(e.target) && !clientDropdown.contains(e.target)) {
+                        clientDropdown.style.display = 'none';
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error loading clients:', error);
+        }
+    }
+
     // Helper methods
     formatDateTime(date, time) {
         return `${new Date(date).toLocaleDateString()} ${time}`;
@@ -239,6 +366,117 @@ class AppointmentCalendar {
             
             return matchesSearch && matchesTherapist && matchesStatus && matchesDate;
         });
+    }
+
+    initializeAddAppointment() {
+        const addBtn = document.getElementById('addAppointmentBtn');
+        const modal = document.getElementById('appointmentFormModal');
+        const form = document.getElementById('addAppointmentForm');
+        const closeBtn = modal.querySelector('.close-modal');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        addBtn?.addEventListener('click', () => {
+            modal.classList.add('active');
+            this.loadClientsList();
+            this.loadTherapistsList();
+        });
+
+        closeBtn?.addEventListener('click', () => modal.classList.remove('active'));
+        cancelBtn?.addEventListener('click', () => modal.classList.remove('active'));
+
+        form?.addEventListener('submit', (e) => this.handleAppointmentSubmit(e));
+
+        // Add event listeners for date/time changes
+        const dateInput = form?.querySelector('[name="date"]');
+        const timeInput = form?.querySelector('[name="time"]');
+
+        dateInput?.addEventListener('change', () => this.updateAvailableTherapists());
+        timeInput?.addEventListener('change', () => this.updateAvailableTherapists());
+    }
+
+    async updateAvailableTherapists() {
+        const dateInput = document.querySelector('[name="date"]');
+        const timeInput = document.querySelector('[name="time"]');
+        const therapistInput = document.getElementById('therapistInput');
+        
+        if (!dateInput?.value || !timeInput?.value) return;
+
+        try {
+            const response = await fetch('/php/appointments/fetch_available_therapists.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    date: dateInput.value,
+                    time: timeInput.value
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                therapistInput.value = ''; // Clear current selection
+                therapistInput.dataset.id = ''; // Clear selected ID
+                
+                const dropdownContent = data.data.map(therapist => `
+                    <div class="dropdown-item" data-id="${therapist.therapist_id}">
+                        ${therapist.firstName} ${therapist.lastName} - ${therapist.specialization}
+                    </div>
+                `).join('');
+                
+                const therapistDropdown = document.getElementById('therapistDropdown');
+                therapistDropdown.innerHTML = dropdownContent;
+                therapistDropdown.style.display = data.data.length ? 'block' : 'none';
+                
+                if (data.data.length === 0) {
+                    therapistInput.setCustomValidity(data.message || 'No therapists available at this time');
+                } else {
+                    therapistInput.setCustomValidity('');
+                }
+            } else {
+                throw new Error(data.error || 'Failed to fetch available therapists');
+            }
+        } catch (error) {
+            console.error('Error fetching available therapists:', error);
+            therapistInput.setCustomValidity(error.message);
+        }
+    }
+
+    async handleAppointmentSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = {
+            clientId: document.querySelector('#clientInput').dataset.id,
+            therapistId: document.querySelector('#therapistInput').dataset.id,
+            date: form.querySelector('[name="date"]').value,
+            time: form.querySelector('[name="time"]').value,
+            sessionType: form.querySelector('[name="sessionType"]').value,
+            notes: form.querySelector('[name="notes"]').value
+        };
+
+        try {
+            const response = await fetch('/php/appointments/schedule_appointment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert('Appointment scheduled successfully!'); // Add success alert
+                document.getElementById('appointmentFormModal').classList.remove('active');
+                this.fetchAppointments();
+                form.reset();
+            } else {
+                alert(data.error || 'Failed to schedule appointment');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to schedule appointment');
+        }
     }
 }
 

@@ -99,7 +99,7 @@ try {
             Address = ?, 
             Status = ? 
             $validIdUpdate
-            WHERE unique_id = ?";
+            WHERE client_id = ?";
 
         $stmt = $conn->prepare($query);
         $stmt->bind_param($types, ...$params);

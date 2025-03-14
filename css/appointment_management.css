@@ -696,18 +696,28 @@
 
 /* Collapsible Calendar */
 .calendar-container {
+    position: relative;
     margin-bottom: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     background: white;
-    border-radius: 12px 12px 0 0;
     border-bottom: 1px solid #e9ecef;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 1;
+}
+
+.calendar-header:hover {
+    background: #e9ecef;
 }
 
 .calendar-header h2 {
@@ -725,8 +735,8 @@
 }
 
 .calendar-content {
-    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-    max-height: 1000px;
+    transition: max-height 0.3s ease-out;
+    max-height: 1500px; /* Increased to accommodate full calendar */
     opacity: 1;
     overflow: hidden;
 }
@@ -734,6 +744,8 @@
 .calendar-content.collapsed {
     max-height: 0;
     opacity: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* Mobile Responsive Styles */
@@ -1334,4 +1346,185 @@ tr:last-child td {
 
 .appointment-details .client {
     color: #666;
+}
+
+/* Calendar Container and Header */
+.calendar-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-header:hover {
+    background: #e9ecef;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapse-icon.collapsed {
+    transform: rotate(180deg);
+}
+
+/* Calendar Grid Layout */
+.calendar-wrapper {
+    padding: 1rem;
+    background: white;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 0.5rem;
+    background: white;
+}
+
+.weekday {
+    padding: 1rem;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    background: white;
+}
+
+.calendar-day {
+    position: relative;
+    aspect-ratio: 1/1;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.5rem;
+    background: white;
+    transition: all 0.2s ease;
+    min-height: 100px;
+}
+
+.calendar-day:hover {
+    border-color: #1e9160;
+    box-shadow: 0 0 0 1px #1e9160;
+}
+
+.calendar-day.empty {
+    background: #f8f9fa;
+    border: 1px solid #f0f0f0;
+}
+
+.calendar-day.today {
+    background: #e8f5e9;
+    border-color: #1e9160;
+}
+
+.calendar-day .date {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    height: 24px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: #495057;
+    font-weight: 500;
+    border-radius: 50%;
+}
+
+.calendar-day.today .date {
+    background: #1e9160;
+    color: white;
+}
+
+.appointment-list {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    overflow-y: auto;
+    max-height: calc(100% - 2rem);
+}
+
+.appointment-item {
+    background: rgba(30, 145, 96, 0.1);
+    border-left: 3px solid #1e9160;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .calendar-wrapper {
+        padding: 0.5rem;
+    }
+
+    .weekday {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .calendar-day {
+        min-height: 80px;
+    }
+
+    .calendar-day .date {
+        height: 20px;
+        width: 20px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-grid {
+        gap: 2px;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        padding: 0.25rem;
+    }
+
+    .weekday {
+        padding: 0.25rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Calendar Content Toggle */
+.calendar-content {
+    transition: all 0.3s ease-out;
+    max-height: 1200px;
+    opacity: 1;
+    overflow: hidden;
+}
+
+.calendar-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
 }

@@ -96,59 +96,49 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
             <div id="appointmentFormModal" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2>Schedule Appointment</h2>
+                        <h2>Schedule New Appointment</h2>
                         <span class="close-modal">&times;</span>
                     </div>
                     <div class="modal-body">
                         <form id="addAppointmentForm">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label">Client</label>
-                                    <div class="filter-dropdown">
-                                        <input type="text" class="form-input" name="client" id="clientInput" placeholder="Search client..." required>
-                                        <div class="dropdown-list" id="clientDropdown">
-                                            <!-- Dropdown items will be populated by JS -->
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Therapist</label>
-                                    <div class="filter-dropdown">
-                                        <input type="text" class="form-input" name="therapist" id="therapistInput" placeholder="Search therapist..." required>
-                                        <div class="dropdown-list" id="therapistDropdown">
-                                            <!-- Dropdown items will be populated by JS -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-input" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Time</label>
-                                    <input type="time" class="form-input" required>
-                                </div>
-                            </div>
-
                             <div class="form-group">
-                                <label class="form-label">Session Type</label>
-                                <select class="form-input" required>
+                                <label>Client</label>
+                                <div class="filter-dropdown">
+                                    <input type="text" id="clientInput" class="form-input" placeholder="Search client..." required>
+                                    <div id="clientDropdown" class="dropdown-list"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Therapist</label>
+                                <div class="filter-dropdown">
+                                    <input type="text" id="therapistInput" class="form-input" placeholder="Search therapist..." required>
+                                    <div id="therapistDropdown" class="dropdown-list"></div>
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" name="date" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Time</label>
+                                    <input type="time" name="time" class="form-input" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Session Type</label>
+                                <select name="sessionType" class="form-input" required>
                                     <option value="video">Video Call</option>
                                     <option value="voice">Voice Call</option>
                                     <option value="chat">Chat Session</option>
                                 </select>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">Notes</label>
-                                <textarea class="form-input" rows="3"></textarea>
+                                <label>Notes</label>
+                                <textarea name="notes" class="form-input" rows="3"></textarea>
                             </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Appointment</button>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Schedule Appointment</button>
                                 <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                             </div>
                         </form>

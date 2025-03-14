@@ -10,9 +10,9 @@ if(!isset($_SESSION['unique_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 try {
-    // Updated query to include ValidID
+    // Updated query to include ValidIDid
     $query = "SELECT 
-        unique_id,
+        client_id,     /* Changed from unique_id to client_id */
         firstName,
         lastName,
         username,
@@ -35,7 +35,7 @@ try {
     $clients = [];
     while($row = $result->fetch_assoc()) {
         $clients[] = [
-            'id' => $row['unique_id'],
+            'id' => $row['client_id'],  // Changed from unique_id to client_id     /* Changed from unique_id to client_id */
             'firstName' => htmlspecialchars($row['firstName']),
             'lastName' => htmlspecialchars($row['lastName']),
             'username' => htmlspecialchars($row['username']),

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileLabel = document.querySelector('.file-name');
     const registerBtn = document.querySelector('.register-btn');
     const blankModal = document.getElementById('blankModal');
-    const blankModalClose = document.getElementById('blankModalClose');
+    
 
     // File upload handler
     fileInput.addEventListener('change', function() {
@@ -81,10 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     });
 
-    // Close blank modal when clicking on close button
-    blankModalClose.addEventListener('click', function() {
-        blankModal.classList.add('hidden');
-    });
+    // // Close blank modal when clicking on close button
+    // blankModalClose.addEventListener('click', function() {
+    //     blankModal.classList.add('hidden');
+    // });
 
     // Terms and Conditions Modal
     const modal = document.getElementById('termsModal');

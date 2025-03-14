@@ -15,13 +15,12 @@ try {
     $clientResult = $conn->query($clientQuery);
     $totalClients = $clientResult->fetch_assoc()['total'];
 
-    // Get today's active sessions
+    // Get today's active sessions - simplified query
     $today = date('Y-m-d');
     $sessionQuery = "SELECT COUNT(*) as total FROM appointments 
-                    WHERE DATE(appointment_date) = ? 
+                    WHERE DATE(appointment_date) = CURRENT_DATE()
                     AND status = 'upcoming'";
     $stmt = $conn->prepare($sessionQuery);
-    $stmt->bind_param('s', $today);
     $stmt->execute();
     $activeSessions = $stmt->get_result()->fetch_assoc()['total'];
 
