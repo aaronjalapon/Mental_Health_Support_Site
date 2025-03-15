@@ -137,7 +137,7 @@ if(isset($_SESSION['unique_id'])) {
     </div>
     <script src="../js/signup.js"></script>
 
-    <!-- Blank Modal -->
+    <!-- Loading Modal -->
     <div id="blankModal" class="modal hidden">
         <div class="modal-content-loading">
             <div class="loader"></div> 

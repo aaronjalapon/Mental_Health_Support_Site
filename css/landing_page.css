@@ -18,6 +18,8 @@ body {
 
 /* Hero Section */
 .hero {
+  height: 100vh;
+  display: flex;
   text-align: center;
   background-image: url(/images/Consult.webp);
   background-position: 75% 35%;
